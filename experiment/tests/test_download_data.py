@@ -101,3 +101,14 @@ def test_restore_rejects_archive_traversal_and_wrong_hash(tmp_path):
         downloader.restore(packed, tmp_path / 'project', records)
     assert not (tmp_path / 'project/safe.txt').exists()
     assert not list((tmp_path / 'project').glob('*.restore-part'))
+
+
+def test_stage_rejects_exec_link_to_grader_material_even_inside_root(tmp_path):
+    source = task_fixture(tmp_path)
+    target = tmp_path / 'experiment/runtime/task_inputs/task'
+    target.mkdir(parents=True)
+    (target / 'exec').symlink_to(source / 'gt', target_is_directory=True)
+    with pytest.raises(ValueError, match='Unexpected link'):
+        downloader.stage_test_inputs(tmp_path)
+    assert (source / 'gt/answer.txt').read_text() == 'grader only'
+    assert not (source / 'gt/input.txt').exists()

@@ -31,6 +31,11 @@ def sha256(path):
 def _contained(path, root):
     if not path.resolve().is_relative_to(root.resolve()):
         raise ValueError(f"Path escapes destination: {path}")
+    current = root.absolute()
+    for part in path.absolute().relative_to(root.absolute()).parts:
+        current = current / part
+        if current.is_symlink():
+            raise ValueError(f"Unexpected link in staging path: {current}")
     return path
 
 

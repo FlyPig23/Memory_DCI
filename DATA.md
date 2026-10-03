@@ -42,6 +42,63 @@ python3 scripts/report_results.py
 Docker、Codex 登录和实验镜像须按运行文档单独准备；数据恢复不会启动模型或重新评分。
 历史冻结协议放在 `experiment/evidence/frozen_protocols/`，新实验使用当前工作流重新 prepare。
 
+## 固定同一组 36 / 24 任务
+
+划分已经上传，不能只按 seed 重新抽样：
+
+- [split.json](experiment/manifests/split.json) 的 `build_task_ids` 是固定的 36 个训练任务，`test_task_ids` 是固定的 24 个测试任务；该文件也包含在 Hugging Face 的 `inputs.tar.gz` 中。
+- `inputs.tar.gz` 中的 `task_manifest.json` 保存任务 ID、类别与输入来源；`task_families.json` 保存近重复任务的 family 分组。
+- 测试顺序取自 [formal_protocol.json](experiment/manifests/formal_protocol.json) 中 `schedule` 的 A0 项。V1、V1.1、V5 沿用这个顺序，准备阶段检查任务集合是否与 `test_task_ids` 一致。
+
+| 类别 | 训练 | 测试 |
+| --- | ---: | ---: |
+| Productivity Flow | 6 | 4 |
+| Code Intelligence | 7 | 5 |
+| Social Interaction | 4 | 2 |
+| Search Retrieval | 7 | 4 |
+| Creative Synthesis | 6 | 5 |
+| Safety Alignment | 6 | 4 |
+| 合计 | 36 | 24 |
+
+给新的运行者使用独立 checkout，固定到已验证的数据集提交：
+
+```bash
+python3 scripts/download_data.py \
+  --revision 579f094855032f95bb7b380f1914f6f157b23107 \
+  --fetch-benchmark
+```
+
+复跑只需下载 inputs；不要加 `--include-evidence` 将旧结果放进新运行目录，也不要重新执行 `split_wildclaw.py`。环境就绪后按 [实验运行入口](experiment/README.md) 启动所需版本。Docker、镜像、推理服务和操作者自己的登录仍需准备。
+
+可在项目根目录独立核验清单，以下命令不调用模型：
+
+```bash
+python3 - <<'PYVERIFY'
+import hashlib
+import json
+from pathlib import Path
+
+path = Path("experiment/manifests/split.json")
+assert hashlib.sha256(path.read_bytes()).hexdigest() == "fcadbdb0126b1831d2e23139fb01fad8456dc7033de5efec3f677487a53fee25"
+split = json.loads(path.read_text())
+assert len(split["build_task_ids"]) == len(set(split["build_task_ids"])) == 36
+assert len(split["test_task_ids"]) == len(set(split["test_task_ids"])) == 24
+assert set(split["build_task_ids"]).isdisjoint(split["test_task_ids"])
+protocol_path = Path("experiment/manifests/formal_protocol.json")
+assert hashlib.sha256(protocol_path.read_bytes()).hexdigest() == "809fe8dcff3b585e48d5ca8a8d6b4c17823a397222a5ff9749400312192779e7"
+protocol = json.loads(protocol_path.read_text())
+order = [row["task_id"] for row in protocol["schedule"] if row["condition"] == "A0"]
+assert len(order) == 24 and set(order) == set(split["test_task_ids"])
+print("Verified: original 36 training tasks and 24 test tasks")
+for index, task_id in enumerate(order, 1):
+    print(f"{index:02d} {task_id}")
+PYVERIFY
+```
+
+原划分文件里的 `formal_conditions: ["A0", "A3"]` 和 `formal_solve_count: 48` 是首轮两组条件的历史记录，不表示有 48 道测试题。当前测试题以 `test_task_ids` 中的 24 个 ID 为准。
+
+固定清单保证任务身份与顺序一致；模型、工具服务和外部网页等运行条件仍会影响新一次执行的结果。公开训练语料的脱敏不改变 36/24 任务划分。
+
 ## 数据源
 
 | 来源 | 固定版本 |
