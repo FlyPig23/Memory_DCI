@@ -1,0 +1,65 @@
+# Only source code, protocols, source references and documentation belong on GitHub.
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.venv-*/
+node_modules/
+.env
+.env.*
+*.pem
+*.key
+auth.json
+*.log
+*.jsonl
+/tmp/
+archive/
+
+# Local experiments, downloaded data and credentials are deliberately excluded.
+experiment/benchmarks/
+experiment/runtime/
+experiment/runs/
+experiment/logs/
+experiment/.cache/
+experiment/trajectory library/
+experiment/corpus/
+experiment/vendor/
+experiment/skills/
+experiment/variants/*/prepared/
+experiment/variants/dci_terminal/
+experiment/variants/dci_native/
+experiment/variants/dci_skills/
+experiment/variants/dci_skills_native/
+
+# Generated evidence lives in the Hugging Face dataset.
+experiment/reports/**/*.json
+experiment/reports/**/*.csv
+experiment/reports/**/*.html
+experiment/reports/versions.json
+experiment/manifests/*_schedule.json
+experiment/manifests/*smoke*.json
+experiment/manifests/*validation*.json
+experiment/manifests/*gate*.json
+experiment/manifests/*audit*.json
+experiment/manifests/download_*.json
+experiment/manifests/execution_state.json
+experiment/manifests/readiness.json
+experiment/manifests/preformal_gateway_health.json
+experiment/manifests/runtime_dependency_probe.json
+experiment/manifests/runtime_image.json
+experiment/manifests/source_WildClawBench*.json
+
+# Generated views and local paper copies.
+docs/project_map/
+docs/meeting_notes/v5_html/
+papers/*.pdf
+reports/*.html
+.openai/
+experiment/manifests/task_manifest.json
+experiment/manifests/task_families.json
+experiment/manifests/dependency_resources.json
+experiment/manifests/grader_error_contracts.json
+.cache/
+experiment/evidence/
+experiment/manifests/v1_protocol.json

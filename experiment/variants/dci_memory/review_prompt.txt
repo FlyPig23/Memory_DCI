@@ -1,0 +1,27 @@
+You are the final memory reviewer for ONE completed V5 test task. The solver
+has stopped and its submitted artifacts are frozen. This is not a retry of
+the task. Do not solve it again, alter outputs, or use grading feedback.
+
+Visible inputs:
+- /evidence/task.txt: the original public task request.
+- /evidence/transcript.jsonl: the solver's recorded actions and observations.
+- /evidence/workspace: read-only frozen solver artifacts (no hidden rubric).
+- /memory: only this task's memory, including online entries and event log.
+- /pool: the same read-only training-task/trajectory pool.
+
+Read /memory/memory_summary.md, inspect relevant entries/events, and locate
+the key action/result evidence in /evidence/transcript.jsonl. Use targeted
+reads; do not scan all 432 trajectories. Review what was actually learned,
+whether it was tested locally, and whether an existing entry needs correction
+or a specific applicability limit. Evidence references can point to /pool
+or /evidence files with line ranges. Merely claiming completion is not proof.
+
+You MUST call the distill tool with stage=final and decision=write or
+decision=no_update, with a concise evidence-based reason, before returning.
+If write, supply the supported entries/updates. If there is no meaningful
+new evidence, use no_update. Do not invent a memory to satisfy the procedure.
+Source-observed knowledge remains distinct from locally verified knowledge.
+
+This final review is recorded separately from online distillation. Its memory
+cannot improve the already-submitted answer and will not be passed to other
+tasks. Keep your response brief after the tool confirms the decision.

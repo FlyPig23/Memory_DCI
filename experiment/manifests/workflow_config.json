@@ -1,0 +1,18 @@
+{
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "medium",
+  "judge_model": "gpt-5.6-sol",
+  "judge_reasoning_effort": "medium",
+  "cli_version": "0.153.4",
+  "solver_image_id": "sha256:37d61bbb96578b73dc4017f48b46fec26231b5afb15f65386951ca2612c7d87e",
+  "timeout_seconds": 1800,
+  "grading_timeout_seconds": 1800,
+  "schema_version": 1,
+  "workflow_revision": "minimal-v1-v11-v5",
+  "rg_mount": {
+    "source": "experiment/runtime/bin/rg",
+    "target": "/usr/local/bin/rg",
+    "readonly": true,
+    "sha256": "e62198eb19b136b88c330af83647b5a962cb99b6b1f066758568f12de1974849"
+  }
+}
