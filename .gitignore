@@ -17,7 +17,15 @@ auth.json
 archive/
 
 # Local experiments, downloaded data and credentials are deliberately excluded.
-experiment/benchmarks/
+experiment/benchmarks/*
+!experiment/benchmarks/terminal_bench_2_1/
+experiment/benchmarks/terminal_bench_2_1/runtime/
+experiment/benchmarks/terminal_bench_2_1/prepared/
+experiment/benchmarks/terminal_bench_2_1/data/
+experiment/benchmarks/terminal_bench_2_1/manifests/
+experiment/benchmarks/terminal_bench_2_1/reports/
+experiment/benchmarks/terminal_bench_2_1/runs/
+experiment/benchmarks/terminal_bench_2_1/.downloads/
 experiment/runtime/
 experiment/runs/
 experiment/logs/

@@ -1,6 +1,6 @@
 # Memory DCI
 
-研究历史轨迹检索与每题独立 memory 能否帮助 agent 完成 WildClawBench 任务。当前代码保留 **V1 / V1.1 无历史资源基线**和 **V5：DCI + task-local memory**。V2–V4 工作流不再保留，相关文献与研究笔记作为历史知识资料保存。
+研究历史轨迹检索与每题独立 memory 能否帮助 agent 完成任务。WildClawBench 保留 **V1 / V1.1 无历史资源基线**和 **V5：DCI + task-local memory**；另提供 [TerminalBench 2.1 的 baseline / V5 最小运行入口](experiment/benchmarks/terminal_bench_2_1/README.md)。V2–V4 工作流不再保留，相关文献与研究笔记作为历史知识资料保存。
 
 代码与方法文档放在本仓库；任务数据、轨迹和可分享的实验记录通过公开的 [Hugging Face dataset](https://huggingface.co/datasets/FlyPig23/memory_dci) 分发。固定来源与下载方式见 [DATA.md](DATA.md)。
 
@@ -11,6 +11,8 @@
 | V5 | GPT-5.6 Sol / medium | 432 条训练轨迹 + 本题独立 memory | 24 | 0.740963 |
 
 V1 的模型不同，只作历史参考。V5 与 V1.1 使用相同 solver 配置，但 V5 同时改变历史分数可见性、检索指引、工具接口和 memory，分差不能单独归因于 memory；每题每条件仅运行一次。
+
+TerminalBench 2.1 使用独立的 **53 条训练 / 36 条测试**固定划分，支持通过 `--model`、`--effort` 修改模型配置；代码不依赖 TerminalBench 4.0。本页下方的结果和 36+24 划分均属于 WildClawBench。TB2.1 数据位于同一个 Hugging Face 数据集的 [`terminal_bench_2_1/`](https://huggingface.co/datasets/FlyPig23/memory_dci/tree/main/terminal_bench_2_1) 子目录。
 
 ## V5 工作流
 
@@ -28,6 +30,7 @@ V1 的模型不同，只作历史参考。V5 与 V1.1 使用相同 solver 配置
 | 入口 | 内容 |
 |---|---|
 | [实验入口](experiment/README.md) | V1、V1.1、V5 的运行命令与前提 |
+| [TerminalBench 2.1](experiment/benchmarks/terminal_bench_2_1/README.md) | 固定 53/36 划分，baseline / V5 安装、下载、改模型与运行 |
 | [三组结果汇总](experiment/reports/retained/README.md) | 从 72 份保存结果重算分数、配对差与成本 |
 | [V1.1 基线](experiment/variants/vanilla_sol/README.md) | 原 V1 A0 提示词、Sol / medium、无历史资源 |
 | [V5 方法与运行](experiment/variants/dci_memory/README.md) | 查询池、五个工具、memory、复盘与评分 |

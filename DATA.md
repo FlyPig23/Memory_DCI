@@ -3,7 +3,11 @@
 代码仓库只保留 V1 / V1.1 baseline、V5 工作流、配置和知识文档。
 数据集位于 [FlyPig23/memory_dci](https://huggingface.co/datasets/FlyPig23/memory_dci)，公开下载无需 token。
 
-数据分为两个压缩包：
+## TerminalBench 2.1 数据
+
+同一个 [Hugging Face 数据集](https://huggingface.co/datasets/FlyPig23/memory_dci/tree/main/terminal_bench_2_1) 的 `terminal_bench_2_1/` 子目录保存 TB2.1 revision 6 的任务包、训练历史查询池及固定 **53 training / 36 test** 清单。下载、校验和运行见 [TB2.1 说明](experiment/benchmarks/terminal_bench_2_1/README.md)。下方原有数据说明均属于 WildClawBench 的 **36 training / 24 test**，两套划分独立保存。
+
+WildClawBench 数据分为两个压缩包：
 
 | 文件 | 内容 |
 | --- | --- |
@@ -11,7 +15,7 @@
 | `evidence.tar.gz` | V1 / V1.1 / V5 各 24 次原始结果、转录与工具事件、V5 独立 memory、复盘决定、历史协议 |
 
 每个文件及压缩包的 SHA-256 都记录在数据集的 `manifest.json`。
-不上传鉴权文件、Codex home、缓存、重复 workspace、模型权重、V2–V4 或 Terminal Bench 数据。
+不上传鉴权文件、Codex home、缓存、重复 workspace、模型权重，以及废弃的 V2–V4 / TerminalBench 4.0 数据。
 完整原始会话和 workspace 未包含在精简导出中，因此完整历史审计仍需本地原始证据。
 
 公开导出会清除检测到的凭据和私钥内容；`redactions.json` 只记录文件路径、替换类别和修改前后的哈希。
