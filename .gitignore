@@ -3,8 +3,8 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
-.venv/
-.venv-*/
+.venv
+.venv-*
 node_modules/
 .env
 .env.*
@@ -20,7 +20,7 @@ archive/
 experiment/benchmarks/*
 !experiment/benchmarks/wildclaw_bench/
 !experiment/benchmarks/terminal_bench_2_1/
-experiment/benchmarks/*/runtime/
+experiment/benchmarks/*/runtime
 experiment/benchmarks/*/runs/
 experiment/benchmarks/*/logs/
 experiment/benchmarks/*/prepared/
@@ -48,10 +48,10 @@ experiment/benchmarks/wildclaw_bench/manifests/*
 !experiment/benchmarks/wildclaw_bench/manifests/workflow_config.json
 # Temporary local compatibility paths used by already-running services.
 experiment/src/
-experiment/scripts/
-experiment/runtime/
-experiment/.venv/
-experiment/.venv-dependencies/
+experiment/scripts
+experiment/runtime
+experiment/.venv
+experiment/.venv-dependencies
 experiment/LOCAL_COMPATIBILITY.md
 # Local-only tool harness; preserved separately from dataset experiments.
 pi_harness/
