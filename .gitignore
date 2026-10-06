@@ -16,58 +16,48 @@ auth.json
 /tmp/
 archive/
 
-# Local experiments, downloaded data and credentials are deliberately excluded.
+# Dataset namespaces. Never commit downloaded inputs, runs, credentials or caches.
 experiment/benchmarks/*
+!experiment/benchmarks/wildclaw_bench/
 !experiment/benchmarks/terminal_bench_2_1/
-experiment/benchmarks/terminal_bench_2_1/runtime/
-experiment/benchmarks/terminal_bench_2_1/prepared/
-experiment/benchmarks/terminal_bench_2_1/data/
+experiment/benchmarks/*/runtime/
+experiment/benchmarks/*/runs/
+experiment/benchmarks/*/logs/
+experiment/benchmarks/*/prepared/
+experiment/benchmarks/*/data/
+experiment/benchmarks/*/.downloads/
+experiment/benchmarks/*/corpus/
+experiment/benchmarks/*/vendor/
+experiment/benchmarks/*/trajectory library/
+experiment/benchmarks/*/skills/
+experiment/benchmarks/*/evidence/
+experiment/benchmarks/*/variants/*/prepared/
 experiment/benchmarks/terminal_bench_2_1/manifests/
 experiment/benchmarks/terminal_bench_2_1/reports/
-experiment/benchmarks/terminal_bench_2_1/runs/
-experiment/benchmarks/terminal_bench_2_1/.downloads/
+experiment/benchmarks/wildclaw_bench/reports/**/*.json
+experiment/benchmarks/wildclaw_bench/reports/**/*.csv
+experiment/benchmarks/wildclaw_bench/reports/**/*.html
+experiment/benchmarks/wildclaw_bench/reports/versions.json
+experiment/benchmarks/wildclaw_bench/manifests/*
+!experiment/benchmarks/wildclaw_bench/manifests/formal_protocol.json
+!experiment/benchmarks/wildclaw_bench/manifests/runtime_skill_patches.json
+!experiment/benchmarks/wildclaw_bench/manifests/sources.json
+!experiment/benchmarks/wildclaw_bench/manifests/split.json
+!experiment/benchmarks/wildclaw_bench/manifests/split_audit.md
+!experiment/benchmarks/wildclaw_bench/manifests/warmup_dependencies.json
+!experiment/benchmarks/wildclaw_bench/manifests/workflow_config.json
+# Temporary local compatibility paths used by already-running services.
+experiment/src/
+experiment/scripts/
 experiment/runtime/
-experiment/runs/
-experiment/logs/
-experiment/.cache/
-experiment/trajectory library/
-experiment/corpus/
-experiment/vendor/
-experiment/skills/
-experiment/variants/*/prepared/
-experiment/variants/dci_terminal/
-experiment/variants/dci_native/
-experiment/variants/dci_skills/
-experiment/variants/dci_skills_native/
-
-# Generated evidence lives in the Hugging Face dataset.
-experiment/reports/**/*.json
-experiment/reports/**/*.csv
-experiment/reports/**/*.html
-experiment/reports/versions.json
-experiment/manifests/*_schedule.json
-experiment/manifests/*smoke*.json
-experiment/manifests/*validation*.json
-experiment/manifests/*gate*.json
-experiment/manifests/*audit*.json
-experiment/manifests/download_*.json
-experiment/manifests/execution_state.json
-experiment/manifests/readiness.json
-experiment/manifests/preformal_gateway_health.json
-experiment/manifests/runtime_dependency_probe.json
-experiment/manifests/runtime_image.json
-experiment/manifests/source_WildClawBench*.json
-
-# Generated views and local paper copies.
+experiment/.venv/
+experiment/.venv-dependencies/
+experiment/LOCAL_COMPATIBILITY.md
+# Local-only tool harness; preserved separately from dataset experiments.
+pi_harness/
+.cache/
+.openai/
 docs/project_map/
 docs/meeting_notes/v5_html/
 papers/*.pdf
 reports/*.html
-.openai/
-experiment/manifests/task_manifest.json
-experiment/manifests/task_families.json
-experiment/manifests/dependency_resources.json
-experiment/manifests/grader_error_contracts.json
-.cache/
-experiment/evidence/
-experiment/manifests/v1_protocol.json

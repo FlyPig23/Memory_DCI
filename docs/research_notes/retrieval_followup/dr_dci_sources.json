@@ -7,7 +7,7 @@
   "retrieved_at": "2026-09-09T01:42:28.077031+00:00",
   "commit_message": "Update README.md",
   "purpose": "read-only source/literature research; no experiment",
-  "snapshot_path": "/home/hangxiao/projects/skill_dci/experiment/.cache/literature/DR-DCI",
+  "snapshot_path": "/home/hangxiao/projects/skill_dci/experiment/benchmarks/wildclaw_bench/.cache/literature/DR-DCI",
   "checkout_mode": "depth1,blob-filtered,sparse,detached",
   "paper": {
     "arxiv": "2606.14885v1",

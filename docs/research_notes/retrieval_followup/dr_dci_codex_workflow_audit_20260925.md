@@ -21,7 +21,7 @@
 | DR-DCI | 0d0410f3c2b98fb33145adc250a09fded028cd3c | 主启动脚本、实际 prompt builder、pull/read/bash、Pi agent loop、可选 research rounds 和 rescue |
 | DCI-Agent-Lite | 271f37e71f053bf0c99c05ce6d2fb53b841d922e | benchmark 默认/IR prompt、RPC runner、上下文配置与启动脚本 |
 | OpenAI Codex | c9e25207073a88f1a3a4a885991b9143799a084f | turn loop、tool routing/parallel execution、skill discovery/catalog、memory write pipeline |
-| 我们的 V4 | experiment/variants/dci_skills_native/ 与 24 次保存 session | 实际 prompt、资源挂载、启动目录、结束和 skill promotion 路径 |
+| 我们的 V4 | experiment/benchmarks/wildclaw_bench/variants/dci_skills_native/ 与 24 次保存 session | 实际 prompt、资源挂载、启动目录、结束和 skill promotion 路径 |
 
 源码快照放在 archive/research_source_audits/20260925/。历史 V4 使用 CLI 0.153.4；本次 Codex 上游快照不能当成该版本的完整实现说明。关于 V4 的判断优先使用运行时保存的 prompt/session 和项目代码。
 
@@ -33,10 +33,10 @@
 
 | 事实 | 证据位置 | 含义 |
 |---|---|---|
-| 检索明确可选 | experiment/variants/dci_skills_native/prompt.txt:21–25 | agent 不检索并不违反这份实验指令 |
+| 检索明确可选 | experiment/benchmarks/wildclaw_bench/variants/dci_skills_native/prompt.txt:21–25 | agent 不检索并不违反这份实验指令 |
 | 开始时只介绍 /skills，没有给 67 个名称与描述 | prompt 第 9–19 行；全部 24 次启动 session | 模型先要支付探索成本，才知道是否有相关经验 |
 | 67 个 skill 不在原生 Available skills 中 | 逐运行目录审计（历史文件：`docs/research_notes/retrieval_followup/v4_skill_catalog_audit_20260925.json`，不在精简发布中） | 使用原生 bash，不等于接入原生 skill 发现机制 |
-| 官方任务 skills 另有注入路径 | experiment/src/codex_backend.py:80–98、experiment/src/task_runtime.py:256–265 | 读官方技能不能算使用我们的蒸馏库 |
+| 官方任务 skills 另有注入路径 | experiment/shared/codex_backend.py:80–98、experiment/shared/task_runtime.py:256–265 | 读官方技能不能算使用我们的蒸馏库 |
 | /skills 实际可写，但仅允许修改既有文件 | runner.py:369–383、skills_runtime.py:85；prompt 第 14–19 行 | 零更新不是简单的文件系统写权限故障 |
 | 一次 solver 调用后就冻结、审计、评分 | runner.py:394–418 | “可以在解题后更新”没有独立调度回合；solver 必须在自己结束前完成 |
 | 没有既有 skill 的修改尝试 | 24 个 skill_changes.json；初始/最终 manifest | 不应归因为审计拒绝了大量有用修改 |

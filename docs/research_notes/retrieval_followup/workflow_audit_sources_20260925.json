@@ -402,10 +402,10 @@
     }
   ],
   "local_evidence": [
-    "experiment/variants/dci_skills_native/prompt.txt",
-    "experiment/variants/dci_skills_native/runner.py",
-    "experiment/src/codex_backend.py",
-    "experiment/src/task_runtime.py",
+    "experiment/benchmarks/wildclaw_bench/variants/dci_skills_native/prompt.txt",
+    "experiment/benchmarks/wildclaw_bench/variants/dci_skills_native/runner.py",
+    "experiment/shared/codex_backend.py",
+    "experiment/shared/task_runtime.py",
     "docs/research_notes/retrieval_followup/v4_skill_catalog_audit_20260925.json"
   ],
   "validation": {

@@ -46,7 +46,7 @@ experiment/benchmarks/terminal_bench_2_1/.venv/bin/python -m \
   experiment.benchmarks.terminal_bench_2_1.scripts.download_data
 ```
 
-默认恢复任务包、固定清单和 V5 查询池，并固定到数据发布 commit `b31c851fc4c09108ace8fbdf80dc5c1b1b0c396d`。只跑 baseline 可加 `--without-pool`；用 `--revision <Hugging-Face-commit>` 显式选择其他版本。下载器校验压缩包及逐文件 SHA256，拒绝覆盖不同内容的现有数据，不重新抽样划分。
+默认恢复任务包、固定清单和 V5 查询池，并固定到数据发布 commit `5cd1cf968d544bd8cb619b1fccc3265704fcc85d`。只跑 baseline 可加 `--without-pool`；用 `--revision <Hugging-Face-commit>` 显式选择其他版本。下载器校验压缩包及逐文件 SHA256，拒绝覆盖不同内容的现有数据，不重新抽样划分。
 
 数据包含 89 个官方任务包。V5 仅挂载 53 个 training tasks 的查询池：5,830 条来源记录中，5,785 条有轨迹正文，45 条经来源核查确认没有正文；缺失正文与无评分记录均明确标注，不伪造轨迹或把缺分改成零。共享轨迹经过凭据清理时，变更和来源哈希另行记录，不能将导出文件称为与历史私有 pool 完全一致。
 

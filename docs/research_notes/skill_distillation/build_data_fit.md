@@ -18,7 +18,7 @@
 | 图像 | 52条轨迹引用381张不同图像 | 文本可见不等于视觉结果已检查，不能自动输出“图像验证通过” |
 | 校验 | 432条原生文本 SHA256 与冻结 manifest 一致 | 新 skill 可以定位到稳定文件、record和行范围 |
 
-`experiment/corpus/frozen_build/manifest.json` 包含来源模型、源文件hash、outcome指标及来源，但 native 轨迹正文没有把评分字段作为检索提示。V4 蒸馏可在隔离的构建侧使用这些构建指标；求解侧不挂载评分表。不能把评分细节、标准答案、评分实现复制进 skill。
+`experiment/benchmarks/wildclaw_bench/corpus/frozen_build/manifest.json` 包含来源模型、源文件hash、outcome指标及来源，但 native 轨迹正文没有把评分字段作为检索提示。V4 蒸馏可在隔离的构建侧使用这些构建指标；求解侧不挂载评分表。不能把评分细节、标准答案、评分实现复制进 skill。
 
 三道 Social 构建任务的数字字段包含计数、罚分或总分，例如范围可达[-0.05,21]；不能对所有字段取平均或将任意数字当0–1准确率。即使有合法的 `overall_score`，它也只用于同题候选分层，不能证明某条中间命令导致得分。
 
@@ -32,7 +32,7 @@
 
 ## 数据边界
 
-沿用 [split.json](../../../experiment/manifests/split.json) 的两个源集：
+沿用 [split.json](../../../experiment/benchmarks/wildclaw_bench/manifests/split.json) 的两个源集：
 
 - 开发：26题×12模型=312条。现有6道开发题及其同family的10题都不进入该阶段的skill来源。
 - 正式：36题×12模型=432条。正式24题及其轨迹、评分、答案和既有求解记录均不进入蒸馏输入。

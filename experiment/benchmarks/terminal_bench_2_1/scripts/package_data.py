@@ -97,10 +97,10 @@ def local_credentials(root):
                 word in name.lower() for word in ("token", "secret", "password", "key")):
             values.add(value.encode())
 
-    auth = root / "experiment/runtime/codex_auth/auth.json"
+    auth = root / "experiment/benchmarks/wildclaw_bench/runtime/codex_auth/auth.json"
     if auth.is_file():
         visit(json.loads(auth.read_bytes()))
-    key = root / "experiment/runtime/inference-private/service-key"
+    key = root / "experiment/benchmarks/wildclaw_bench/runtime/inference-private/service-key"
     if key.is_file() and len(key.read_bytes().strip()) >= 16:
         values.add(key.read_bytes().strip())
     return values

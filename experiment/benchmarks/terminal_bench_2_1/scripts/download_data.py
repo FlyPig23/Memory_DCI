@@ -7,14 +7,14 @@ import json
 from pathlib import Path, PurePosixPath
 import urllib.parse
 
-from scripts.download_data import _contained, download, restore, sha256
+from experiment.shared.dataset_io import _contained, download, restore, sha256
 
 ROOT = Path(__file__).resolve().parents[4]
 PREFIX = Path("experiment/benchmarks/terminal_bench_2_1")
 REPO = "FlyPig23/memory_dci"
 SUBDIRECTORY = "terminal_bench_2_1"
-RELEASE_REVISION = "b31c851fc4c09108ace8fbdf80dc5c1b1b0c396d"
-RELEASE_MANIFEST_SHA256 = "89d462f740f10398695d8a6ed1901d968e76514c19b598e935ce59e9f1bf5434"
+RELEASE_REVISION = "5cd1cf968d544bd8cb619b1fccc3265704fcc85d"
+RELEASE_MANIFEST_SHA256 = "07554e497a524c998a0fcb16bf3f3f629d613c03035507bea28e604b1a4b1d95"
 
 
 def load(path):

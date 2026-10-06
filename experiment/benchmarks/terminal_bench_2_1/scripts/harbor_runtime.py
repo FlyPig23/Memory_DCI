@@ -26,15 +26,15 @@ from harbor.models.trial.config import AgentConfig, EnvironmentConfig, TaskConfi
 from harbor.trial.hooks import TrialEvent
 from harbor.trial.trial import Trial
 
-from experiment.src.codex_backend import (
+from experiment.shared.codex_backend import (
     CodexSettings, MCPServer, convert_transcript, extract_usage, read_jsonl,
     render_config, select_main_session,
 )
-from experiment.variants.dci_memory.tools import audit_memory, initialize_memory
+from experiment.shared.memory.tools import audit_memory, initialize_memory
 
 ROOT = Path(__file__).resolve().parents[4]
 BASE = Path(__file__).resolve().parents[1]
-SHARED = ROOT / "experiment/variants/dci_memory"
+SHARED = ROOT / "experiment/shared/memory"
 MODEL, EFFORT, CLI_VERSION = "gpt-5.6-sol", "medium", "0.153.4"
 PYTHON = "/opt/v5-python/bin/python3"
 SERVER = "/opt/v5/serve_memory.py"

@@ -27,7 +27,7 @@ from harbor.models.trial.config import AgentConfig, EnvironmentConfig, TaskConfi
 from harbor.trial.hooks import TrialEvent
 from harbor.trial.trial import Trial
 
-from experiment.src.codex_backend import CodexSettings, extract_usage, read_jsonl, render_config, select_main_session
+from experiment.shared.codex_backend import CodexSettings, extract_usage, read_jsonl, render_config, select_main_session
 from .harbor_runtime import (
     bind, clean_private_runtime, command, forbidden_evidence, hash_tree,
 )

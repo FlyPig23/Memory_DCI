@@ -62,7 +62,7 @@ IR 输出处理仅解析 agent 的最终列表、规范路径并排除 query 对
 
 ## 五、与我们首轮的差距，怎样准确地讨论下一版
 
-我们首轮已经保留了一次持续的 Codex agent loop，以及可交替使用的 search/read 接口；因此不能说它只有一次检索或“没有 agent”。实际24个 A3 中多数只在开头查询，属于本轮观测到的策略行为。具体证据见 首轮检索审计（历史文件：`experiment/reports/analysis/retrieval_audit.md`，不在精简发布中）。
+我们首轮已经保留了一次持续的 Codex agent loop，以及可交替使用的 search/read 接口；因此不能说它只有一次检索或“没有 agent”。实际24个 A3 中多数只在开头查询，属于本轮观测到的策略行为。具体证据见 首轮检索审计（历史文件：`experiment/benchmarks/wildclaw_bench/reports/analysis/retrieval_audit.md`，不在精简发布中）。
 
 更准确的差距如下。
 

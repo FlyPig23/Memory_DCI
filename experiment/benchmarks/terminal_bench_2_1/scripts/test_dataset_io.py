@@ -7,7 +7,7 @@ import tarfile
 import tempfile
 import unittest
 
-from scripts.download_data import _contained, restore
+from experiment.shared.dataset_io import _contained, restore
 from experiment.benchmarks.terminal_bench_2_1.scripts.package_data import package, sanitize
 
 

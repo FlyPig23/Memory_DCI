@@ -17,7 +17,7 @@
   → agent选择采用、拒绝、再查，或继续执行当前任务
 ```
 
-A3 的实际提示要求：理解题目并简要查看输入后，在实质解题前至少做一次相关关键词搜索；有候选时至少读一个相关窗口并判断是否适用；之后可自主再次搜索、拒绝经验或继续求解，也明确禁止为凑调用量而检索。它没有规定关键词个数、自动分解算法、关键词词表、操作/工具/约束模板或遇阻必查状态机。提示源码（历史文件：`experiment/src/experiment_protocol.py:27`，不在精简发布中）、调用入口（历史文件：`experiment/scripts/run_wildclaw.py:125`，不在精简发布中）
+A3 的实际提示要求：理解题目并简要查看输入后，在实质解题前至少做一次相关关键词搜索；有候选时至少读一个相关窗口并判断是否适用；之后可自主再次搜索、拒绝经验或继续求解，也明确禁止为凑调用量而检索。它没有规定关键词个数、自动分解算法、关键词词表、操作/工具/约束模板或遇阻必查状态机。提示源码（历史文件：`experiment/benchmarks/wildclaw_bench/src/experiment_protocol.py:27`，不在精简发布中）、调用入口（历史文件：`experiment/benchmarks/wildclaw_bench/scripts/run_wildclaw.py:125`，不在精简发布中）
 
 因此，关键词由模型根据当时可见上下文生成。日志能确认发出的 query 和后续动作；没有完整可观察依据时，不推断模型内部为何选某个词，也不把事后合理解释当作当时的生成算法。
 
@@ -38,7 +38,7 @@ A3 的实际提示要求：理解题目并简要查看输入后，在实质解�
 
 这里的“窗口”是一次读取的文件片段，不是模型的context window，也不默认等于整条trajectory。起点和请求长度由agent填写，省略才用默认值；不是服务自动按完整操作切块。实际长度为请求范围、文件剩余内容及剩余字节预算共同决定。单次12000 B中预留768 B，items最多11232 B，而且每行重复来源信息也占这个额度。短轨迹可能一次读完，长轨迹须按返回坐标续读；服务不会自动读取余下全文。
 
-搜索实现（历史文件：`experiment/src/dci_tools.py:340`，不在精简发布中）、读取实现（历史文件：`experiment/src/dci_tools.py:383`，不在精简发布中）、工具说明（历史文件：`experiment/src/dci_tools.py:437`，不在精简发布中）。源码内部使用 `re.escape(query)` 后再编译正则，是为了实现字面匹配；不能因为代码调用了正则库，就把工具说成支持用户正则查询。
+搜索实现（历史文件：`experiment/benchmarks/wildclaw_bench/src/dci_tools.py:340`，不在精简发布中）、读取实现（历史文件：`experiment/benchmarks/wildclaw_bench/src/dci_tools.py:383`，不在精简发布中）、工具说明（历史文件：`experiment/benchmarks/wildclaw_bench/src/dci_tools.py:437`，不在精简发布中）。源码内部使用 `re.escape(query)` 后再编译正则，是为了实现字面匹配；不能因为代码调用了正则库，就把工具说成支持用户正则查询。
 
 ### 一个真实的调用序列
 
@@ -51,17 +51,17 @@ A3 的实际提示要求：理解题目并简要查看输入后，在实质解�
 | 3 | `dci_search(query="ImageDraw", limit=5)` | 找到repo_to_slides轨迹中的Pillow绘图脚本 |
 | 4 | `dci_read(episode_id="0fd95daef4aca24ff8b1b3a4", start_line=1436, line_count=12)` | 实际返回1436–1439行，字节预算使请求的12行未全部返回 |
 
-这是模型从任务题材词转到具体工具词的可见例子，不是系统自动把`poster`扩展为`ImageDraw`。找到绘图代码也不等于完整海报任务因此成功；采用与分数归因仍需独立证据。原始服务日志（历史文件：`experiment/runs/formal/formal-22-a3/dci.audit.jsonl`，不在精简发布中）、已完成检索审计（历史文件：`experiment/reports/analysis/retrieval_audit.md`，不在精简发布中）
+这是模型从任务题材词转到具体工具词的可见例子，不是系统自动把`poster`扩展为`ImageDraw`。找到绘图代码也不等于完整海报任务因此成功；采用与分数归因仍需独立证据。原始服务日志（历史文件：`experiment/benchmarks/wildclaw_bench/runs/formal/formal-22-a3/dci.audit.jsonl`，不在精简发布中）、已完成检索审计（历史文件：`experiment/benchmarks/wildclaw_bench/reports/analysis/retrieval_audit.md`，不在精简发布中）
 
 ### “稳定”要分三件事
 
 1. **程序返回是否可复现：有明确支持。** 固定语料、query、过滤、cursor、limit及剩余预算后，服务基本是确定性程序。此前审计已重建84次服务返回，84/84与保存的result hash一致；今天没有再次运行求解来验证。
 2. **命中是否稳定有用：没有保证。** 同一个无关参考文献也可以被稳定地返回第一名。词选得不对、长短语过严、哈希顺序偏向某些episode、窗口未覆盖命中，都可能稳定地产生差结果。
-3. **整次agent过程是否可重复：首轮无法估计。** 同一任务每个条件只跑一次，生成seed没有固定；模型选词、读窗、采用和执行路径可能改变。划分seed固定只保证数据划分规则，不保证模型生成完全重复。冻结配置生成（历史文件：`experiment/src/experiment_protocol.py:106`，不在精简发布中）
+3. **整次agent过程是否可重复：首轮无法估计。** 同一任务每个条件只跑一次，生成seed没有固定；模型选词、读窗、采用和执行路径可能改变。划分seed固定只保证数据划分规则，不保证模型生成完全重复。冻结配置生成（历史文件：`experiment/benchmarks/wildclaw_bench/src/experiment_protocol.py:106`，不在精简发布中）
 
 **日志归属补充及后续更正（2026-09-09）：**最初只核对主solver MCP完成事件时，84次服务请求中能对应82次（52次搜索、30次读取）；另外两条为`formal-33-a3`的call3（`Link-a-Pix`, limit=3）和`formal-06-a3`的call6（`poster paper PDF figure`, limit=3）。当时没有直接对应记录，因此在首次归属核查（历史文件：`docs/research_notes/retrieval_followup/query_provenance_check_20260909.json`，不在精简发布中）中保留为来源未确认。
 
-V3执行前后的完整会话审计已找到两条请求的子代理来源，工具参数与原始响应UTF-8哈希均与服务账本一致：`formal-06-a3`的`paper_factcheck`子会话第29行对应服务第7行/call6；`formal-33-a3`的`independent_check`子会话第24行对应服务第4行/call3。因此当前结论为**82次主线程＋2次子线程＝84次已记录模型调用**，包含54次搜索和30次读取。主线程零命中18/52与全模型会话零命中20/54是不同范围；跨线程合并的先后顺序也不等于单一agent的一条推理链。两条子查询都为零命中、零证据字节，不能作为收益证据。完整身份、路径、事件行、哈希和fork历史去重方法见新增子代理归属证据（历史文件：`experiment/reports/dci_terminal/helper_activity.json`，不在精简发布中）。原始运行、首次审计JSON和成绩保持原样。
+V3执行前后的完整会话审计已找到两条请求的子代理来源，工具参数与原始响应UTF-8哈希均与服务账本一致：`formal-06-a3`的`paper_factcheck`子会话第29行对应服务第7行/call6；`formal-33-a3`的`independent_check`子会话第24行对应服务第4行/call3。因此当前结论为**82次主线程＋2次子线程＝84次已记录模型调用**，包含54次搜索和30次读取。主线程零命中18/52与全模型会话零命中20/54是不同范围；跨线程合并的先后顺序也不等于单一agent的一条推理链。两条子查询都为零命中、零证据字节，不能作为收益证据。完整身份、路径、事件行、哈希和fork历史去重方法见新增子代理归属证据（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/helper_activity.json`，不在精简发布中）。原始运行、首次审计JSON和成绩保持原样。
 
 ## 2. Lite 和 DR-DCI 的检索技术
 

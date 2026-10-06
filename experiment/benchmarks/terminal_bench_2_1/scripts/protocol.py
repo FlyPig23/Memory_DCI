@@ -110,8 +110,8 @@ def sources(base=BASE):
     base = Path(base)
     root = base.parents[2]
     paths = [base / 'scripts' / name for name in SOURCE_FILES]
-    paths += [root / 'experiment/src' / name for name in ('codex_backend.py', 'task_runtime.py')]
-    paths += [root / 'experiment/variants/dci_memory' / name for name in ('tools.py', 'prompt.txt', 'review_prompt.txt')]
+    paths += [root / 'experiment/shared' / name for name in ('codex_backend.py', 'task_runtime.py')]
+    paths += [root / 'experiment/shared/memory' / name for name in ('tools.py', 'prompt.txt', 'review_prompt.txt')]
     return {p.relative_to(root).as_posix(): sha(p) for p in paths}
 
 

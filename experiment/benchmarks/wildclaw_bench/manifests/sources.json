@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-09-08T12:27:56.337775+00:00",
+  "scope_root": "/home/hangxiao/projects/skill_dci",
+  "git": {
+    "WildClawBench": {
+      "commit": "316334ccc4a87b9b5635ad73da99b4dfc0b3887e",
+      "path": "experiment/benchmarks/wildclaw_bench/vendor/WildClawBench"
+    },
+    "DCI-Agent-Lite": {
+      "commit": "271f37e71f053bf0c99c05ce6d2fb53b841d922e",
+      "path": "experiment/benchmarks/wildclaw_bench/vendor/DCI-Agent-Lite"
+    }
+  },
+  "datasets": {
+    "internlm/WildClawBench": {
+      "revision": "75f945578aa00cbdb8f46e4d42e4f4e98f704b4f",
+      "files": 2926,
+      "bytes": 57716353135,
+      "inventory_path": "experiment/benchmarks/wildclaw_bench/manifests/source_WildClawBench.json",
+      "license": "mit"
+    },
+    "internlm/WildClawBench-Trajectories": {
+      "revision": "d2816016a7a7b41fa6b7ba368b28ddafcb54fd93",
+      "files": 615,
+      "bytes": 8863705332,
+      "inventory_path": "experiment/benchmarks/wildclaw_bench/manifests/source_WildClawBench-Trajectories.json",
+      "license": "mit"
+    }
+  }
+}

@@ -719,7 +719,7 @@ AND 范围：关联事件块；若改成 episode 范围必须显示说明
 - **存在性与因果问题：**先在构建集内部标注“库中是否存在可用方法”；若将可靠方法明确给出仍不能帮助，问题可能在可迁移性或执行。后续若做固定执行前缀下的有用/无关/无历史证据对照，要另行设计匹配条件，不能从现有观察日志认定某条经验造成了分数提升。
 - **数据边界：**这24道首轮测试题已被逐题分析，应作为诊断集；据其失败改方法后，再跑只能叫回归或探索验证。可先在36道构建题内部按 family 留出开发验证，查询库同时排除该任务的全部12模型轨迹及同 family 材料；从这些材料提炼的卡片和别名也须按折重建。后续确认性评估需要未参与调参的新任务或独立 holdout，不能靠换 seed 把旧测试恢复成“未见”。
 
-首轮的事实依据集中在 检索审计（历史文件：`experiment/reports/analysis/retrieval_audit.md`，不在精简发布中）、逐题审计（历史文件：`experiment/reports/analysis/case_audit.md`，不在精简发布中） 和 正式成绩（历史文件：`experiment/reports/formal/summary_zh.md`，不在精简发布中）：已观察到噪声与读窗问题，同时也存在评分判据与无历史证据仍涨跌的情况。因此，本节提出的机制有针对性，但目前仍是待检验假设。
+首轮的事实依据集中在 检索审计（历史文件：`experiment/benchmarks/wildclaw_bench/reports/analysis/retrieval_audit.md`，不在精简发布中）、逐题审计（历史文件：`experiment/benchmarks/wildclaw_bench/reports/analysis/case_audit.md`，不在精简发布中） 和 正式成绩（历史文件：`experiment/benchmarks/wildclaw_bench/reports/formal/summary_zh.md`，不在精简发布中）：已观察到噪声与读窗问题，同时也存在评分判据与无历史证据仍涨跌的情况。因此，本节提出的机制有针对性，但目前仍是待检验假设。
 
 **接下来一起讨论的三个选择：**第一版是否只做原始轨迹的接口与采用策略修订；候选相关性排序是否作为单独对照；何时再加入构建集策略卡。具体 API、参数、对照数量和新实验预算，在讨论后再形成新的冻结方案。
 
@@ -752,7 +752,7 @@ IRCoT明确编排中间句生成与检索交替；DR-DCI的agent则自主操作�
 
 ### 13.9 第三版代码准备：DCI终端检索（2026-09-09）
 
-第三版使用独立条件名 `DCI_TERMINAL`，阅读标签为 V3；V1 仍对应 A0 无历史检索，V2 仍对应 A3 简易字面检索。旧24对、48次正式运行及其原始分数不重写、不重命名。新实现位于 V3目录（历史文件：`experiment/variants/dci_terminal/README.md`，不在精简发布中），统一版本及旧结果校验入口为 versions.json（历史文件：`experiment/reports/versions.json`，不在精简发布中）。本节记录代码准备和不调用模型的接入验证阶段，当时V3尚无实验分数；后续获准执行的进展见13.10。
+第三版使用独立条件名 `DCI_TERMINAL`，阅读标签为 V3；V1 仍对应 A0 无历史检索，V2 仍对应 A3 简易字面检索。旧24对、48次正式运行及其原始分数不重写、不重命名。新实现位于 V3目录（历史文件：`experiment/benchmarks/wildclaw_bench/variants/dci_terminal/README.md`，不在精简发布中），统一版本及旧结果校验入口为 versions.json（历史文件：`experiment/benchmarks/wildclaw_bench/reports/versions.json`，不在精简发布中）。本节记录代码准备和不调用模型的接入验证阶段，当时V3尚无实验分数；后续获准执行的进展见13.10。
 
 DCI-Agent-Lite中的Lite指作者的精简公开实现和轻量运行框架，不限制模型大小。本版保留本项目已冻结的 `gpt-6-astra / ultra`、Codex CLI、逐题任务环境、1800秒解题时限与原评分流程；以固定Lite源码为检索逻辑参考，并不声称复现Pi运行循环或其L3上下文压缩。
 
@@ -773,21 +773,21 @@ DCI-Agent-Lite中的Lite指作者的精简公开实现和轻量运行框架，�
 
 ### 13.10 V3执行与结果读取（2026-09-09，全部完成）
 
-用户授权的 **6道构建集内部开发验证 + 24道正式比较题，每题一次求解** 已全部完成。六道开发题正常完成求解和评分，并通过工程验收（历史文件：`experiment/manifests/dci_terminal_development_audit.json`，不在精简发布中）与独立执行、检索证据复核（历史文件：`experiment/reports/dci_terminal/development_verification.json`，不在精简发布中）。开发验收不设置分数或最少检索次数门槛；有效零分保留，没有因低分或零检索重跑挑选结果。24道正式题按固定清单（历史文件：`experiment/manifests/dci_terminal_schedule.json`，不在精简发布中）串行完成，均有有效官方评分；其中地点搜索达到1800秒求解上限，按冻结规则保留0.5分。见完成批次（历史文件：`experiment/runs/dci_terminal/batch.json`，不在精简发布中）及完成核验（历史文件：`experiment/reports/dci_terminal/completion_verification.json`，不在精简发布中）。
+用户授权的 **6道构建集内部开发验证 + 24道正式比较题，每题一次求解** 已全部完成。六道开发题正常完成求解和评分，并通过工程验收（历史文件：`experiment/benchmarks/wildclaw_bench/manifests/dci_terminal_development_audit.json`，不在精简发布中）与独立执行、检索证据复核（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/development_verification.json`，不在精简发布中）。开发验收不设置分数或最少检索次数门槛；有效零分保留，没有因低分或零检索重跑挑选结果。24道正式题按固定清单（历史文件：`experiment/benchmarks/wildclaw_bench/manifests/dci_terminal_schedule.json`，不在精简发布中）串行完成，均有有效官方评分；其中地点搜索达到1800秒求解上限，按冻结规则保留0.5分。见完成批次（历史文件：`experiment/benchmarks/wildclaw_bench/runs/dci_terminal/batch.json`，不在精简发布中）及完成核验（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/completion_verification.json`，不在精简发布中）。
 
 六道开发题均未主动调用DCI，记录中可以核验这一点。工具可用性另由真实Docker工具检查及实际solver容器中的连接探针验证；连接探针只执行initialize、ping和tools/list，没有注入模型查询或消耗证据预算。这证明接入可用，不证明模型已自然阅读或采用历史经验。正式结果同样分别报告工具调用、检索证据及分数，不能把“配置了DCI”直接当作“利用了DCI”。
 
-新增三版本比较与证据导航（历史文件：`experiment/reports/dci_terminal/README.md`，不在精简发布中）使用V1/V2/V3名称，原始A0/A3目录、协议与48次结果保持原样。比较固定24题分母，六道开发分数单独保存；缺失、未完成和评分错误保持null，合法零分仍为0。只有同题有效结果才能进入配对差值。报告将“分数收集完整”和“检索证据全部核验”分别标明；独立执行记录、最终运行记录、非空转录、来源哈希、账本预算及模型调用对应关系均需检查。
+新增三版本比较与证据导航（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/README.md`，不在精简发布中）使用V1/V2/V3名称，原始A0/A3目录、协议与48次结果保持原样。比较固定24题分母，六道开发分数单独保存；缺失、未完成和评分错误保持null，合法零分仍为0。只有同题有效结果才能进入配对差值。报告将“分数收集完整”和“检索证据全部核验”分别标明；独立执行记录、最终运行记录、非空转录、来源哈希、账本预算及模型调用对应关系均需检查。
 
 V2强制开局检索，V3按已确认的默认策略自主决定是否查询，因此两版同时改变了接口和调用策略。没有检索的任务，其成绩变化不能解释为历史经验内容带来的效果。三版实际均可能使用Codex原生子代理，尽管旧配置字段为multi_agent=false；成本表中的主solver token不覆盖全部子代理、评分和辅助请求，不能直接换算订阅美元费用，也不能把带继承上下文的子会话累计token简单相加。
 
-已完成的地点搜索案例（历史文件：`experiment/reports/dci_terminal/cases/location_search.md`，不在精简发布中）首次观察到自然DCI调用：两次bash返回20个路径及4条搜索工具相关的匹配行，共2931字节，未继续读取完整操作与结果。历史轨迹紧接命中行的“零搜索结果”没有进入模型上下文；后续动作也不足以确认采用。这给13.4的事件边界读取建议提供了具体诊断案例，但不能据单次失败证明该改法一定有收益。两次调用均已返回，随后继续解题约28分钟才触及1800秒上限；保留合法超时分数，并单独核验超时前保存的调用对应关系。
+已完成的地点搜索案例（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/cases/location_search.md`，不在精简发布中）首次观察到自然DCI调用：两次bash返回20个路径及4条搜索工具相关的匹配行，共2931字节，未继续读取完整操作与结果。历史轨迹紧接命中行的“零搜索结果”没有进入模型上下文；后续动作也不足以确认采用。这给13.4的事件边界读取建议提供了具体诊断案例，但不能据单次失败证明该改法一定有收益。两次调用均已返回，随后继续解题约28分钟才触及1800秒上限；保留合法超时分数，并单独核验超时前保存的调用对应关系。
 
-已完成的升级路由案例（历史文件：`experiment/reports/dci_terminal/cases/chat_escalation_routing.md`，不在精简发布中）说明分数也需要结合评分可见内容解释：官方grader只取完整结果的前10000个Python字符，部分已经写出的调查结论和草稿不在输入中。V3的0.775高于V1的0.675和V2的0.595，但三版完整报告均识别了QA测试，不能把QA的0/0/1评分解释为V3首次获得这一能力。该V3运行没有调用DCI，因此也不能把加分归因于检索。原始官方分数及输入裁剪规则均保留，案例只补充解释，不重评。
+已完成的升级路由案例（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/cases/chat_escalation_routing.md`，不在精简发布中）说明分数也需要结合评分可见内容解释：官方grader只取完整结果的前10000个Python字符，部分已经写出的调查结论和草稿不在输入中。V3的0.775高于V1的0.675和V2的0.595，但三版完整报告均识别了QA测试，不能把QA的0/0/1评分解释为V3首次获得这一能力。该V3运行没有调用DCI，因此也不能把加分归因于检索。原始官方分数及输入裁剪规则均保留，案例只补充解释，不重评。
 
-人物传记案例（历史文件：`experiment/reports/dci_terminal/cases/wikipedia_biography.md`，不在精简发布中）中的唯一DCI调用因不支持的`timeout_ms`参数而未执行，没有返回轨迹。三版得分均为0.51；后续成功的User-Agent请求方法在DCI返回前就已提出并运行，不能归因于检索。冻结源码提供的参数定义是`timeout`（秒），但实际会话只保存了截断描述的发现输出，缺少模型收到完整schema的证据；目前只能确认请求与接口不符，不能进一步断言责任在模型或适配层。后续应分别检查“实际调用、命令执行、候选返回、连续读取、适用性判断、采用”，避免将调用次数等同于利用历史经验。
+人物传记案例（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/cases/wikipedia_biography.md`，不在精简发布中）中的唯一DCI调用因不支持的`timeout_ms`参数而未执行，没有返回轨迹。三版得分均为0.51；后续成功的User-Agent请求方法在DCI返回前就已提出并运行，不能归因于检索。冻结源码提供的参数定义是`timeout`（秒），但实际会话只保存了截断描述的发现输出，缺少模型收到完整schema的证据；目前只能确认请求与接口不符，不能进一步断言责任在模型或适配层。后续应分别检查“实际调用、命令执行、候选返回、连续读取、适用性判断、采用”，避免将调用次数等同于利用历史经验。
 
-艺术品搜索案例（历史文件：`experiment/reports/dci_terminal/cases/artwork_search.md`，不在精简发布中）三版均为1.0。V3第一次调用因额外参数被拒绝，第二次执行管道后无输出，两次均没有返回轨迹正文。管道整体退出码0不提供`rg`独立状态，不能把它记作成功命中，更不能把满分归功于检索。另一个评论任务案例（历史文件：`experiment/reports/dci_terminal/cases/malicious_comments.md`，不在精简发布中）三版均为0，直接触发官方识别项总分门槛；输入与产物完整，但评分可见内容和短语规则限制了对批评对象的解释。两例均保留原分数，用于区分任务得分、实际检索与评分测量范围。
+艺术品搜索案例（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/cases/artwork_search.md`，不在精简发布中）三版均为1.0。V3第一次调用因额外参数被拒绝，第二次执行管道后无输出，两次均没有返回轨迹正文。管道整体退出码0不提供`rg`独立状态，不能把它记作成功命中，更不能把满分归功于检索。另一个评论任务案例（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/cases/malicious_comments.md`，不在精简发布中）三版均为0，直接触发官方识别项总分门槛；输入与产物完整，但评分可见内容和短语规则限制了对批评对象的解释。两例均保留原分数，用于区分任务得分、实际检索与评分测量范围。
 
 完整24题的结果如下；分数、实际调用与采用证据应分开解释。
 
@@ -797,21 +797,21 @@ V2强制开局检索，V3按已确认的默认策略自主决定是否查询，�
 | V2：简易检索 | 24 | 0.7869 | 24 | 84 |
 | V3：DCI终端检索 | 24 | 0.7664 | 3 | 5 |
 
-V3较V1平均低0.0315，逐题提高／持平／下降为2／14／8；较V2低0.0205，为2／16／6。以family为簇的5000次bootstrap探索性95%区间分别为[-0.0875, 0.0046]、[-0.0611, 0.0121]，均覆盖0；每题单次运行且题目参与过诊断，不能据此建立独立泛化结论或证明两种方法等效。详细数据和复算见完整比较（历史文件：`experiment/reports/dci_terminal/summary_zh.md`，不在精简发布中）。
+V3较V1平均低0.0315，逐题提高／持平／下降为2／14／8；较V2低0.0205，为2／16／6。以family为簇的5000次bootstrap探索性95%区间分别为[-0.0875, 0.0046]、[-0.0611, 0.0121]，均覆盖0；每题单次运行且题目参与过诊断，不能据此建立独立泛化结论或证明两种方法等效。详细数据和复算见完整比较（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/summary_zh.md`，不在精简发布中）。
 
 **本轮没有观察到整体提升，更直接的问题是检索链路很少被实际走通。** V3的21题有零调用记录支持；3题的5次调用均来自主线程，2次参数校验失败，另外3次实际执行bash。只有地点搜索返回正文，共2262字节，包含20个文件路径和4条匹配行，不能当作完整轨迹阅读量；整轮总返回3706字节还包含1286字节包装和158字节控制文本。没有专用`read`调用或图片返回，也未确认一次历史经验采用。`bash`本身可以读正文，因此0次`read`不等于0次阅读；这里的具体不足是没有从命中行继续读完整操作与结果。
 
-V3主solver累计20336367个token、求解8386.5秒；V1为15153698个token／10029.9秒，V2为22778668个token／11420.0秒。主solver token包含缓存与多轮输入，不含所有子代理和评分成本，不能换算实际订阅费用。V3更短的求解时长也不能据此归因于检索效率，尤其多数题未调用DCI。模型配置核查（历史文件：`experiment/reports/dci_terminal/model_configuration_audit.json`，不在精简发布中）覆盖V1/V2的48次、V3开发6次和正式24次，主／子会话保存记录均符合冻结配置；这不独立证明服务端内部路由。
+V3主solver累计20336367个token、求解8386.5秒；V1为15153698个token／10029.9秒，V2为22778668个token／11420.0秒。主solver token包含缓存与多轮输入，不含所有子代理和评分成本，不能换算实际订阅费用。V3更短的求解时长也不能据此归因于检索效率，尤其多数题未调用DCI。模型配置核查（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/model_configuration_audit.json`，不在精简发布中）覆盖V1/V2的48次、V3开发6次和正式24次，主／子会话保存记录均符合冻结配置；这不独立证明服务端内部路由。
 
 后续讨论应先围绕这些已观察到的断点设计对照：在构建集验证工具参数信息是否完整可见、错误后能否修正；以相同接口比较自主调用与明确阻塞时的查询指引；对命中后的连续操作／结果读取和环境适用性判断作独立对照。关键词别名、范围和多词语义可继续按13.4改进，但不应把参数失败或无阅读一律归为关键词问题。以上是下一轮候选思路，本轮冻结参数与结果保持原样，未启动追加实验。
 
-终态核验确认30份运行与清单一一对应，无计划外运行；旧31个冻结文件、157个保全文件以及V1/V2的96份结果／分数哈希和5份正式报告均保持一致。任务容器、检索与推理租约、在途请求已排空，本轮gateway、bridge、proxy按登记身份停止，端口和socket已释放。全部证据入口见三版本导航（历史文件：`experiment/reports/dci_terminal/README.md`，不在精简发布中）。
+终态核验确认30份运行与清单一一对应，无计划外运行；旧31个冻结文件、157个保全文件以及V1/V2的96份结果／分数哈希和5份正式报告均保持一致。任务容器、检索与推理租约、在途请求已排空，本轮gateway、bridge、proxy按登记身份停止，端口和socket已释放。全部证据入口见三版本导航（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_terminal/README.md`，不在精简发布中）。
 
 ### 13.11 V3.1：由Codex原生工具检索历史轨迹（2026-09-09，协议已冻结）
 
-用户明确要求取消V3自定义的`bash/read` MCP，并授权完整执行 **6道开发验证 + 24道正式比较，每题一次求解**。V3.1使用独立条件名`DCI_NATIVE`，直接将V3同阶段的轨迹文件库只读挂到求解容器的`/corpus`，由Codex原生终端和文件工具完成搜索、阅读、续读及再查询。没有自定义检索MCP、关键词生成器、命令包装或结果截断层；任务、鉴权、快照与评分仍由现有实验代码管理。源码和运行说明见V3.1实现（历史文件：`experiment/variants/dci_native/README.md`，不在精简发布中），新增结果与原生工具证据见独立报告导航（历史文件：`experiment/reports/dci_native/README.md`，不在精简发布中）。
+用户明确要求取消V3自定义的`bash/read` MCP，并授权完整执行 **6道开发验证 + 24道正式比较，每题一次求解**。V3.1使用独立条件名`DCI_NATIVE`，直接将V3同阶段的轨迹文件库只读挂到求解容器的`/corpus`，由Codex原生终端和文件工具完成搜索、阅读、续读及再查询。没有自定义检索MCP、关键词生成器、命令包装或结果截断层；任务、鉴权、快照与评分仍由现有实验代码管理。源码和运行说明见V3.1实现（历史文件：`experiment/benchmarks/wildclaw_bench/variants/dci_native/README.md`，不在精简发布中），新增结果与原生工具证据见独立报告导航（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/README.md`，不在精简发布中）。
 
-本节是13.10之后新获授权的实验，前三版已完成的成绩、协议和终态停机记录继续作为历史事实保留。V3.1的开发协议（历史文件：`experiment/variants/dci_native/prepared/dev/protocol.json`，不在精简发布中）、正式协议（历史文件：`experiment/variants/dci_native/prepared/formal/protocol.json`，不在精简发布中）与固定调度（历史文件：`experiment/manifests/dci_native_schedule.json`，不在精简发布中）均已落盘；新增运行使用独立目录，不覆盖或重做已有版本。协议中的`prepared_not_executed`描述冻结准备时点，执行进展以新增运行和报告为准，本节不预填未完成分数。
+本节是13.10之后新获授权的实验，前三版已完成的成绩、协议和终态停机记录继续作为历史事实保留。V3.1的开发协议（历史文件：`experiment/benchmarks/wildclaw_bench/variants/dci_native/prepared/dev/protocol.json`，不在精简发布中）、正式协议（历史文件：`experiment/benchmarks/wildclaw_bench/variants/dci_native/prepared/formal/protocol.json`，不在精简发布中）与固定调度（历史文件：`experiment/benchmarks/wildclaw_bench/manifests/dci_native_schedule.json`，不在精简发布中）均已落盘；新增运行使用独立目录，不覆盖或重做已有版本。协议中的`prepared_not_executed`描述冻结准备时点，执行进展以新增运行和报告为准，本节不预填未完成分数。
 
 | 项目 | V3.1冻结设置与比较边界 |
 |---|---|
@@ -828,13 +828,13 @@ Lite默认实现本来就使用Pi自带的终端工具，没有独立的关键�
 
 新增报告分开记录分数、原生工具观察和环境证明。`native_environment.json`保存实际只读挂载、无MCP配置、ripgrep版本／哈希及评分去除语料的证据；保存的主／子会话用于核对模型设置和原生调用。检索使用从命令与路径引用事后观察，显式`/corpus`引用需要结合命令解释；变量、相对路径、脚本和复制文件会使完整计量不再可得。没有显式引用不等于零检索，命令返回文本也不能直接当作去重后的原轨迹阅读量，更不能据此认定采用。不会为了补齐这些指标重新引入工具包装或伪造检索账本。
 
-**经验库的任务覆盖也是解释结果的必要条件。** [冻结划分](../experiment/manifests/split.json)将48个family整组分到构建侧27组、测试侧21组，没有跨侧family；432条轨迹来自36个构建任务各12个模型尝试，不代表432种任务。三种jigsaw和两种Link-a-Pix均在测试侧，构建侧有连点等其他图像操作任务；海报制作与裁切也在测试侧，构建侧有幻灯片和视频处理任务。会议论文检索则有较接近的构建任务，但其作者、年份筛选要求不同于测试题的Oral和第一署名机构判定。任务归属与原Prompt可查任务清单（历史文件：`experiment/manifests/task_manifest.json`，不在精简发布中）。本轮主要考察跨family的经验迁移，操作层近邻分布不均；不能从关键词命中直接推定方法适用，也不能仅凭没有同类构建任务就断言轨迹内完全不存在有用片段。后续分析应分别检查经验覆盖、定位、读取完整性与实际采用。
+**经验库的任务覆盖也是解释结果的必要条件。** [冻结划分](../experiment/benchmarks/wildclaw_bench/manifests/split.json)将48个family整组分到构建侧27组、测试侧21组，没有跨侧family；432条轨迹来自36个构建任务各12个模型尝试，不代表432种任务。三种jigsaw和两种Link-a-Pix均在测试侧，构建侧有连点等其他图像操作任务；海报制作与裁切也在测试侧，构建侧有幻灯片和视频处理任务。会议论文检索则有较接近的构建任务，但其作者、年份筛选要求不同于测试题的Oral和第一署名机构判定。任务归属与原Prompt可查任务清单（历史文件：`experiment/benchmarks/wildclaw_bench/manifests/task_manifest.json`，不在精简发布中）。本轮主要考察跨family的经验迁移，操作层近邻分布不均；不能从关键词命中直接推定方法适用，也不能仅凭没有同类构建任务就断言轨迹内完全不存在有用片段。后续分析应分别检查经验覆盖、定位、读取完整性与实际采用。
 
 正式比较仍使用此前已逐题分析的24题，属于**探索性回归**。开发结果单列，未完成和评分故障保持null，不能进入已完成均值或替代为0；完整比较需要固定24题收集完毕并核验。V1/V2/V3原始分数保持原样。本节记录已授权方案、冻结边界及供给侧解释条件；执行完成后的结果与机制分析见13.12。
 
 ### 13.12 V3.1完整结果与检索机制分析（2026-09-10 UTC）
 
-**原生检索接入成功；本轮没有确认稳定的整体提升。** 6道开发验证与24道正式比较均已完成，每题一次，30次求解均正常结束。正式24题平均分为0.7770，高于V3的0.7664，仍低于V1与V2。开发分数不混入正式均值，合法零分保持原样。成绩从96份正式原始结果独立重算，与四版本汇总（历史文件：`experiment/reports/dci_native/summary_zh.md`，不在精简发布中）一致；逐题原始文件、模型身份、命令位置和配置证据见配对数据（历史文件：`experiment/reports/dci_native/paired.json`，不在精简发布中）。
+**原生检索接入成功；本轮没有确认稳定的整体提升。** 6道开发验证与24道正式比较均已完成，每题一次，30次求解均正常结束。正式24题平均分为0.7770，高于V3的0.7664，仍低于V1与V2。开发分数不混入正式均值，合法零分保持原样。成绩从96份正式原始结果独立重算，与四版本汇总（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/summary_zh.md`，不在精简发布中）一致；逐题原始文件、模型身份、命令位置和配置证据见配对数据（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/paired.json`，不在精简发布中）。
 
 | 版本 | 历史经验访问方式 | 正式题数 | 平均分 |
 |---|---|---:|---:|
@@ -853,10 +853,10 @@ Lite默认实现本来就使用Pi自带的终端工具，没有独立的关键�
 
 保存日志中，22道正式题出现显式语料访问候选，范围包括目录列表、文件路径、空读与正文查询。另2题没有显式候选，检索使用仍为未知。这个计数不代表22题都读过历史方法，也不能替代完整检索次数或采用量。原生工具和环境核验通过，已详细核对案例中的断点更具体地落在以下环节：
 
-1. **候选的命中理由与后续读取条件不一致。** 图片分类用多个OR关键词筛出候选，随后只查其中未命中的`contact.sheet`，空读后没有补查；人物传记因`zh-hans`网址命中，得到手机条目的搜索摘要而非HTML提取方法。日程安排曾筛错文件扩展名，后来自主修正到`.txt`，仍未找到正文。聊天查询中的`sender.*internal`还可能跨越同一JSON行中的多个字段，不能当作精确的内部发件人过滤。这些是查询语义与相关性问题，取消MCP不会自动修复。见简短检索观察（历史文件：`experiment/reports/dci_native/README.md`，不在精简发布中）及聊天取证（历史文件：`experiment/reports/dci_native/cases/chat_escalation_routing.md`，不在精简发布中）。
-2. **读窗由模型的命令决定，常常不足以覆盖操作和结果。** 人物传记只读了5行、898字节的搜索摘要；模糊仓库搜索的780字节窗口包含API操作，却在`toolResult`标题处结束，返回正文从下一行才开始。主页题用`cut`主动裁切代码行；其他任务还出现Codex对超长输出的截断。必须区分命令主动选小范围与工具截断，不能统一归为检索包装限制，更不能把一次读窗当作整条trajectory。见窗口与裁切记录（历史文件：`experiment/reports/dci_native/README.md`，不在精简发布中）、前三题（历史文件：`experiment/reports/dci_native/cases/first_three_formal.md`，不在精简发布中）及正式03–05（历史文件：`experiment/reports/dci_native/cases/formal03_05.md`，不在精简发布中）。
-3. **历史建议传递有证据，新增行动与得分收益仍需另证。** 聊天题存在“历史窗口→子会话总结→主会话收到”的直接记录，但完整读取与首次重试在收到总结前已发生，当前任务技能也给出了类似要求。机构查询的当前JSON端点来自当前网页；人物传记的BeautifulSoup操作、模糊仓库搜索的GitHub API调用都早于历史读取。不能因为后续方法与历史相似就认定采用，也不能概括为从未传播过经验。V2对照中另有明确借用通用验证思路的记录，仍不等于证明分数因此提高。见采用链与V2对照（历史文件：`experiment/reports/dci_native/cases/formal03_05.md`，不在精简发布中）、聊天建议传递（历史文件：`experiment/reports/dci_native/cases/chat_escalation_routing.md`，不在精简发布中）。
-4. **较大的分数变化需要检查当前解题过程和评分可见范围。** 服装图与产品海报相对V3分别提高0.4020、0.1560，但没有明确的历史经验促成改善证据：前者决定使用imagegen早于历史查询，后者没有读取历史正文。地点题下降0.2500，提交的错误城市可追溯到当前网络候选，不能解释为错用历史方法。聊天题下降0.0800，对应Jake与跨消息关联两项；完整报告中的Jake背景确实落在裁判读取的前10000字符之外。这不能等同于模型未识别背景，也不能据此推算一个假定的重评分数或断言全部扣分都由截断造成。原评分保持不变。见地点案例（历史文件：`experiment/reports/dci_native/cases/location_search.md`，不在精简发布中）和聊天评分输入核对（历史文件：`experiment/reports/dci_native/cases/chat_escalation_routing.md`，不在精简发布中）。
+1. **候选的命中理由与后续读取条件不一致。** 图片分类用多个OR关键词筛出候选，随后只查其中未命中的`contact.sheet`，空读后没有补查；人物传记因`zh-hans`网址命中，得到手机条目的搜索摘要而非HTML提取方法。日程安排曾筛错文件扩展名，后来自主修正到`.txt`，仍未找到正文。聊天查询中的`sender.*internal`还可能跨越同一JSON行中的多个字段，不能当作精确的内部发件人过滤。这些是查询语义与相关性问题，取消MCP不会自动修复。见简短检索观察（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/README.md`，不在精简发布中）及聊天取证（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/cases/chat_escalation_routing.md`，不在精简发布中）。
+2. **读窗由模型的命令决定，常常不足以覆盖操作和结果。** 人物传记只读了5行、898字节的搜索摘要；模糊仓库搜索的780字节窗口包含API操作，却在`toolResult`标题处结束，返回正文从下一行才开始。主页题用`cut`主动裁切代码行；其他任务还出现Codex对超长输出的截断。必须区分命令主动选小范围与工具截断，不能统一归为检索包装限制，更不能把一次读窗当作整条trajectory。见窗口与裁切记录（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/README.md`，不在精简发布中）、前三题（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/cases/first_three_formal.md`，不在精简发布中）及正式03–05（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/cases/formal03_05.md`，不在精简发布中）。
+3. **历史建议传递有证据，新增行动与得分收益仍需另证。** 聊天题存在“历史窗口→子会话总结→主会话收到”的直接记录，但完整读取与首次重试在收到总结前已发生，当前任务技能也给出了类似要求。机构查询的当前JSON端点来自当前网页；人物传记的BeautifulSoup操作、模糊仓库搜索的GitHub API调用都早于历史读取。不能因为后续方法与历史相似就认定采用，也不能概括为从未传播过经验。V2对照中另有明确借用通用验证思路的记录，仍不等于证明分数因此提高。见采用链与V2对照（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/cases/formal03_05.md`，不在精简发布中）、聊天建议传递（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/cases/chat_escalation_routing.md`，不在精简发布中）。
+4. **较大的分数变化需要检查当前解题过程和评分可见范围。** 服装图与产品海报相对V3分别提高0.4020、0.1560，但没有明确的历史经验促成改善证据：前者决定使用imagegen早于历史查询，后者没有读取历史正文。地点题下降0.2500，提交的错误城市可追溯到当前网络候选，不能解释为错用历史方法。聊天题下降0.0800，对应Jake与跨消息关联两项；完整报告中的Jake背景确实落在裁判读取的前10000字符之外。这不能等同于模型未识别背景，也不能据此推算一个假定的重评分数或断言全部扣分都由截断造成。原评分保持不变。见地点案例（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/cases/location_search.md`，不在精简发布中）和聊天评分输入核对（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/cases/chat_escalation_routing.md`，不在精简发布中）。
 
 **后续讨论应继续使用原生工具，优先改查询和读取决策。** 本轮已经完成用户要求的默认DCI式自主文件检索适配；下一步不需要为了这些问题再实现bash/read工具。以下仅为待讨论的改进思路，未启动追加实验：
 
@@ -864,4 +864,4 @@ Lite默认实现本来就使用Pi自带的终端工具，没有独立的关键�
 - 命中后检查是否读到完整操作、返回结果及验证；窗口停在命令或返回标题时继续读取，并判断当前环境是否适用。无需每次读整条trajectory，也不应把固定行数当作方法完整性的保证。
 - 在明确阻塞或待决策处比较自主查询与针对性提示，把“找到方法、充分读取、明确采用、执行验证、最终评分”分别记录。先在构建/开发材料验证策略和操作级覆盖；新的确认性结论需要独立任务或重复运行设计，不能继续把已分析24题称为未见测试集。
 
-全轮收尾通过完成核验（历史文件：`experiment/reports/dci_native/completion_verification.json`，不在精简发布中）：30份新增运行均有效，旧1626个文件保全，无多余运行；后台控制与监督进程已退出、请求和租约排空、任务容器清理，三项实验服务停止且端点释放。首个开发任务的信任配置追加以及中途控制进程中断均有独立审核记录；已完成结果经核验复用，没有重跑求解。V1/V2/V3原代码、协议、报告与原始分数保持原样。
+全轮收尾通过完成核验（历史文件：`experiment/benchmarks/wildclaw_bench/reports/dci_native/completion_verification.json`，不在精简发布中）：30份新增运行均有效，旧1626个文件保全，无多余运行；后台控制与监督进程已退出、请求和租约排空、任务容器清理，三项实验服务停止且端点释放。首个开发任务的信任配置追加以及中途控制进程中断均有独立审核记录；已完成结果经核验复用，没有重跑求解。V1/V2/V3原代码、协议、报告与原始分数保持原样。

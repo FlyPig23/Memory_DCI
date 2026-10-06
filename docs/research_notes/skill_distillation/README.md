@@ -8,4 +8,4 @@ V2–V4 的实验实现和运行记录已移除。本目录保留与 V5 在线�
 - [方法贡献讨论](method_contribution.md)：当时的研究问题与限制。
 - [构建数据适配讨论](build_data_fit.md)：原训练轨迹的覆盖情况。
 
-当前实现见 [V5](../../../experiment/variants/dci_memory/README.md)，论文版本见 [论文索引](../../../papers/README.md)。
+当前实现见 [V5](../../../experiment/benchmarks/wildclaw_bench/variants/dci_memory/README.md)，论文版本见 [论文索引](../../../papers/README.md)。
