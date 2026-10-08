@@ -12,7 +12,7 @@ import tomllib
 BASE = Path(__file__).resolve().parents[1]
 ROOT = BASE.parents[2]
 PINNED_SPLIT_SHA256 = '4f437d77ebd35e420fe8dbd02fa34395f91c8f9a7d541f1d61798482e52938b6'
-ARMS = ('baseline', 'v5')
+ARMS = ('baseline', 'v5', 'v6')
 SOURCE_FILES = ('protocol.py', 'run.py', 'runtime.py', 'harbor_runtime.py',
                 'baseline_runtime.py', 'baseline_supervisor.py', 'health_guard.py',
                 'serve_memory.py')
@@ -111,7 +111,7 @@ def sources(base=BASE):
     root = base.parents[2]
     paths = [base / 'scripts' / name for name in SOURCE_FILES]
     paths += [root / 'experiment/shared' / name for name in ('codex_backend.py', 'task_runtime.py')]
-    paths += [root / 'experiment/shared/memory' / name for name in ('tools.py', 'prompt.txt', 'review_prompt.txt')]
+    paths += [root / 'experiment/shared/memory' / name for name in ('tools.py', 'prompt.txt', 'review_prompt.txt', 'seed.py')]
     return {p.relative_to(root).as_posix(): sha(p) for p in paths}
 
 
@@ -132,11 +132,13 @@ def verify_pool(base, split):
         raise ValueError('Pool violates task-local/held-out isolation')
 
 
-def build_plan(arm, run_name, *, base=BASE, model=None, effort=None, verifier_policy=None):
+def build_plan(arm, run_name, *, base=BASE, model=None, effort=None, verifier_policy=None, memory_seed=None):
     """Read and hash inputs only. No auth read, run files, subprocesses or imports of Harbor."""
     base = Path(base)
     if arm not in ARMS:
         raise ValueError('Unknown arm')
+    if (arm == 'v6') != (memory_seed is not None):
+        raise ValueError('V6 requires --memory-seed; baseline and V5 do not accept a seed')
     namespace = hashlib.sha256(str(run_directory(base, run_name)).encode()).hexdigest()[:12]
     config = settings(base, model=model, effort=effort, verifier_policy=verifier_policy)
     split_path = base / 'manifests/split.json'
@@ -172,15 +174,28 @@ def build_plan(arm, run_name, *, base=BASE, model=None, effort=None, verifier_po
                       'official_verifier_timeout_seconds': spec['verifier']['timeout_sec'],
                       'files_sha256': expected})
     input_names = ['split.json', 'task_files.json']
-    if arm == 'v5':
+    if arm in ('v5', 'v6'):
         verify_pool(base, split)
         input_names += ['pool.json']
-    return {'schema_version': 1, 'benchmark': 'Terminal-Bench 2.1', 'arm': arm,
+    inputs = {f'manifests/{name}': sha(base / 'manifests' / name) for name in input_names}
+    seed = None
+    if arm == 'v6':
+        from experiment.shared.memory.seed import validate_seed
+        seed_path = local_path(base, memory_seed)
+        manifest = validate_seed(seed_path, pool=base / 'prepared/pool', training_task_ids=training)
+        relative = seed_path.relative_to(base.resolve()).as_posix()
+        seed = {'path': relative, 'manifest_sha256': sha(seed_path / 'manifest.json'),
+                'entry_count': manifest['entry_count'], 'files_sha256': inventory(seed_path)}
+        inputs[relative + '/manifest.json'] = seed['manifest_sha256']
+    plan = {'schema_version': 1, 'benchmark': 'Terminal-Bench 2.1', 'arm': arm,
             'run_name': run_name, 'settings': config, 'harbor_version': '0.23.0',
-            'review_timeout_seconds': 180 if arm == 'v5' else None,
+            'review_timeout_seconds': 180 if arm in ('v5', 'v6') else None,
             'cross_task_memory': False, 'solver_rollouts_per_task': 1,
-            'inputs_sha256': {f'manifests/{name}': sha(base / 'manifests' / name) for name in input_names},
+            'inputs_sha256': inputs,
             'sources_sha256': sources(base), 'tasks': tasks}
+    if seed is not None:
+        plan['memory_seed'] = seed
+    return plan
 
 
 def support(base=BASE):

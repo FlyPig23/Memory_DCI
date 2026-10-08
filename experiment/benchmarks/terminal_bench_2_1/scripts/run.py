@@ -1,4 +1,4 @@
-"""Serial baseline/V5 runner. Planning and status never start Docker or a model."""
+"""Serial baseline/V5/V6 runner. Planning and status never start Docker or a model."""
 from __future__ import annotations
 
 import argparse
@@ -26,9 +26,9 @@ def write_json(path, value):
     temporary.replace(path)
 
 
-def summary(directory, arm, *, task=None, settings=None):
+def summary(directory, arm, *, task=None, settings=None, memory_seed=None):
     directory = Path(directory)
-    name = 'baseline_result.json' if arm == 'baseline' else 'v5_result.json'
+    name = {'baseline': 'baseline_result.json', 'v5': 'v5_result.json', 'v6': 'v6_result.json'}[arm]
     path = directory / name
     if not path.is_file():
         return {'run_id': directory.name, 'status': 'incomplete', 'valid': False}
@@ -44,6 +44,7 @@ def summary(directory, arm, *, task=None, settings=None):
     health = health_guard.inspect_trial(directory)
     frozen = result.get('freeze') or {}
     reasons = []
+    deviations = []
     if not scored:
         reasons.append('missing_official_reward')
     if not model.get('model_effort_verified') or (settings is not None and
@@ -51,7 +52,7 @@ def summary(directory, arm, *, task=None, settings=None):
         reasons.append('model_audit_failed')
     if not health['phases']['agent']['actual_inference']:
         reasons.append('no_solver_inference_evidence')
-    if health['blocked']:
+    if health['blocked'] and (arm != 'v6' or health['phases']['agent']['blocked']):
         reasons.append('infrastructure_failure')
     if not frozen.get('taken_before_hidden_grading'):
         reasons.append('missing_pre_grader_boundary')
@@ -64,18 +65,37 @@ def summary(directory, arm, *, task=None, settings=None):
         review = result.get('review') or {}
         initial_path = directory / 'memory_initial.json'
         initial = protocol.load(initial_path) if initial_path.is_file() else {}
-        if (initial.get('valid') is not True or initial.get('entry_count') != 0
+        expected_count = (memory_seed or {}).get('entry_count') if arm == 'v6' else 0
+        if (initial.get('valid') is not True or initial.get('entry_count') != expected_count
                 or initial.get('event_count') != 0 or initial.get('scope') != 'single_test_task'
                 or initial.get('task_id') != result.get('task_id')):
             reasons.append('initial_memory_audit_failed')
+        if arm == 'v6':
+            expected_files = (memory_seed or {}).get('files_sha256', {})
+            expected_entries = {k: v for k, v in expected_files.items() if k.startswith('entries/')}
+            observed_entries = {k: v for k, v in initial.get('files_sha256', {}).items() if k.startswith('entries/')}
+            if (not memory_seed or not expected_count or initial.get('inherited_entries') != expected_count
+                    or initial.get('seed_manifest_sha256') != memory_seed.get('manifest_sha256')
+                    or observed_entries != expected_entries):
+                reasons.append('frozen_seed_mismatch')
         decision = (review.get('memory_audit') or {}).get('final_decision') or {}
         if not (review.get('valid') and review.get('received_hidden_grade') is False
                 and review.get('evidence_unchanged') and decision.get('agent_stage') == 'review'
                 and decision.get('task_id') == result.get('task_id')
                 and decision.get('decision') in ('write', 'no_update')):
-            reasons.append('review_audit_failed')
+            # Post-submission review cannot change the answer. Preserve and
+            # report a review failure independently of the official reward.
+            if (arm == 'v6' and review.get('received_hidden_grade') is False
+                    and review.get('evidence_unchanged') is not False):
+                deviations.append('post_submission_review_incomplete')
+            else:
+                reasons.append('review_audit_failed')
     contract_path = directory / 'runtime_contract.json'
     contract = protocol.load(contract_path) if contract_path.exists() else {}
+    if arm == 'v6' and (contract.get('condition') != 'v6'
+            or contract.get('seed_manifest_sha256') != (memory_seed or {}).get('manifest_sha256')
+            or contract.get('initial_memory_entries') != (memory_seed or {}).get('entry_count')):
+        reasons.append('seed_contract_mismatch')
     if task is not None and settings is not None:
         effective_verifier = None if settings['verifier_policy'] == 'unlimited' else task['official_verifier_timeout_seconds']
         if (result.get('task_id') != task['task_id'] or contract.get('task_id') != task['task_id']
@@ -89,22 +109,25 @@ def summary(directory, arm, *, task=None, settings=None):
             reasons.append('runtime_contract_mismatch')
     audits = ('runtime_contract.json', 'agent/model_audit.json', 'agent/usage.json',
               'freeze.json', 'isolation.json', 'memory_initial.json', 'memory_review.json')
-    return {'run_id': directory.name, 'task_id': result.get('task_id'),
+    row = {'run_id': directory.name, 'task_id': result.get('task_id'),
             'status': 'completed' if not reasons else 'needs_review', 'valid': not reasons,
             'reward': reward if scored else None, 'reasons': reasons,
             'input_tokens': usage.get('input_tokens'), 'output_tokens': usage.get('output_tokens'),
             'result_sha256': protocol.sha(path),
             'audit_sha256': {name: protocol.sha(directory / name) for name in audits if (directory / name).is_file()}}
+    if arm == 'v6':
+        row['workflow_deviations'] = deviations
+    return row
 
 
-def saved_completion(directory, arm, *, task=None, settings=None):
+def saved_completion(directory, arm, *, task=None, settings=None, memory_seed=None):
     """Never accept a changed first result or silently retry a partial attempt."""
     directory = Path(directory)
     completion_path = directory / 'completion.json'
     if not completion_path.is_file():
         raise ValueError('Existing incomplete trial cannot be rerun; preserve it and choose a new run name')
     saved = protocol.load(completion_path)
-    observed = summary(directory, arm, task=task, settings=settings)
+    observed = summary(directory, arm, task=task, settings=settings, memory_seed=memory_seed)
     if not observed['valid'] or saved != observed:
         raise ValueError('Saved trial result or audits changed; automatic continuation refused')
     return observed
@@ -139,7 +162,7 @@ def status(arm, run_name, *, base=BASE):
     for task in plan['tasks']:
         trial = directory / 'trials' / task['run_id']
         if trial.exists():
-            row = summary(trial, arm, task=task, settings=plan['settings'])
+            row = summary(trial, arm, task=task, settings=plan['settings'], memory_seed=plan.get('memory_seed'))
             if not (trial / 'completion.json').exists():
                 row.update(valid=False, status=('running' if active and state.get('active_task') == task.get('task_id') else 'incomplete'))
             elif protocol.load(trial / 'completion.json') != row:
@@ -226,7 +249,7 @@ async def execute(plan, *, auth_file, base=BASE):
             for task in plan['tasks']:
                 trial = protocol.local_path(directory, 'trials/' + task['run_id'])
                 if trial.exists():
-                    saved_completion(trial, plan['arm'], task=task, settings=plan['settings'])
+                    saved_completion(trial, plan['arm'], task=task, settings=plan['settings'], memory_seed=plan.get('memory_seed'))
                     state['completed'] += 1
                     continue
                 if protocol.sources(base) != plan['sources_sha256']:
@@ -245,12 +268,18 @@ async def execute(plan, *, auth_file, base=BASE):
                 arguments = {'python_root': python_root, 'auth_file': auth_file,
                              'environment_config': environment_for(path),
                              'verifier_policy': config['verifier_policy']}
+                if plan['arm'] == 'v6':
+                    seed = plan['memory_seed']
+                    seed_path = protocol.local_path(base, seed['path'])
+                    if protocol.inventory(seed_path) != seed['files_sha256']:
+                        raise ValueError('Frozen failure memory changed during the run')
+                    arguments['memory_seed'] = seed_path
                 if plan['arm'] == 'baseline':
                     await baseline.run_trial(path, trial, task['task_id'], cleanup_image=image['image_id'], **arguments)
                 else:
                     await v5.run_trial(path, trial, base / 'prepared/pool', task['task_id'],
                                        review_image=image['image_id'], **arguments)
-                row = summary(trial, plan['arm'], task=task, settings=config)
+                row = summary(trial, plan['arm'], task=task, settings=config, memory_seed=plan.get('memory_seed'))
                 print(json.dumps(row, ensure_ascii=False), flush=True)
                 if not row['valid']:
                     raise RuntimeError('Trial failed its completion audits; first result preserved, no retry')
@@ -274,6 +303,7 @@ def main(argv=None):
     parser.add_argument('--model', help='Override config.json model; account must have access')
     parser.add_argument('--effort', help='Override config.json reasoning effort')
     parser.add_argument('--verifier-policy', choices=('official', 'unlimited'))
+    parser.add_argument('--memory-seed', help='V6 only: frozen seed directory relative to this benchmark directory')
     parser.add_argument('--auth-file', type=Path, help='OAuth auth JSON; otherwise CODEX_AUTH_FILE or ~/.codex/auth.json')
     args = parser.parse_args(argv)
     phase = 'preflight'
@@ -282,7 +312,7 @@ def main(argv=None):
             output = status(args.arm, args.run_name)
         else:
             plan = protocol.build_plan(args.arm, args.run_name, model=args.model, effort=args.effort,
-                                       verifier_policy=args.verifier_policy)
+                                       verifier_policy=args.verifier_policy, memory_seed=args.memory_seed)
             if args.command == 'run':
                 auth_file = (args.auth_file or Path(os.environ.get('CODEX_AUTH_FILE', '~/.codex/auth.json'))).expanduser().resolve()
                 phase = 'execution'

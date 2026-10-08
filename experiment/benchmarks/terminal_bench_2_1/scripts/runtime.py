@@ -36,7 +36,7 @@ def environment_for(task_path):
 
 
 async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=None,
-                    auth_file=None, review_image, environment_config=None, verifier_policy="official"):
+                    auth_file=None, review_image, environment_config=None, verifier_policy="official", memory_seed=None):
     """One fresh V5 rollout; the shared runtime refuses existing directories."""
     inspect_task(task_path)
     pool = Path(pool_path)
@@ -49,4 +49,5 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
     return await shared.run_trial(
         task_path, trial_dir, pool, task_id,
         python_root=python_root or python_installation(), auth_file=auth_file,
-        review_image=review_image, environment_config=environment_config, verifier_policy=verifier_policy)
+        review_image=review_image, environment_config=environment_config, verifier_policy=verifier_policy,
+        memory_seed=memory_seed)

@@ -70,11 +70,27 @@ def python_installation():
     return candidates[0]
 
 
-def solver_instructions(pool, workspace):
+def solver_instructions(pool, workspace, *, initial_memory=None):
     """Reuse V5's retrieval workflow with TB2.1 resources and review ordering."""
     tasks = len([p for p in (Path(pool) / "trajectories").iterdir() if p.is_dir()])
     traces = len(list((Path(pool) / "trajectories").rglob("*.txt")))
     prompt = (SHARED / "prompt.txt").read_text()
+    if initial_memory is not None:
+        prompt = prompt.replace('V5 — task-local evidence memory', 'V6 — seeded task-local evidence memory')
+        prompt = prompt.replace('/memory: initially empty experience memory belonging ONLY to this test task.',
+            f"/memory: this task's private copy of {initial_memory['entry_count']} frozen failure lessons "
+            "distilled from historical TRAINING trajectories before testing.")
+        prompt = prompt.replace('Your environment contains two experience resources:',
+                                'Your environment contains the following experience resources:')
+        prompt += ("\nThe same initial failure-memory library is copied independently into every test task. "
+                   "No updates from another test task are inherited. Use DCI_search_memory to find relevant "
+                   "failure lessons when useful under the workflow above; all original training trajectories "
+                   "remain available for checking source evidence. A failed source run does not prove its "
+                   "root cause. Distinguish observed failures, causal hypotheses, and untested fixes; check "
+                   "applicability before adopting a lesson. A source_observed label is not evidence that a "
+                   "proposed repair works on the current task. If a historical lesson suggests checking "
+                   "grading or collection feedback, use only evidence already publicly provided by the "
+                   "current task; this never authorizes seeking hidden tests, scores or grader files.\n")
     prompt = prompt.replace("36 training-task descriptions", f"{tasks} training-task descriptions")
     prompt = prompt.replace("432 original training trajectories", f"{traces} original training trajectories")
     prompt = prompt.replace("/pool/trajectories/<task_id>/<model_alias>/<task_id>_<score>.txt:",
@@ -230,14 +246,18 @@ class TerminalBenchV5Agent(BaseAgent):
         python_probe = await environment.exec(f"{PYTHON} -c 'import sys; assert sys.version_info[:2] == (3, 12)'", timeout_sec=20)
         if python_probe.return_code:
             raise RuntimeError("Standalone Python cannot run in this task image")
-        (self.run_dir / "control/solver_prompt.txt").write_text(solver_instructions(self.pool, self.workspace))
+        initial = json.loads((self.run_dir / "memory_initial.json").read_text())
+        seeded = initial if initial.get('seed_manifest_sha256') else None
+        (self.run_dir / "control/solver_prompt.txt").write_text(
+            solver_instructions(self.pool, self.workspace, initial_memory=seeded))
         baseline = await environment.exec(f"{PYTHON} -c " + shlex.quote(
             "import runpy,json; m=runpy.run_path('/opt/v5/serve_memory.py'); print(json.dumps(m['processes']()))"), timeout_sec=15)
         if baseline.return_code:
             raise RuntimeError("Cannot record initial task process baseline")
         write_json(self.run_dir / "control/baseline.json", json.loads(baseline.stdout))
         write_json(self.logs_dir / "setup.json", {"workspace": self.workspace, "cli_version": CLI_VERSION,
-                   "model": MODEL, "reasoning_effort": EFFORT, "initial_entries": 0,
+                   "model": MODEL, "reasoning_effort": EFFORT, "initial_entries": initial['entry_count'],
+                   "seed_manifest_sha256": initial.get('seed_manifest_sha256'),
                    "task_environment_python_path_unchanged": True})
 
     async def run(self, instruction, environment, context: AgentContext):
@@ -471,7 +491,7 @@ def support_mounts(pool, memory, home, control, python_root):
 
 async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=None,
                     auth_file=None, review_image="python:3.12-slim-bookworm", environment_config=None,
-                    keep_environment=False, verifier_policy="official"):
+                    keep_environment=False, verifier_policy="official", memory_seed=None):
     """Execute ONE fresh official task; callers own scheduling, split and consent.
 
     Returns a JSON-compatible dict with Harbor result and separate review data.
@@ -501,10 +521,15 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
     (trial_dir / "control").mkdir()
     home = trial_dir / "private/solve-home"
     home.mkdir(parents=True, mode=0o700)
-    shutil.copyfile(auth_file, home / "auth.json")
-    os.chmod(home / "auth.json", 0o600)
-    initialize_memory(trial_dir / "memory", task_id)
-    write_json(trial_dir / "memory_initial.json", audit_memory(trial_dir / "memory"))
+    initial = None
+    if memory_seed is None:
+        initialize_memory(trial_dir / "memory", task_id)
+        initial = audit_memory(trial_dir / "memory")
+    else:
+        from experiment.shared.memory.seed import initialize_seeded_memory
+        initial = initialize_seeded_memory(trial_dir / "memory", task_id, memory_seed,
+            pool=pool, training_task_ids=json.loads((pool / 'manifest.json').read_text())['training_task_ids'])
+    write_json(trial_dir / "memory_initial.json", initial)
     write_json(trial_dir / "runtime_contract.json", {"model": MODEL, "reasoning_effort": EFFORT,
         "cli_version": CLI_VERSION, "harbor_version": "0.23.0", "solver_timeout_seconds": solver_timeout,
         "review_timeout_seconds": REVIEW_SECONDS,
@@ -515,7 +540,10 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
         "submission_boundary": "stop Codex control processes; preserve initial and task-created services",
         "task_services_paused": False, "snapshot_atomic_across_services": False,
         "task_id": task_id, "pool_manifest_sha256": hashlib.sha256((pool / "manifest.json").read_bytes()).hexdigest(),
-        "cross_task_memory": False, "initial_skills": 0, "tool_names": TOOLS})
+        "cross_task_memory": False, "initial_skills": 0, "tool_names": TOOLS,
+        "condition": "v6" if memory_seed is not None else "v5",
+        "initial_memory_entries": initial['entry_count'],
+        "seed_manifest_sha256": initial.get('seed_manifest_sha256')})
     config = dict(environment_config or {})
     if config.get("mounts"):
         raise ValueError("Additional arbitrary host mounts require a separate reviewed adapter")
@@ -527,6 +555,8 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
     review_result = None
     frozen_evidence = None
     try:
+        shutil.copyfile(auth_file, home / "auth.json")
+        os.chmod(home / "auth.json", 0o600)
         # Resolve the review image before starting the solver timer.
         probe, _, _ = await command(["docker", "image", "inspect", review_image], check=False)
         if probe:
@@ -572,7 +602,7 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
         output = {"task_id": task_id, "harbor": result.model_dump(mode="json"), "review": review_result,
                   "memory": audit_memory(trial_dir / "memory"),
                   "freeze": json.loads((trial_dir / "freeze.json").read_text()) if (trial_dir / "freeze.json").exists() else None}
-        write_json(trial_dir / "v5_result.json", output)
+        write_json(trial_dir / ("v6_result.json" if memory_seed is not None else "v5_result.json"), output)
         return output
     finally:
         await clean_private_runtime(trial_dir, review_image)

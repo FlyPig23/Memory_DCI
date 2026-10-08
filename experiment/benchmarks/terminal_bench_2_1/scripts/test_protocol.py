@@ -107,6 +107,44 @@ class PlanTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'isolation'):
             self.plan('v5')
 
+    def test_v6_requires_seed_and_other_arms_reject_it(self):
+        with self.assertRaisesRegex(ValueError, 'requires --memory-seed'):
+            self.plan('v6')
+        for arm in ('baseline', 'v5'):
+            with self.assertRaisesRegex(ValueError, 'do not accept'):
+                self.plan(arm, memory_seed='prepared/memory_seeds/test')
+
+    def test_v6_seed_frozen_in_protocol_and_modified_source_rejected(self):
+        from experiment.shared.memory.seed import create_seed
+        pool = self.make_pool()
+        relative = 'trajectories/train-00/model/trial/train-00_0.txt'
+        source = pool / relative
+        source.parent.mkdir(parents=True)
+        source.write_text('Task: train-00\nScore: 0\nCommand failed: missing package\n')
+        self.pool_inventory()
+        entry = {'slug': 'check-required-package', 'title': 'Check required package',
+                 'keywords': ['package'], 'applicability': 'A required package is missing.',
+                 'procedure': ['Check package availability before calling it.'],
+                 'pitfalls': ['Missing dependency prevented execution.'],
+                 'verification': 'The source failed; proposed preflight is not tested here.',
+                 'status': 'source_observed',
+                 'sources': [{'path': '/pool/' + relative, 'line_start': 1, 'line_end': 3}],
+                 'evidence_summary': 'Observed failure: missing package. Cause hypothesis: dependency unavailable. Repair unverified.'}
+        path = self.base / 'prepared/memory_seeds/test'
+        create_seed(path, [entry], pool=pool, training_task_ids=self.training,
+                    provenance={'builder_model': 'gpt-5.6-luna', 'builder_reasoning_effort': 'xhigh',
+                                'model_audit_verified': True, 'source_selection': 'failed_training_trajectories'})
+        plan = self.plan('v6', memory_seed='prepared/memory_seeds/test', verifier_policy='unlimited')
+        self.assertEqual(plan['memory_seed']['entry_count'], 1)
+        self.assertEqual(plan['memory_seed']['manifest_sha256'], protocol.sha(path / 'manifest.json'))
+        self.assertEqual(plan['review_timeout_seconds'], 180)
+        self.assertEqual([t['task_id'] for t in plan['tasks']], self.test_ids)
+        self.assertIn('entries/check-required-package.md', plan['memory_seed']['files_sha256'])
+        source.write_text('changed source')
+        self.pool_inventory()
+        with self.assertRaises(ValueError):
+            self.plan('v6', memory_seed='prepared/memory_seeds/test')
+
     def test_v5_rejects_pool_mutation_or_training_leak(self):
         pool = self.make_pool()
         (pool / 'tasks' / (self.test_ids[0] + '.md')).write_text('leaked heldout task')
@@ -190,6 +228,19 @@ class ResumeTests(unittest.TestCase):
 
 
 class RuntimePolicyTests(unittest.TestCase):
+    def test_seed_description_preserves_v5_workflow(self):
+        from experiment.benchmarks.terminal_bench_2_1.scripts import harbor_runtime
+        with tempfile.TemporaryDirectory() as temporary:
+            pool = Path(temporary)
+            (pool / 'trajectories/train').mkdir(parents=True)
+            original = harbor_runtime.solver_instructions(pool, '/app')
+            seeded = harbor_runtime.solver_instructions(pool, '/app', initial_memory={'entry_count': 7})
+            self.assertIn('initially empty', original)
+            self.assertNotIn('initially empty', seeded)
+            self.assertIn('7 frozen failure lessons', seeded)
+            self.assertEqual(original.split('Required workflow:')[1].split('Initial working directory:')[0],
+                             seeded.split('Required workflow:')[1].split('Initial working directory:')[0])
+
     def test_both_arms_apply_same_explicit_verifier_policy(self):
         from experiment.benchmarks.terminal_bench_2_1.scripts import baseline_runtime, harbor_runtime
         for arm in ('baseline', 'v5'):

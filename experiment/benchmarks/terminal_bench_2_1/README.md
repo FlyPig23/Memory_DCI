@@ -1,6 +1,6 @@
-# Terminal-Bench 2.1：baseline 与 V5
+# Terminal-Bench 2.1：baseline、V5 与 V6
 
-在同一组 **36 个测试任务**上运行纯 Codex baseline，或带轨迹检索和本题 memory 的 V5。模型、reasoning effort 和评分时限策略均可配置；每次实验使用独立的 run name。
+在同一组 **36 个测试任务**上运行纯 Codex baseline、初始空 memory 的 V5，或带冻结初始错题 memory 的 V6。模型、reasoning effort 和评分时限策略均可配置；每次实验使用独立的 run name。
 
 本基准固定 **53 training / 36 test**，与 WildClawBench 的 36/24 划分不同。数据来自 [Terminal-Bench 2.1 revision 6](https://hub.harborframework.com/datasets/terminal-bench/terminal-bench-2-1/6)，registry 中的 package version 为 `2.0.2`，不代表改用了 TB2.0。完整划分和测试顺序随数据下载并校验，也可直接查看 [固定任务分类与题序](https://huggingface.co/datasets/FlyPig23/memory_dci/blob/main/terminal_bench_2_1/task_split.csv)。
 
@@ -8,8 +8,9 @@
 |---|---|---|
 | baseline | 无训练轨迹、memory、额外技能或检索 MCP | 无 |
 | V5 | 53 张训练任务卡、历史轨迹、本题初始为空的 memory | 最多 180 秒，只看评分前冻结证据 |
+| V6 | 同一查询池，加上从训练失败轨迹离线提炼的冻结初始 memory；每题独立复制 | 最多 180 秒，只看评分前冻结证据 |
 
-V5 每题 memory 独立，不跨题传递。两组均保留官方任务说明与原生工具，按每题 `task.toml` 的 agent timeout 求解，默认使用官方 verifier timeout。方法与历史评分差异见 [PROTOCOL.md](docs/PROTOCOL.md)。
+V5/V6 每题 memory 独立，任务内更新不跨题传递。各组保留官方任务说明与原生工具，按每题 `task.toml` 的 agent timeout 求解。通用 runner 默认使用官方 verifier timeout；本文 V6 命令与双阶段控制器显式使用 `unlimited`。方法与历史评分差异见 [PROTOCOL.md](docs/PROTOCOL.md)。
 
 ## 1. 安装本地运行环境
 
@@ -90,6 +91,48 @@ experiment/benchmarks/terminal_bench_2_1/.venv/bin/python -m \
 ```
 
 已有完整任务不会重新求解。继续同一 run 时，代码与配置必须匹配保存的协议；遇到已有不完整任务目录会停止核查，不会静默重试或覆盖结果。改变模型或评分策略应开始新实验，并单独报告额外尝试。
+
+## 4. V6：先构建错题 memory，再运行测试
+
+构建器使用 `gpt-5.6-luna / xhigh`，只处理固定训练划分内有正文、已评分且 reward=0 的历史轨迹。它按训练题分组提供有限长度的失败片段，并允许读取完整原文；覆盖与未引用记录会单独报告。来源不足可 `no_update`，修复建议必须标明是否仅是假设。
+
+默认提炼时限按每题材料量计算：`clamp(300 + 30 × 失败轨迹数 + 60 × ceil(轨迹总字节数 / 1 MiB), 600, 3600)` 秒，即 10–60 分钟；完成即可提前退出。这是初始预算启发式，不是已验证的最优配置，也不表示会读完全部原文。逐题材料量、预算与是否触及一小时上限写入构建计划，实际耗时及超时结果写入每次尝试。显式传 `--timeout-seconds` 才使用固定时限。这里仅调整离线提炼；正式测试仍使用官方逐题求解时限，本文 V6 评分仍不设外层超时。
+
+```bash
+experiment/benchmarks/terminal_bench_2_1/.venv/bin/python -m \
+  experiment.benchmarks.terminal_bench_2_1.scripts.build_failure_memory plan
+
+experiment/benchmarks/terminal_bench_2_1/.venv/bin/python -m \
+  experiment.benchmarks.terminal_bench_2_1.scripts.build_failure_memory build \
+  --work-dir experiment/benchmarks/terminal_bench_2_1/runs/v6_memory_build_20261005 \
+  --seed-dir experiment/benchmarks/terminal_bench_2_1/prepared/memory_seeds/v6_luna_xhigh_20261005
+
+experiment/benchmarks/terminal_bench_2_1/.venv/bin/python -m \
+  experiment.benchmarks.terminal_bench_2_1.scripts.run run \
+  --arm v6 --run-name v6_seeded_sol_medium_20261005 \
+  --memory-seed prepared/memory_seeds/v6_luna_xhigh_20261005 \
+  --model gpt-5.6-sol --effort medium --verifier-policy unlimited
+```
+
+`--max-jobs 1` 可先检查一个真实提炼任务；移除此参数后继续同一构建目录，不重做已完成任务。只有全部构建任务完成、输出非空且来源与模型审计通过，才生成最终 seed。失败尝试保留，不能用成功结果覆盖。V6 禁止空 seed；baseline 与 V5 禁止传 seed。
+
+提炼进程若在返回最终答复前超时，但已经在截止前写出完整 `failure_memory.json`，收集器可在模型、格式、来源和时间检查通过后接收该产物。原始超时状态、费用记录及 JSON 均保留，并另外记录恢复来源；缺失或不合法的文件不能算完成。人工核查发现错误经验时，以带理由和哈希的排除记录处理，保留模型原文。中断运行可能缺少最后一轮的完整 token usage。
+
+修复收集器后续跑已有建库目录，可显式使用 `--accept-code-update`（双阶段控制器对应 `--accept-builder-code-update`）。该选项只接受源码哈希变化；训练数据、模型和预算必须相同，旧计划及既有产物哈希会留档，不会重新生成已完成任务。
+
+已有建库目录改用自适应时限，还需 `--accept-budget-update`（控制器对应 `--accept-builder-budget-update`），单独保存预算修订记录。已完成经验沿用原始预算与输出；不得把旧尝试的 300 秒改写成新预算。原来超时且没有合格产物的任务，仅在新预算确实增加、修订记录可核验并显式传入 `--retry-budget-exhausted`（控制器对应 `--retry-builder-budget-exhausted`）时追加一次尝试，保留全部旧尝试和成本。需要在当前提炼结束后暂停，可在构建目录创建 `pause_requested` 文件；新控制器会在任务边界暂停，暂停期间不导出 seed 或启动测试，删除此文件后可续跑。
+
+需要按顺序自动执行两个阶段时，运行以下控制器。它只在完整 seed 冻结后开始正式测试，阶段状态写入构建目录的 `pipeline_state.json`：
+
+```bash
+experiment/benchmarks/terminal_bench_2_1/.venv/bin/python -m \
+  experiment.benchmarks.terminal_bench_2_1.scripts.v6_pipeline \
+  --work-dir experiment/benchmarks/terminal_bench_2_1/runs/v6_memory_build_20261005 \
+  --seed-dir experiment/benchmarks/terminal_bench_2_1/prepared/memory_seeds/v6_luna_xhigh_20261005 \
+  --run-name v6_seeded_sol_medium_20261005
+```
+
+查询建库状态用 `build_failure_memory status --work-dir ...`；查询测试状态用 `run status --arm v6 --run-name ...`。各题从同一 seed 开始，任务内更新不回写 seed，也不进入下一题。Luna 建库成本、Sol 求解成本和最终复盘成本分别记录。
 
 ## 结果与来源
 
