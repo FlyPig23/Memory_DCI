@@ -12,10 +12,12 @@ import tomllib
 BASE = Path(__file__).resolve().parents[1]
 ROOT = BASE.parents[2]
 PINNED_SPLIT_SHA256 = '4f437d77ebd35e420fe8dbd02fa34395f91c8f9a7d541f1d61798482e52938b6'
-ARMS = ('baseline', 'v5', 'v6')
+ARMS = ('baseline', 'v5', 'v6', 'v7')
 SOURCE_FILES = ('protocol.py', 'run.py', 'runtime.py', 'harbor_runtime.py',
                 'baseline_runtime.py', 'baseline_supervisor.py', 'health_guard.py',
                 'serve_memory.py')
+# Imported only on V7 code paths, so only V7 plans hash them.
+V7_SOURCE_FILES = ('v7_corpus.py', 'v7_seed.py')
 
 
 def load(path):
@@ -106,10 +108,10 @@ def run_directory(base, name):
     return local_path(base, 'runs/' + name)
 
 
-def sources(base=BASE):
+def sources(base=BASE, arm=None):
     base = Path(base)
     root = base.parents[2]
-    paths = [base / 'scripts' / name for name in SOURCE_FILES]
+    paths = [base / 'scripts' / name for name in SOURCE_FILES + (V7_SOURCE_FILES if arm == 'v7' else ())]
     paths += [root / 'experiment/shared' / name for name in ('codex_backend.py', 'task_runtime.py')]
     paths += [root / 'experiment/shared/memory' / name for name in ('tools.py', 'prompt.txt', 'review_prompt.txt', 'seed.py')]
     return {p.relative_to(root).as_posix(): sha(p) for p in paths}
@@ -132,13 +134,67 @@ def verify_pool(base, split):
         raise ValueError('Pool violates task-local/held-out isolation')
 
 
-def build_plan(arm, run_name, *, base=BASE, model=None, effort=None, verifier_policy=None, memory_seed=None):
+def task_corpus_records(base, corpus, split, tasks):
+    """V7: freeze each test task's own failure-only pool and optional same-task seed into its task row."""
+    from .v7_corpus import verify_corpus, verify_task_pool
+    from .v7_seed import validate_seed as validate_task_seed
+    root = local_path(base, corpus)
+    index = verify_corpus(root, split)
+    seeds = load(root / 'seeds_index.json')
+    if seeds.get('schema_version') != 1:
+        raise ValueError('Unsupported V7 seed index')
+    if set(index['tasks']) != {task['task_id'] for task in tasks} or set(seeds.get('tasks', {})) != set(index['tasks']):
+        raise ValueError('V7 corpus and seed index must cover exactly the 36 test tasks')
+    # The reviewed decontamination decisions are part of the corpus definition: the build must have used the
+    # current file, and no published attempt may carry a current 'exclude' decision.
+    decisions_path = local_path(base, 'prepared/v7_corpus/decontamination_decisions.json')
+    if not index.get('decisions_sha256') or sha(decisions_path) != index['decisions_sha256']:
+        raise ValueError('V7 corpus was not built from the current reviewed decontamination decisions')
+    decisions = load(decisions_path)
+    published = {r['trial_id'] for record in index['tasks'].values() for r in record['records']
+                 if r.get('status') in ('available', 'raw_fallback')}
+    if any(decisions.get(trial, {}).get('decision') == 'exclude' for trial in published):
+        raise ValueError('V7 corpus publishes an attempt whose reviewed decision is exclude')
+    for task in tasks:
+        task_id = task['task_id']
+        record = index['tasks'][task_id]
+        pool = local_path(base, record['pool_path'])
+        checked = verify_task_pool(pool, task_id, record)
+        task['pool'] = {'path': record['pool_path'], 'manifest_sha256': sha(pool / 'manifest.json'),
+                        'files_sha256': inventory(pool), 'trajectory_count': checked['trajectory_count']}
+        seed_record = seeds['tasks'][task_id]
+        if seed_record.get('seed_path'):
+            if seed_record['seed_path'] != f'{root.relative_to(Path(base).resolve()).as_posix()}/seeds/{task_id}':
+                raise ValueError(f'V7 seed must live in its own corpus build: {task_id}')
+            seed_path = local_path(base, seed_record['seed_path'])
+            manifest = validate_task_seed(seed_path, pool=pool, task_id=task_id)
+            if (seed_record.get('manifest_sha256') != sha(seed_path / 'manifest.json')
+                    or seed_record.get('entry_count') != manifest['entry_count']):
+                raise ValueError(f'V7 seed index row does not describe the seed on disk: {task_id}')
+            task['memory_seed'] = {'path': seed_record['seed_path'], 'manifest_sha256': sha(seed_path / 'manifest.json'),
+                                   'entry_count': manifest['entry_count'], 'files_sha256': inventory(seed_path)}
+        else:
+            if checked['trajectory_count'] and seed_record.get('reason') != 'builder_failed':
+                raise ValueError(f'V7 task with failed trajectories needs a seed or a recorded builder failure: {task_id}')
+            if not checked['trajectory_count'] and seed_record.get('reason') != 'no_available_failed_trajectories':
+                raise ValueError(f'V7 seed index reason is inconsistent with an empty pool: {task_id}')
+            task['memory_seed'] = None
+            task['memory_seed_reason'] = seed_record['reason']
+    relative = root.relative_to(Path(base).resolve()).as_posix()
+    return {'path': relative, 'index_sha256': sha(root / 'index.json'),
+            'seeds_index_sha256': sha(root / 'seeds_index.json'), 'decisions_sha256': sha(decisions_path)}
+
+
+def build_plan(arm, run_name, *, base=BASE, model=None, effort=None, verifier_policy=None, memory_seed=None,
+               task_corpus=None):
     """Read and hash inputs only. No auth read, run files, subprocesses or imports of Harbor."""
     base = Path(base)
     if arm not in ARMS:
         raise ValueError('Unknown arm')
     if (arm == 'v6') != (memory_seed is not None):
         raise ValueError('V6 requires --memory-seed; baseline and V5 do not accept a seed')
+    if (arm == 'v7') != (task_corpus is not None):
+        raise ValueError('V7 requires --task-corpus; other arms do not accept one')
     namespace = hashlib.sha256(str(run_directory(base, run_name)).encode()).hexdigest()[:12]
     config = settings(base, model=model, effort=effort, verifier_policy=verifier_policy)
     split_path = base / 'manifests/split.json'
@@ -187,14 +243,25 @@ def build_plan(arm, run_name, *, base=BASE, model=None, effort=None, verifier_po
         seed = {'path': relative, 'manifest_sha256': sha(seed_path / 'manifest.json'),
                 'entry_count': manifest['entry_count'], 'files_sha256': inventory(seed_path)}
         inputs[relative + '/manifest.json'] = seed['manifest_sha256']
+    corpus = None
+    if arm == 'v7':
+        if config['verifier_policy'] != 'unlimited':
+            raise ValueError('V7 must match V6: use --verifier-policy unlimited')
+        corpus = task_corpus_records(base, task_corpus, split, tasks)
+        inputs[corpus['path'] + '/index.json'] = corpus['index_sha256']
+        inputs[corpus['path'] + '/seeds_index.json'] = corpus['seeds_index_sha256']
+        inputs['manifests/v7_failure_sources.json'] = sha(base / 'manifests/v7_failure_sources.json')
+        inputs['prepared/v7_corpus/decontamination_decisions.json'] = corpus['decisions_sha256']
     plan = {'schema_version': 1, 'benchmark': 'Terminal-Bench 2.1', 'arm': arm,
             'run_name': run_name, 'settings': config, 'harbor_version': '0.23.0',
-            'review_timeout_seconds': 180 if arm in ('v5', 'v6') else None,
+            'review_timeout_seconds': 180 if arm in ('v5', 'v6', 'v7') else None,
             'cross_task_memory': False, 'solver_rollouts_per_task': 1,
             'inputs_sha256': inputs,
-            'sources_sha256': sources(base), 'tasks': tasks}
+            'sources_sha256': sources(base, arm), 'tasks': tasks}
     if seed is not None:
         plan['memory_seed'] = seed
+    if corpus is not None:
+        plan['task_corpus'] = corpus
     return plan
 
 

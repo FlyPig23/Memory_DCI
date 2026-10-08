@@ -1,0 +1,64 @@
+{
+  "task_id": "pypi-server",
+  "attempt": "attempt-001",
+  "builder_model": "gpt-5.6-luna",
+  "builder_reasoning_effort": "xhigh",
+  "timeout_seconds": 1050,
+  "budget_basis": {
+    "mode": "adaptive_failure_volume_v1",
+    "candidate_count": 23,
+    "candidate_bytes": 824768,
+    "ceil_mebibytes": 1,
+    "unbounded_seconds": 1050
+  },
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "corpus_manifest_sha256": "969eded135bb103a4061c046307f389a0ee14c6180654058d911d9ad1945d401",
+  "prompt_sha256": "f2076eabbb9a33fce02b6feb49ac6c04ec7e5bb92aa2eb12ec6ef0921fc6e6b3",
+  "container_name": "side-replay-distill-db725328530c",
+  "received_tests_or_solutions": false,
+  "received_successful_attempts": false,
+  "elapsed_seconds": 301.86500668525696,
+  "exit_code": 0,
+  "timed_out": false,
+  "usage": {
+    "input_tokens": 3468980,
+    "output_tokens": 39130,
+    "cached_input_tokens": 3203072,
+    "reasoning_output_tokens": 11970,
+    "total_tokens": 3508110,
+    "usage_available": true,
+    "usage_events": 30,
+    "request_count": null
+  },
+  "model_audit": {
+    "models": [
+      "gpt-5.6-luna"
+    ],
+    "efforts": [
+      "xhigh"
+    ],
+    "requested_model": "gpt-5.6-luna",
+    "requested_effort": "xhigh",
+    "model_effort_verified": true,
+    "global_memory": false,
+    "initial_distilled_skills": 0
+  },
+  "status": "complete",
+  "first_collection": {
+    "status": "failed",
+    "error": "result.json: lesson cites a file outside this task's failed attempts: /experience/failed_attempts/claude-sonnet-5/89f50938-1cbc-4f67-8ac6-01fb70e85ec6/pypi-server_0.txt; summary.json: reviewed_sources names a file outside this task's failed attempts"
+  },
+  "recollected_after_validator_fix": {
+    "at_unix": 1791347796.8598213,
+    "model_called": false,
+    "reason": "reviewed_sources listed the instruction or output schema; the self-report is no longer fatal"
+  },
+  "result_origin": "summary.json",
+  "lesson_count": 7,
+  "lessons_sha256": "773d27593ebfdd5744c81bdb6e6dc0bdee1da500a555cadbd4fe50c1b2fa496c",
+  "reviewed_attempt_files": 23,
+  "reviewed_other_paths": [
+    "/experience/instruction.md",
+    "/work/output_schema.json"
+  ]
+}

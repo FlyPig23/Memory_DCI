@@ -1,0 +1,54 @@
+{
+  "task_id": "filter-js-from-html",
+  "builder": "luna56",
+  "engine": "codex",
+  "model": "gpt-5.6-luna",
+  "effort": "medium",
+  "prompt_version": "v3",
+  "attempt": "attempt-002",
+  "timeout_seconds": 3600,
+  "budget_basis": {
+    "mode": "adaptive_failure_volume_v1",
+    "candidate_count": 98,
+    "candidate_bytes": 15538190,
+    "ceil_mebibytes": 15,
+    "unbounded_seconds": 4140
+  },
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "corpus_manifest_sha256": "33d96829b78d3e0673191f32e8085c2ee0cc67dfb8c0f063012beff971cdc638",
+  "prompt_sha256": "bbde6be90dcb752b1ec5481efd2a4f2f77baa70742dcda97f08f0808523b82c7",
+  "received_tests_or_solutions": false,
+  "received_successful_attempts": false,
+  "container_name": "side-replay-luna56-20960e6263",
+  "started_at_unix": 1791361423.4635499,
+  "elapsed_seconds": 155.64223384857178,
+  "exit_code": 0,
+  "timed_out": false,
+  "usage": {
+    "input_tokens": 671553,
+    "output_tokens": 22554,
+    "cached_input_tokens": 563456,
+    "reasoning_output_tokens": 1495,
+    "total_tokens": 694107,
+    "usage_available": true,
+    "usage_events": 12,
+    "request_count": null
+  },
+  "model_audit": {
+    "engine": "codex",
+    "models": [
+      "gpt-5.6-luna"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "requested_model": "gpt-5.6-luna",
+    "requested_effort": "medium",
+    "model_effort_verified": true
+  },
+  "status": "complete",
+  "result_origin": "result.json",
+  "lesson_count": 7,
+  "lessons_sha256": "41ddbae27fbc0a26aaf0410757011eede57bbcde6ad34997ed9675b9e8c50c55",
+  "lessons_chars": 13650
+}

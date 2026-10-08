@@ -1,0 +1,54 @@
+{
+  "task_id": "pypi-server",
+  "builder": "luna56",
+  "engine": "codex",
+  "model": "gpt-5.6-luna",
+  "effort": "medium",
+  "prompt_version": "v3",
+  "attempt": "attempt-002",
+  "timeout_seconds": 1050,
+  "budget_basis": {
+    "mode": "adaptive_failure_volume_v1",
+    "candidate_count": 23,
+    "candidate_bytes": 824768,
+    "ceil_mebibytes": 1,
+    "unbounded_seconds": 1050
+  },
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "corpus_manifest_sha256": "969eded135bb103a4061c046307f389a0ee14c6180654058d911d9ad1945d401",
+  "prompt_sha256": "96a796b71853c7a2d7c51381c75306cffceddc391282d78815692171f3790b3e",
+  "received_tests_or_solutions": false,
+  "received_successful_attempts": false,
+  "container_name": "side-replay-luna56-43e530dab5",
+  "started_at_unix": 1791361417.854242,
+  "elapsed_seconds": 476.366539478302,
+  "exit_code": 0,
+  "timed_out": false,
+  "usage": {
+    "input_tokens": 360903,
+    "output_tokens": 25547,
+    "cached_input_tokens": 291072,
+    "reasoning_output_tokens": 1521,
+    "total_tokens": 386450,
+    "usage_available": true,
+    "usage_events": 8,
+    "request_count": null
+  },
+  "model_audit": {
+    "engine": "codex",
+    "models": [
+      "gpt-5.6-luna"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "requested_model": "gpt-5.6-luna",
+    "requested_effort": "medium",
+    "model_effort_verified": true
+  },
+  "status": "complete",
+  "result_origin": "result.json",
+  "lesson_count": 6,
+  "lessons_sha256": "fd861a0b5c4c287d513b7fccd3e14872f8214bae6de966988e3e3e502a76db1c",
+  "lessons_chars": 10787
+}

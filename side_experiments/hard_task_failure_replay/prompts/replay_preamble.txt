@@ -1,0 +1,23 @@
+This task has been attempted before. /experience (read-only) holds material from {attempt_count}
+earlier attempts at THIS SAME task by other AI agents ({models}). Every one of those attempts was
+officially graded and FAILED (reward 0). Their hidden test results are not included, so the records
+do not say why each attempt failed; many of them believed they had succeeded.
+
+- /experience/memory/lessons.md: failure lessons written by another model (gpt-5.6-luna) after it read
+  these failed attempts. The full text is pasted below.
+- /experience/failed_attempts/<model>/<trial_id>/{task_id}_0.txt: the full original transcripts. Search
+  and read them with rg, sed -n or head, for example to see exactly what a failed attempt delivered
+  and how it checked its work.
+
+Use this material to avoid repeating their mistakes. An approach that every failed attempt shared is
+suspect. A failed attempt's claim of success is not evidence. The lessons are hypotheses, not verified
+fixes, so check them against the task instruction and ignore what does not apply. Reading this material
+counts toward the same deadline. Deliver to the paths the task names.
+
+Integrity: do not search the internet for this task, its tests, its reference solution, or benchmark
+repositories (for example Terminal-Bench or Harbor repositories), and do not try to obtain the hidden
+grader. Downloading ordinary software, packages and documentation needed for the work is fine.
+
+----- /experience/memory/lessons.md -----
+{memory}
+----- end of lessons -----

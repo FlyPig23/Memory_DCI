@@ -110,9 +110,69 @@ def solver_instructions(pool, workspace, *, initial_memory=None):
     return prompt
 
 
-def make_config(task_id, workspace, stage):
-    server = MCPServer("v5", PYTHON, (SERVER, "mcp", "--pool", "/pool", "--memory", "/memory",
-                        "--task-id", task_id, "--stage", stage, "--workspace", workspace))
+def _replace_once(text, old, new):
+    if text.count(old) != 1:
+        raise ValueError(f"Prompt template drifted; expected one occurrence of: {old[:60]!r}")
+    return text.replace(old, new)
+
+
+def solver_instructions_v7(pool, workspace, *, initial_memory=None):
+    """V7: the V5/V6 text with only the sentences that describe the corpus rewritten.
+
+    The pool holds only this task's own failed official attempts, and the optional seed was written
+    from them. Workflow steps, integrity rules and the rest of the wording stay verbatim.
+    """
+    tasks = len([p for p in (Path(pool) / "trajectories").iterdir() if p.is_dir()])
+    traces = len(list((Path(pool) / "trajectories").rglob("*.txt")))
+    prompt = solver_instructions(pool, workspace, initial_memory=initial_memory)
+    edits = [
+        (f"- /pool/tasks: {tasks} training-task descriptions and trajectory navigation cards.",
+         "- /pool/tasks: this task's own description and trajectory navigation card (the only task card)."),
+        ("/pool/trajectories/<task_id>/<model_alias>/<trial_id>/<task_id>_<score>.txt:",
+         "/pool/trajectories/<task_id>/<model_alias>/<attempt_id>/<task_id>_<score>.txt:"),
+        (f"{traces} original training trajectories.",
+         f"{traces} original trajectories of officially graded FAILED attempts at THIS task by other AI agents "
+         "(official score 0); successful attempts are held out and not included."),
+        ("query over training-task\n   descriptions.", "query over the task card\n   (here only this task's own card)."),
+        ("investigate selected similar training tasks' files.",
+         "investigate the selected task's files (here this task's failed attempts)."),
+        ("B. If no similar training task is found,", "B. If no similar task is found,"),
+        ("relevant training trajectories again.", "relevant trajectories again."),
+    ]
+    if initial_memory is None:
+        edits.append(("V5 — task-local evidence memory", "V7 — task-local evidence memory"))
+    else:
+        edits += [
+            ("V6 — seeded task-local evidence memory", "V7 — seeded task-local evidence memory"),
+            (f"/memory: this task's private copy of {initial_memory['entry_count']} frozen failure lessons "
+             "distilled from historical TRAINING trajectories before testing.",
+             f"/memory: this task's private copy of {initial_memory['entry_count']} frozen failure-analysis entries "
+             "written before testing by another model from this task's failed attempts above."),
+            ("The same initial failure-memory library is copied independently into every test task.",
+             "This initial failure analysis was written only from this task's own failed attempts and is not "
+             "copied into any other test task."),
+            ("all original training trajectories remain available for checking source evidence",
+             "the original failed trajectories remain available for checking source evidence"),
+        ]
+    for old, new in edits:
+        prompt = _replace_once(prompt, old, new)
+    return prompt
+
+
+def review_instructions_v7():
+    """V5/V6 review prompt with only the pool description rewritten for a same-task pool."""
+    prompt = (SHARED / "review_prompt.txt").read_text()
+    prompt = _replace_once(prompt, "- /pool: the same read-only training-task/trajectory pool.",
+                           "- /pool: the same read-only pool of this task's own officially failed attempts.")
+    return _replace_once(prompt, "all 432 trajectories", "all pool trajectories")
+
+
+def make_config(task_id, workspace, stage, pool_scope=None):
+    arguments = (SERVER, "mcp", "--pool", "/pool", "--memory", "/memory",
+                 "--task-id", task_id, "--stage", stage, "--workspace", workspace)
+    if pool_scope is not None:
+        arguments += ("--pool-scope", pool_scope)
+    server = MCPServer("v5", PYTHON, arguments)
     return render_config(CodexSettings(model=MODEL, reasoning_effort=EFFORT,
         cli_version=CLI_VERSION, binary="/opt/codex/codex", mcp_servers=(server,)))
 
@@ -210,12 +270,18 @@ def capture_session(home, logs):
 class TerminalBenchV5Agent(BaseAgent):
     """Harbor BaseAgent using the project's pinned native Codex binary."""
 
-    def __init__(self, *args, run_dir, pool_path, task_id, **kwargs):
+    def __init__(self, *args, run_dir, pool_path, task_id, condition=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.run_dir, self.pool = Path(run_dir), Path(pool_path)
         self.task_id = task_id
+        # None keeps V5/V6 behaviour; 'v7' selects the same-task pool scope and prompt text.
+        self.condition = condition
         self.workspace = None
         self.private_home = self.run_dir / "private/solve-home"
+
+    @property
+    def pool_scope(self):
+        return "same_task" if self.condition == "v7" else None
 
     @staticmethod
     def name():
@@ -231,7 +297,8 @@ class TerminalBenchV5Agent(BaseAgent):
         self.workspace = (where.stdout or "").strip()
         if not self.workspace.startswith("/") or "\n" in self.workspace:
             raise ValueError("Task has no unambiguous absolute working directory")
-        (self.private_home / "config.toml").write_text(make_config(self.task_id, self.workspace, "solve"))
+        (self.private_home / "config.toml").write_text(make_config(self.task_id, self.workspace, "solve",
+                                                                   pool_scope=self.pool_scope))
         identity = await environment.exec("id -u; id -g", timeout_sec=10)
         uid, gid = [int(v) for v in identity.stdout.splitlines()]
         ready = await environment.exec(
@@ -248,8 +315,9 @@ class TerminalBenchV5Agent(BaseAgent):
             raise RuntimeError("Standalone Python cannot run in this task image")
         initial = json.loads((self.run_dir / "memory_initial.json").read_text())
         seeded = initial if initial.get('seed_manifest_sha256') else None
+        instructions = solver_instructions_v7 if self.condition == "v7" else solver_instructions
         (self.run_dir / "control/solver_prompt.txt").write_text(
-            solver_instructions(self.pool, self.workspace, initial_memory=seeded))
+            instructions(self.pool, self.workspace, initial_memory=seeded))
         baseline = await environment.exec(f"{PYTHON} -c " + shlex.quote(
             "import runpy,json; m=runpy.run_path('/opt/v5/serve_memory.py'); print(json.dumps(m['processes']()))"), timeout_sec=15)
         if baseline.return_code:
@@ -434,8 +502,11 @@ async def review_frozen_memory(agent, evidence, *, python_root, auth_file, revie
     home.mkdir(mode=0o700)
     shutil.copyfile(auth_file, home / "auth.json")
     os.chmod(home / "auth.json", 0o600)
-    (home / "config.toml").write_text(make_config(agent.task_id, "/review", "review"))
-    prompt = (SHARED / "review_prompt.txt").read_text().replace("all 432 trajectories", "all training trajectories")
+    (home / "config.toml").write_text(make_config(agent.task_id, "/review", "review", pool_scope=agent.pool_scope))
+    if agent.condition == "v7":
+        prompt = review_instructions_v7()
+    else:
+        prompt = (SHARED / "review_prompt.txt").read_text().replace("all 432 trajectories", "all training trajectories")
     prompt += "\nAdditional frozen artifacts are indexed by /evidence/snapshot_manifest.json. Follow only relevant paths.\n"
     (review / "prompt.txt").write_text(prompt)
     mounts = support_mounts(agent.pool, memory, home, root / "control", python_root)
@@ -491,7 +562,7 @@ def support_mounts(pool, memory, home, control, python_root):
 
 async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=None,
                     auth_file=None, review_image="python:3.12-slim-bookworm", environment_config=None,
-                    keep_environment=False, verifier_policy="official", memory_seed=None):
+                    keep_environment=False, verifier_policy="official", memory_seed=None, condition=None):
     """Execute ONE fresh official task; callers own scheduling, split and consent.
 
     Returns a JSON-compatible dict with Harbor result and separate review data.
@@ -499,13 +570,24 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
     accepted, but evidence capture requires a Compose-compatible adapter.
     GPU requirements remain intact; unsupported providers fail rather than
     silently running a GPU task on CPU.
+
+    condition None keeps the V5/V6 inference from memory_seed. 'v7' replaces only the corpus:
+    the pool must hold exactly this task's own failed official attempts, and the optional seed is
+    a same-task failure analysis.
     """
+    condition = condition or ("v6" if memory_seed is not None else "v5")
+    if condition not in ("v5", "v6", "v7"):
+        raise ValueError("Unknown runtime condition")
     task_path, trial_dir, pool = map(lambda p: Path(p).resolve(), (task_path, trial_dir, pool_path))
     if trial_dir.exists():
         raise FileExistsError("Refuse to overwrite or rerun an existing trial")
     if not (pool / "manifest.json").is_file() or not (pool / "tasks").is_dir():
         raise ValueError("Prepared build-only pool is incomplete")
-    if (pool / "trajectories" / task_id).exists():
+    pool_record = None
+    if condition == "v7":
+        from .v7_corpus import verify_task_pool
+        pool_record = verify_task_pool(pool, task_id)
+    elif (pool / "trajectories" / task_id).exists():
         raise ValueError("Test task occurs in training pool")
     python_root = Path(python_root or python_installation()).resolve()
     auth_file = Path(auth_file or os.environ.get("CODEX_AUTH_FILE", "~/.codex/auth.json")).expanduser().resolve()
@@ -522,7 +604,10 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
     home = trial_dir / "private/solve-home"
     home.mkdir(parents=True, mode=0o700)
     initial = None
-    if memory_seed is None:
+    if condition == "v7" and memory_seed is not None:
+        from .v7_seed import initialize_same_task_memory
+        initial = initialize_same_task_memory(trial_dir / "memory", task_id, memory_seed, pool=pool)
+    elif memory_seed is None:
         initialize_memory(trial_dir / "memory", task_id)
         initial = audit_memory(trial_dir / "memory")
     else:
@@ -541,9 +626,15 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
         "task_services_paused": False, "snapshot_atomic_across_services": False,
         "task_id": task_id, "pool_manifest_sha256": hashlib.sha256((pool / "manifest.json").read_bytes()).hexdigest(),
         "cross_task_memory": False, "initial_skills": 0, "tool_names": TOOLS,
-        "condition": "v6" if memory_seed is not None else "v5",
+        "condition": condition,
         "initial_memory_entries": initial['entry_count'],
         "seed_manifest_sha256": initial.get('seed_manifest_sha256')})
+    if condition == "v7":
+        contract = json.loads((trial_dir / "runtime_contract.json").read_text())
+        contract.update({"pool_scope": "same_task", "pool_trajectory_count": pool_record["trajectory_count"],
+                         "pool_files_sha256_digest": hashlib.sha256(json.dumps(
+                             pool_record["files_sha256"], sort_keys=True).encode()).hexdigest()})
+        write_json(trial_dir / "runtime_contract.json", contract)
     config = dict(environment_config or {})
     if config.get("mounts"):
         raise ValueError("Additional arbitrary host mounts require a separate reviewed adapter")
@@ -566,10 +657,13 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
         contract = json.loads((trial_dir / "runtime_contract.json").read_text())
         contract["review_image_id"] = review_image
         write_json(trial_dir / "runtime_contract.json", contract)
+        agent_kwargs = {"run_dir": str(trial_dir), "pool_path": str(pool), "task_id": task_id}
+        if condition == "v7":
+            agent_kwargs["condition"] = condition
         trial = await Trial.create(TrialConfig(
             task=TaskConfig(path=task_path), trial_name=trial_dir.name, trials_dir=trial_dir.parent,
             agent=AgentConfig(import_path=__name__ + ":TerminalBenchV5Agent", model_name=MODEL,
-                              kwargs={"run_dir": str(trial_dir), "pool_path": str(pool), "task_id": task_id}),
+                              kwargs=agent_kwargs),
             environment=EnvironmentConfig(**config), verifier=VerifierConfig()))
 
         if trial._agent_timeout_sec != solver_timeout or trial._verifier_timeout_sec != task_spec["verifier"]["timeout_sec"]:
@@ -602,7 +696,7 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
         output = {"task_id": task_id, "harbor": result.model_dump(mode="json"), "review": review_result,
                   "memory": audit_memory(trial_dir / "memory"),
                   "freeze": json.loads((trial_dir / "freeze.json").read_text()) if (trial_dir / "freeze.json").exists() else None}
-        write_json(trial_dir / ("v6_result.json" if memory_seed is not None else "v5_result.json"), output)
+        write_json(trial_dir / f"{condition}_result.json", output)
         return output
     finally:
         await clean_private_runtime(trial_dir, review_image)

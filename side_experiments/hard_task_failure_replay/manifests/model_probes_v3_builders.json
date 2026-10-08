@@ -1,0 +1,51 @@
+{
+  "probed_at_unix": 1791360122.072899,
+  "results": [
+    {
+      "builder": "terra56",
+      "engine": "codex",
+      "model": "gpt-5.6-terra",
+      "effort": "medium",
+      "ok": true,
+      "answer": "OK",
+      "exit_code": 0,
+      "model_audit": {
+        "engine": "codex",
+        "models": [
+          "gpt-5.6-terra"
+        ],
+        "efforts": [
+          "medium"
+        ],
+        "requested_model": "gpt-5.6-terra",
+        "requested_effort": "medium",
+        "model_effort_verified": true
+      },
+      "elapsed_seconds": 18.9,
+      "stderr_tail": ""
+    },
+    {
+      "builder": "sol56",
+      "engine": "codex",
+      "model": "gpt-5.6-sol",
+      "effort": "medium",
+      "ok": true,
+      "answer": "OK",
+      "exit_code": 0,
+      "model_audit": {
+        "engine": "codex",
+        "models": [
+          "gpt-5.6-sol"
+        ],
+        "efforts": [
+          "medium"
+        ],
+        "requested_model": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "model_effort_verified": true
+      },
+      "elapsed_seconds": 7.1,
+      "stderr_tail": ""
+    }
+  ]
+}

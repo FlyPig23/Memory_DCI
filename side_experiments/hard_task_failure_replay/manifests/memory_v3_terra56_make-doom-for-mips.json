@@ -1,0 +1,54 @@
+{
+  "task_id": "make-doom-for-mips",
+  "builder": "terra56",
+  "engine": "codex",
+  "model": "gpt-5.6-terra",
+  "effort": "medium",
+  "prompt_version": "v3",
+  "attempt": "attempt-001",
+  "timeout_seconds": 3600,
+  "budget_basis": {
+    "mode": "adaptive_failure_volume_v1",
+    "candidate_count": 107,
+    "candidate_bytes": 74619483,
+    "ceil_mebibytes": 72,
+    "unbounded_seconds": 7830
+  },
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "corpus_manifest_sha256": "153ae40c1fcd2ada3eb225012cac15f209c343769fbdf9917bc17614d83b3f9a",
+  "prompt_sha256": "2231840581b87dd63963f3154f7d78c489acd39702b6e7ecf0b48d299cce2075",
+  "received_tests_or_solutions": false,
+  "received_successful_attempts": false,
+  "container_name": "side-replay-terra56-0a7d494b16",
+  "started_at_unix": 1791360772.8679852,
+  "elapsed_seconds": 413.2747609615326,
+  "exit_code": 0,
+  "timed_out": false,
+  "usage": {
+    "input_tokens": 536585,
+    "output_tokens": 15873,
+    "cached_input_tokens": 451584,
+    "reasoning_output_tokens": 1978,
+    "total_tokens": 552458,
+    "usage_available": true,
+    "usage_events": 9,
+    "request_count": null
+  },
+  "model_audit": {
+    "engine": "codex",
+    "models": [
+      "gpt-5.6-terra"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "requested_model": "gpt-5.6-terra",
+    "requested_effort": "medium",
+    "model_effort_verified": true
+  },
+  "status": "complete",
+  "result_origin": "result.json",
+  "lesson_count": 4,
+  "lessons_sha256": "5a31556c4641f1bc9d80f99f1e80e2fcabe23b2a8ff98472c1b427a53e9617ac",
+  "lessons_chars": 8522
+}

@@ -51,3 +51,21 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
         python_root=python_root or python_installation(), auth_file=auth_file,
         review_image=review_image, environment_config=environment_config, verifier_policy=verifier_policy,
         memory_seed=memory_seed)
+
+
+async def run_same_task_trial(task_path, trial_dir, pool_path, task_id, *, python_root=None, auth_file=None,
+                              review_image, environment_config=None, verifier_policy="official", memory_seed=None):
+    """One fresh V7 rollout: the V6 runtime with a corpus of only this task's own failed attempts."""
+    inspect_task(task_path)
+    pool = Path(pool_path)
+    manifest = json.loads((pool / "manifest.json").read_text())
+    if (manifest.get("kind") != "same_task_failed_official_trajectories" or manifest.get("task_id") != task_id
+            or manifest.get("successful_trajectories_included") is not False or "training_task_ids" in manifest):
+        raise ValueError("V7 requires this task's own failure-only pool")
+    if manifest.get("cross_task_memory") is not False:
+        raise ValueError("Pool must explicitly disable cross-task memory")
+    return await shared.run_trial(
+        task_path, trial_dir, pool, task_id,
+        python_root=python_root or python_installation(), auth_file=auth_file,
+        review_image=review_image, environment_config=environment_config, verifier_policy=verifier_policy,
+        memory_seed=memory_seed, condition="v7")

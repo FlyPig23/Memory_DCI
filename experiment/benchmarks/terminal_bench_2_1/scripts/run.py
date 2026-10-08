@@ -1,4 +1,4 @@
-"""Serial baseline/V5/V6 runner. Planning and status never start Docker or a model."""
+"""Serial baseline/V5/V6/V7 runner. Planning and status never start Docker or a model."""
 from __future__ import annotations
 
 import argparse
@@ -26,9 +26,20 @@ def write_json(path, value):
     temporary.replace(path)
 
 
+def seed_for(plan, task):
+    """V6 shares one frozen seed across tasks; V7 freezes a separate same-task seed (or none) per task."""
+    return task.get('memory_seed') if plan['arm'] == 'v7' else plan.get('memory_seed')
+
+
+def pool_digest(files):
+    import hashlib
+    return hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest()
+
+
 def summary(directory, arm, *, task=None, settings=None, memory_seed=None):
     directory = Path(directory)
-    name = {'baseline': 'baseline_result.json', 'v5': 'v5_result.json', 'v6': 'v6_result.json'}[arm]
+    name = {'baseline': 'baseline_result.json', 'v5': 'v5_result.json', 'v6': 'v6_result.json',
+            'v7': 'v7_result.json'}[arm]
     path = directory / name
     if not path.is_file():
         return {'run_id': directory.name, 'status': 'incomplete', 'valid': False}
@@ -52,7 +63,7 @@ def summary(directory, arm, *, task=None, settings=None, memory_seed=None):
         reasons.append('model_audit_failed')
     if not health['phases']['agent']['actual_inference']:
         reasons.append('no_solver_inference_evidence')
-    if health['blocked'] and (arm != 'v6' or health['phases']['agent']['blocked']):
+    if health['blocked'] and (arm not in ('v6', 'v7') or health['phases']['agent']['blocked']):
         reasons.append('infrastructure_failure')
     if not frozen.get('taken_before_hidden_grading'):
         reasons.append('missing_pre_grader_boundary')
@@ -66,6 +77,8 @@ def summary(directory, arm, *, task=None, settings=None, memory_seed=None):
         initial_path = directory / 'memory_initial.json'
         initial = protocol.load(initial_path) if initial_path.is_file() else {}
         expected_count = (memory_seed or {}).get('entry_count') if arm == 'v6' else 0
+        if arm == 'v7' and memory_seed:
+            expected_count = memory_seed.get('entry_count')
         if (initial.get('valid') is not True or initial.get('entry_count') != expected_count
                 or initial.get('event_count') != 0 or initial.get('scope') != 'single_test_task'
                 or initial.get('task_id') != result.get('task_id')):
@@ -78,6 +91,18 @@ def summary(directory, arm, *, task=None, settings=None, memory_seed=None):
                     or initial.get('seed_manifest_sha256') != memory_seed.get('manifest_sha256')
                     or observed_entries != expected_entries):
                 reasons.append('frozen_seed_mismatch')
+        if arm == 'v7':
+            # This task's own seed (or no seed) must be the one cloned before solving.
+            expected_files = (memory_seed or {}).get('files_sha256', {})
+            expected_entries = {k: v for k, v in expected_files.items() if k.startswith('entries/')}
+            observed_entries = {k: v for k, v in initial.get('files_sha256', {}).items() if k.startswith('entries/')}
+            if memory_seed and (initial.get('inherited_entries') != expected_count
+                    or initial.get('seed_manifest_sha256') != memory_seed.get('manifest_sha256')
+                    or observed_entries != expected_entries):
+                reasons.append('task_seed_mismatch')
+            if not memory_seed and (initial.get('seed_manifest_sha256') or initial.get('inherited_entries') not in (None, 0)
+                                    or observed_entries):
+                reasons.append('task_seed_mismatch')
         decision = (review.get('memory_audit') or {}).get('final_decision') or {}
         if not (review.get('valid') and review.get('received_hidden_grade') is False
                 and review.get('evidence_unchanged') and decision.get('agent_stage') == 'review'
@@ -85,7 +110,7 @@ def summary(directory, arm, *, task=None, settings=None, memory_seed=None):
                 and decision.get('decision') in ('write', 'no_update')):
             # Post-submission review cannot change the answer. Preserve and
             # report a review failure independently of the official reward.
-            if (arm == 'v6' and review.get('received_hidden_grade') is False
+            if (arm in ('v6', 'v7') and review.get('received_hidden_grade') is False
                     and review.get('evidence_unchanged') is not False):
                 deviations.append('post_submission_review_incomplete')
             else:
@@ -96,6 +121,13 @@ def summary(directory, arm, *, task=None, settings=None, memory_seed=None):
             or contract.get('seed_manifest_sha256') != (memory_seed or {}).get('manifest_sha256')
             or contract.get('initial_memory_entries') != (memory_seed or {}).get('entry_count')):
         reasons.append('seed_contract_mismatch')
+    if arm == 'v7' and (contract.get('condition') != 'v7' or contract.get('pool_scope') != 'same_task'
+            or contract.get('seed_manifest_sha256') != (memory_seed or {}).get('manifest_sha256')
+            or contract.get('initial_memory_entries') != ((memory_seed or {}).get('entry_count') or 0)
+            or (task is not None and (contract.get('pool_manifest_sha256') != task['pool']['manifest_sha256']
+                                      or contract.get('pool_files_sha256_digest') != pool_digest(task['pool']['files_sha256'])
+                                      or contract.get('pool_trajectory_count') != task['pool']['trajectory_count']))):
+        reasons.append('task_corpus_contract_mismatch')
     if task is not None and settings is not None:
         effective_verifier = None if settings['verifier_policy'] == 'unlimited' else task['official_verifier_timeout_seconds']
         if (result.get('task_id') != task['task_id'] or contract.get('task_id') != task['task_id']
@@ -115,7 +147,7 @@ def summary(directory, arm, *, task=None, settings=None, memory_seed=None):
             'input_tokens': usage.get('input_tokens'), 'output_tokens': usage.get('output_tokens'),
             'result_sha256': protocol.sha(path),
             'audit_sha256': {name: protocol.sha(directory / name) for name in audits if (directory / name).is_file()}}
-    if arm == 'v6':
+    if arm in ('v6', 'v7'):
         row['workflow_deviations'] = deviations
     return row
 
@@ -131,6 +163,15 @@ def saved_completion(directory, arm, *, task=None, settings=None, memory_seed=No
     if not observed['valid'] or saved != observed:
         raise ValueError('Saved trial result or audits changed; automatic continuation refused')
     return observed
+
+
+def display_row(row):
+    """Plan output without per-file hashes (V7 rows also nest pool/seed inventories)."""
+    shown = {k: v for k, v in row.items() if k != 'files_sha256'}
+    for key in ('pool', 'memory_seed'):
+        if isinstance(shown.get(key), dict):
+            shown[key] = {k: v for k, v in shown[key].items() if k != 'files_sha256'}
+    return shown
 
 
 def controller_active(directory):
@@ -162,7 +203,7 @@ def status(arm, run_name, *, base=BASE):
     for task in plan['tasks']:
         trial = directory / 'trials' / task['run_id']
         if trial.exists():
-            row = summary(trial, arm, task=task, settings=plan['settings'], memory_seed=plan.get('memory_seed'))
+            row = summary(trial, arm, task=task, settings=plan['settings'], memory_seed=seed_for(plan, task))
             if not (trial / 'completion.json').exists():
                 row.update(valid=False, status=('running' if active and state.get('active_task') == task.get('task_id') else 'incomplete'))
             elif protocol.load(trial / 'completion.json') != row:
@@ -249,10 +290,10 @@ async def execute(plan, *, auth_file, base=BASE):
             for task in plan['tasks']:
                 trial = protocol.local_path(directory, 'trials/' + task['run_id'])
                 if trial.exists():
-                    saved_completion(trial, plan['arm'], task=task, settings=plan['settings'], memory_seed=plan.get('memory_seed'))
+                    saved_completion(trial, plan['arm'], task=task, settings=plan['settings'], memory_seed=seed_for(plan, task))
                     state['completed'] += 1
                     continue
-                if protocol.sources(base) != plan['sources_sha256']:
+                if protocol.sources(base, plan['arm']) != plan['sources_sha256']:
                     raise ValueError('Runtime sources changed during the run')
                 for relative, digest in plan['inputs_sha256'].items():
                     if protocol.sha(protocol.local_path(base, relative)) != digest:
@@ -274,12 +315,25 @@ async def execute(plan, *, auth_file, base=BASE):
                     if protocol.inventory(seed_path) != seed['files_sha256']:
                         raise ValueError('Frozen failure memory changed during the run')
                     arguments['memory_seed'] = seed_path
+                if plan['arm'] == 'v7':
+                    # Only this task's own frozen failure pool and seed; re-hash both before solving.
+                    pool_path = protocol.local_path(base, task['pool']['path'])
+                    if protocol.inventory(pool_path) != task['pool']['files_sha256']:
+                        raise ValueError('V7 task pool changed during the run')
+                    if task.get('memory_seed'):
+                        seed_path = protocol.local_path(base, task['memory_seed']['path'])
+                        if protocol.inventory(seed_path) != task['memory_seed']['files_sha256']:
+                            raise ValueError('V7 task seed changed during the run')
+                        arguments['memory_seed'] = seed_path
                 if plan['arm'] == 'baseline':
                     await baseline.run_trial(path, trial, task['task_id'], cleanup_image=image['image_id'], **arguments)
+                elif plan['arm'] == 'v7':
+                    await v5.run_same_task_trial(path, trial, pool_path, task['task_id'],
+                                                 review_image=image['image_id'], **arguments)
                 else:
                     await v5.run_trial(path, trial, base / 'prepared/pool', task['task_id'],
                                        review_image=image['image_id'], **arguments)
-                row = summary(trial, plan['arm'], task=task, settings=config, memory_seed=plan.get('memory_seed'))
+                row = summary(trial, plan['arm'], task=task, settings=config, memory_seed=seed_for(plan, task))
                 print(json.dumps(row, ensure_ascii=False), flush=True)
                 if not row['valid']:
                     raise RuntimeError('Trial failed its completion audits; first result preserved, no retry')
@@ -304,6 +358,7 @@ def main(argv=None):
     parser.add_argument('--effort', help='Override config.json reasoning effort')
     parser.add_argument('--verifier-policy', choices=('official', 'unlimited'))
     parser.add_argument('--memory-seed', help='V6 only: frozen seed directory relative to this benchmark directory')
+    parser.add_argument('--task-corpus', help='V7 only: per-task failure corpus build (pools + seeds), relative to this benchmark directory')
     parser.add_argument('--auth-file', type=Path, help='OAuth auth JSON; otherwise CODEX_AUTH_FILE or ~/.codex/auth.json')
     args = parser.parse_args(argv)
     phase = 'preflight'
@@ -312,14 +367,15 @@ def main(argv=None):
             output = status(args.arm, args.run_name)
         else:
             plan = protocol.build_plan(args.arm, args.run_name, model=args.model, effort=args.effort,
-                                       verifier_policy=args.verifier_policy, memory_seed=args.memory_seed)
+                                       verifier_policy=args.verifier_policy, memory_seed=args.memory_seed,
+                                       task_corpus=args.task_corpus)
             if args.command == 'run':
                 auth_file = (args.auth_file or Path(os.environ.get('CODEX_AUTH_FILE', '~/.codex/auth.json'))).expanduser().resolve()
                 phase = 'execution'
                 asyncio.run(execute(plan, auth_file=auth_file))
                 output = status(args.arm, args.run_name)
             else:
-                output = {**plan, 'tasks': [{k: v for k, v in row.items() if k != 'files_sha256'} for row in plan['tasks']]}
+                output = {**plan, 'tasks': [display_row(row) for row in plan['tasks']]}
         print(json.dumps(output, ensure_ascii=False, indent=2))
     except (Exception, KeyboardInterrupt) as exc:
         # External tools and auth parsing can include sensitive error strings.

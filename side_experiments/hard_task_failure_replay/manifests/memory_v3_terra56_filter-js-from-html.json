@@ -1,0 +1,54 @@
+{
+  "task_id": "filter-js-from-html",
+  "builder": "terra56",
+  "engine": "codex",
+  "model": "gpt-5.6-terra",
+  "effort": "medium",
+  "prompt_version": "v3",
+  "attempt": "attempt-001",
+  "timeout_seconds": 3600,
+  "budget_basis": {
+    "mode": "adaptive_failure_volume_v1",
+    "candidate_count": 98,
+    "candidate_bytes": 15538190,
+    "ceil_mebibytes": 15,
+    "unbounded_seconds": 4140
+  },
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "corpus_manifest_sha256": "33d96829b78d3e0673191f32e8085c2ee0cc67dfb8c0f063012beff971cdc638",
+  "prompt_sha256": "bbde6be90dcb752b1ec5481efd2a4f2f77baa70742dcda97f08f0808523b82c7",
+  "received_tests_or_solutions": false,
+  "received_successful_attempts": false,
+  "container_name": "side-replay-terra56-ca5200392b",
+  "started_at_unix": 1791360760.1486166,
+  "elapsed_seconds": 374.5518410205841,
+  "exit_code": 0,
+  "timed_out": false,
+  "usage": {
+    "input_tokens": 748244,
+    "output_tokens": 16933,
+    "cached_input_tokens": 658688,
+    "reasoning_output_tokens": 3763,
+    "total_tokens": 765177,
+    "usage_available": true,
+    "usage_events": 11,
+    "request_count": null
+  },
+  "model_audit": {
+    "engine": "codex",
+    "models": [
+      "gpt-5.6-terra"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "requested_model": "gpt-5.6-terra",
+    "requested_effort": "medium",
+    "model_effort_verified": true
+  },
+  "status": "complete",
+  "result_origin": "result.json",
+  "lesson_count": 5,
+  "lessons_sha256": "f8b6d70b4660d6a39d411188539d36a3328d0ddbd8e639233be4150b5915dd53",
+  "lessons_chars": 14086
+}

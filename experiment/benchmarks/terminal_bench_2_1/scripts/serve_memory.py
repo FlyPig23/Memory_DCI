@@ -24,13 +24,42 @@ def load_tools(path: Path):
     return module
 
 
-def make_store(library, pool, memory, task_id, stage, workspace, evidence="/evidence"):
+# V7 pools hold only the current task's own failed attempts. Only the words that describe the
+# corpus change; schemas, behaviour and every other sentence stay as in V5/V6.
+SAME_TASK_DESCRIPTIONS = {
+    "DCI_search_task": [("Search/read build-task descriptions using YOUR bash command",
+                         "Search/read the pool's task card (here only the current task's own card, which lists its "
+                         "officially failed attempts) using YOUR bash command")],
+    "DCI_search_trajectory": [("Search/read trajectories of selected BUILD tasks using YOUR bash command. "
+                               "Select task IDs discovered by DCI_search_task.",
+                               "Search/read trajectories of the selected pool task (here only the current task; every "
+                               "trajectory is an officially failed attempt at it) using YOUR bash command. Select the "
+                               "task ID discovered by DCI_search_task.")],
+    "distill": [("Online writes may occur after learning from build trajectories",
+                 "Online writes may occur after learning from pool trajectories")],
+}
+
+
+def same_task_descriptors(descriptors):
+    for tool in descriptors:
+        for old, new in SAME_TASK_DESCRIPTIONS.get(tool["name"], ()):
+            if tool["description"].count(old) != 1:
+                raise ValueError(f"Tool description drifted; cannot describe a same-task pool: {tool['name']}")
+            tool["description"] = tool["description"].replace(old, new)
+    return descriptors
+
+
+def make_store(library, pool, memory, task_id, stage, workspace, evidence="/evidence", pool_scope="build"):
     # Copy descriptors so importing the historical module never edits its files.
     descriptors = copy.deepcopy(library.TOOLS)
     build_count = len([p for p in (Path(pool) / "trajectories").iterdir() if p.is_dir()])
     for tool in descriptors:
         if tool["name"] == "DCI_search_trajectory":
             tool["inputSchema"]["properties"]["selected_task_ids"]["maxItems"] = max(1, build_count)
+    if pool_scope == "same_task":
+        same_task_descriptors(descriptors)
+    elif pool_scope != "build":
+        raise ValueError("Unknown pool scope")
     library.TOOLS = descriptors
     class TerminalTools(library.Tools):
         def _source(self, source):
@@ -49,8 +78,26 @@ def make_store(library, pool, memory, task_id, stage, workspace, evidence="/evid
                     raise ValueError("Private runtime and grading files are not memory evidence")
             return super()._source(source)
 
-    store = TerminalTools(pool, memory, task_id, stage, evidence_root=evidence,
-                          workspace_root=workspace)
+    class SameTaskTools(TerminalTools):
+        """Tools.__init__ refuses a pool holding the current task; a V7 pool holds only that task."""
+
+        def __init__(self, pool, memory, task_id, stage="solve", evidence_root="/evidence",
+                     workspace_root="/tmp_workspace"):
+            if stage not in ("solve", "review"):
+                raise ValueError("stage must be solve or review")
+            self.pool = Path(pool).resolve(strict=True)
+            self.memory = Path(memory).absolute()
+            self.task_id, self.stage = task_id, stage
+            library.initialize_memory(self.memory, task_id)
+            self.source_roots = {"/pool": self.pool, "/evidence": Path(evidence_root).resolve(),
+                                 "/tmp_workspace": Path(workspace_root).resolve()}
+            trajectories = self.pool / "trajectories"
+            self.build_task_ids = {p.name for p in trajectories.iterdir() if p.is_dir() and not p.is_symlink()}
+            if self.build_task_ids != {task_id} or {p.name for p in (self.pool / "tasks").iterdir()} != {task_id + ".md"}:
+                raise ValueError("same-task pool must contain exactly the current task")
+
+    cls = SameTaskTools if pool_scope == "same_task" else TerminalTools
+    store = cls(pool, memory, task_id, stage, evidence_root=evidence, workspace_root=workspace)
     # Actual task directories are not always /tmp_workspace. Preserve pool
     # precedence when the official task's working directory happens to be '/'.
     store.source_roots = {"/pool": Path(pool).resolve(),
@@ -160,6 +207,7 @@ def main():
     server.add_argument("--stage", choices=["solve", "review"], default="solve")
     server.add_argument("--library", default="/opt/v5/tools.py")
     server.add_argument("--evidence", default="/evidence")
+    server.add_argument("--pool-scope", choices=["build", "same_task"], default="build")
     base = sub.add_parser("baseline")
     base.add_argument("path")
     stop = sub.add_parser("freeze")
@@ -181,7 +229,7 @@ def main():
             args.command = args.command[1:]
         return supervise(args)
     store, descriptors = make_store(load_tools(Path(args.library)), args.pool, args.memory,
-                                    args.task_id, args.stage, args.workspace, args.evidence)
+                                    args.task_id, args.stage, args.workspace, args.evidence, args.pool_scope)
     while line := sys.stdin.buffer.readline(1024 * 1024 + 1):
         if len(line) > 1024 * 1024:
             return 2

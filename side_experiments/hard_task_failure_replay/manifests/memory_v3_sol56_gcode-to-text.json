@@ -1,0 +1,54 @@
+{
+  "task_id": "gcode-to-text",
+  "builder": "sol56",
+  "engine": "codex",
+  "model": "gpt-5.6-sol",
+  "effort": "medium",
+  "prompt_version": "v3",
+  "attempt": "attempt-001",
+  "timeout_seconds": 3270,
+  "budget_basis": {
+    "mode": "adaptive_failure_volume_v1",
+    "candidate_count": 55,
+    "candidate_bytes": 22687620,
+    "ceil_mebibytes": 22,
+    "unbounded_seconds": 3270
+  },
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "corpus_manifest_sha256": "3e3172d7d3a4886df5baa38f19c5a13fe05c6bb58a54306fa6abf9dd2626a55e",
+  "prompt_sha256": "16de55964ee59a85dee75d8c7e2d66ee39ce003520886747117b9ea33dfce53d",
+  "received_tests_or_solutions": false,
+  "received_successful_attempts": false,
+  "container_name": "side-replay-sol56-f53f03db17",
+  "started_at_unix": 1791360752.6500063,
+  "elapsed_seconds": 589.0779573917389,
+  "exit_code": 0,
+  "timed_out": false,
+  "usage": {
+    "input_tokens": 1318779,
+    "output_tokens": 28680,
+    "cached_input_tokens": 1203968,
+    "reasoning_output_tokens": 3273,
+    "total_tokens": 1347459,
+    "usage_available": true,
+    "usage_events": 17,
+    "request_count": null
+  },
+  "model_audit": {
+    "engine": "codex",
+    "models": [
+      "gpt-5.6-sol"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "requested_model": "gpt-5.6-sol",
+    "requested_effort": "medium",
+    "model_effort_verified": true
+  },
+  "status": "complete",
+  "result_origin": "result.json",
+  "lesson_count": 8,
+  "lessons_sha256": "974baa3ff09183b9a6557a9901a365c0b5e593a1e5346e68edae7a6ad83c9356",
+  "lessons_chars": 12216
+}

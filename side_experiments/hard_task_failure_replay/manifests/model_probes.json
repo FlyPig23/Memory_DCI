@@ -1,0 +1,53 @@
+{
+  "probed_at_unix": 1791369191.2609239,
+  "results": [
+    {
+      "builder": "astra6",
+      "engine": "codex",
+      "model": "gpt-6-astra",
+      "effort": "medium",
+      "ok": true,
+      "answer": "OK",
+      "exit_code": 0,
+      "model_audit": {
+        "engine": "codex",
+        "models": [
+          "gpt-6-astra"
+        ],
+        "efforts": [
+          "medium"
+        ],
+        "requested_model": "gpt-6-astra",
+        "requested_effort": "medium",
+        "model_effort_verified": true
+      },
+      "elapsed_seconds": 8.6,
+      "stderr_tail": ""
+    },
+    {
+      "builder": "opus55",
+      "engine": "claude",
+      "model": "claude-opus-5-5",
+      "effort": "medium",
+      "ok": true,
+      "answer": "OK",
+      "exit_code": 0,
+      "model_audit": {
+        "engine": "claude",
+        "init_model": "claude-opus-5-5",
+        "models_used": [
+          "claude-opus-5-5"
+        ],
+        "other_models_used": [],
+        "requested_model": "claude-opus-5-5",
+        "requested_effort": "medium",
+        "effort_source": "--effort flag (not echoed by the CLI)",
+        "model_effort_verified": true,
+        "result_subtype": "success",
+        "is_error": false
+      },
+      "elapsed_seconds": 2.7,
+      "stderr_tail": ""
+    }
+  ]
+}

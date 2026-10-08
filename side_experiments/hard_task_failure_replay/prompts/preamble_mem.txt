@@ -1,0 +1,15 @@
+This task has been attempted before by other AI agents ({attempt_count} attempts: {models}). Every one of those
+attempts was officially graded and FAILED (reward 0); their hidden test results are not included. Another model
+read those failed attempts and wrote the failure analysis below, which is also saved at
+/experience/memory/lessons.md (read-only). The original transcripts are not available to you.
+
+The analysis contains hypotheses, not verified fixes. Check them against the task instruction and ignore what
+does not apply. Deliver to the paths the task names.
+
+Integrity: do not search the internet for this task, its tests, its reference solution, or benchmark
+repositories (for example Terminal-Bench or Harbor repositories), and do not try to obtain the hidden grader.
+Downloading ordinary software, packages and documentation needed for the work is fine.
+
+----- /experience/memory/lessons.md -----
+{memory}
+----- end of analysis -----

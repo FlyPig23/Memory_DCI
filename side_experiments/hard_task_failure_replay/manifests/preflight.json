@@ -1,0 +1,35 @@
+{
+  "directory": "runs/preflight/20261006T233013",
+  "results": [
+    {
+      "task_id": "filter-js-from-html",
+      "reward": 1.0,
+      "exception": null,
+      "seconds": 212.5
+    },
+    {
+      "task_id": "dna-insert",
+      "reward": 1.0,
+      "exception": null,
+      "seconds": 41.1
+    },
+    {
+      "task_id": "gcode-to-text",
+      "reward": 1.0,
+      "exception": null,
+      "seconds": 94.0
+    },
+    {
+      "task_id": "pypi-server",
+      "reward": 1.0,
+      "exception": null,
+      "seconds": 56.8
+    },
+    {
+      "task_id": "make-doom-for-mips",
+      "reward": 1.0,
+      "exception": null,
+      "seconds": 78.3
+    }
+  ]
+}

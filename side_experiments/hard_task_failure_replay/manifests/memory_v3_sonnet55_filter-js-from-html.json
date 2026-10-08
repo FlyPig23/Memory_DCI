@@ -1,0 +1,71 @@
+{
+  "task_id": "filter-js-from-html",
+  "builder": "sonnet55",
+  "engine": "claude",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "prompt_version": "v3",
+  "attempt": "attempt-001",
+  "timeout_seconds": 3600,
+  "budget_basis": {
+    "mode": "adaptive_failure_volume_v1",
+    "candidate_count": 98,
+    "candidate_bytes": 15538190,
+    "ceil_mebibytes": 15,
+    "unbounded_seconds": 4140
+  },
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "corpus_manifest_sha256": "33d96829b78d3e0673191f32e8085c2ee0cc67dfb8c0f063012beff971cdc638",
+  "prompt_sha256": "bbde6be90dcb752b1ec5481efd2a4f2f77baa70742dcda97f08f0808523b82c7",
+  "received_tests_or_solutions": false,
+  "received_successful_attempts": false,
+  "container_name": "side-replay-sonnet55-fc4c57ae38",
+  "started_at_unix": 1791360759.9553587,
+  "elapsed_seconds": 128.9526491165161,
+  "exit_code": 0,
+  "timed_out": false,
+  "usage": {
+    "usage_available": true,
+    "input_tokens": 12,
+    "cache_creation_input_tokens": 58043,
+    "cache_read_input_tokens": 317716,
+    "output_tokens": 17274,
+    "output_tokens_details": {
+      "thinking_tokens": 310
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 43728,
+      "ephemeral_5m_input_tokens": 14315
+    },
+    "inference_geo": "not_available",
+    "iterations": [],
+    "speed": "standard",
+    "fallback_credit": null,
+    "total_cost_usd": 0.4470067,
+    "num_turns": 8
+  },
+  "model_audit": {
+    "engine": "claude",
+    "init_model": "claude-sonnet-5-5",
+    "models_used": [
+      "claude-sonnet-5-5"
+    ],
+    "other_models_used": [],
+    "requested_model": "claude-sonnet-5-5",
+    "requested_effort": "medium",
+    "effort_source": "--effort flag (not echoed by the CLI)",
+    "model_effort_verified": true,
+    "result_subtype": "success",
+    "is_error": false
+  },
+  "status": "complete",
+  "result_origin": "result.json",
+  "lesson_count": 5,
+  "lessons_sha256": "328c0746938e00da2be7695c1e7973efe3a44be86f8d92e3dd6709e514f16fe1",
+  "lessons_chars": 8804
+}

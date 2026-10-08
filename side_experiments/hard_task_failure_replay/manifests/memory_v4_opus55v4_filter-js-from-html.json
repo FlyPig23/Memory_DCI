@@ -1,0 +1,72 @@
+{
+  "task_id": "filter-js-from-html",
+  "builder": "opus55v4",
+  "engine": "claude",
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "prompt_version": "v4",
+  "attempt": "attempt-001",
+  "timeout_seconds": 3600,
+  "budget_basis": {
+    "mode": "adaptive_failure_volume_v1",
+    "candidate_count": 98,
+    "candidate_bytes": 15538190,
+    "ceil_mebibytes": 15,
+    "unbounded_seconds": 4140
+  },
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "corpus_manifest_sha256": "33d96829b78d3e0673191f32e8085c2ee0cc67dfb8c0f063012beff971cdc638",
+  "prompt_sha256": "5f360f50314dd1af698e694aa6fbc33d8eb22204ed0a9023800fdf2087e9f7a8",
+  "received_tests_or_solutions": false,
+  "received_successful_attempts": false,
+  "container_name": "side-replay-opus55v4-68e391254f",
+  "started_at_unix": 1791372968.9057896,
+  "elapsed_seconds": 289.16907811164856,
+  "exit_code": 0,
+  "timed_out": false,
+  "usage": {
+    "usage_available": true,
+    "input_tokens": 44,
+    "cache_creation_input_tokens": 112191,
+    "cache_read_input_tokens": 1964517,
+    "output_tokens": 30555,
+    "output_tokens_details": {
+      "thinking_tokens": 7392
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 67529,
+      "ephemeral_5m_input_tokens": 44662
+    },
+    "inference_geo": "not_available",
+    "iterations": [],
+    "speed": "standard",
+    "fallback_credit": null,
+    "total_cost_usd": 1.7677214,
+    "num_turns": 23
+  },
+  "model_audit": {
+    "engine": "claude",
+    "init_model": "claude-opus-5-5",
+    "models_used": [
+      "claude-opus-5-5"
+    ],
+    "other_models_used": [],
+    "refusal_fallbacks": [],
+    "requested_model": "claude-opus-5-5",
+    "requested_effort": "medium",
+    "effort_source": "--effort flag (not echoed by the CLI)",
+    "model_effort_verified": true,
+    "result_subtype": "success",
+    "is_error": false
+  },
+  "status": "complete",
+  "result_origin": "result.json",
+  "lesson_count": 6,
+  "lessons_sha256": "e9feb35df8ba1d476d5d9eda3e4c2d156e55fc69580fee4d1aeebc85058be760",
+  "lessons_chars": 18629
+}

@@ -1,0 +1,64 @@
+{
+  "task_id": "filter-js-from-html",
+  "attempt": "attempt-001",
+  "builder_model": "gpt-5.6-luna",
+  "builder_reasoning_effort": "xhigh",
+  "timeout_seconds": 3600,
+  "budget_basis": {
+    "mode": "adaptive_failure_volume_v1",
+    "candidate_count": 98,
+    "candidate_bytes": 15538190,
+    "ceil_mebibytes": 15,
+    "unbounded_seconds": 4140
+  },
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "corpus_manifest_sha256": "33d96829b78d3e0673191f32e8085c2ee0cc67dfb8c0f063012beff971cdc638",
+  "prompt_sha256": "0e17de64722886a3e51378cff8c3965d1c9db32fd247b5aa0cf09bb128a69f72",
+  "container_name": "side-replay-distill-f3c12387fe3b",
+  "received_tests_or_solutions": false,
+  "received_successful_attempts": false,
+  "elapsed_seconds": 235.31758904457092,
+  "exit_code": 0,
+  "timed_out": false,
+  "usage": {
+    "input_tokens": 4315106,
+    "output_tokens": 35317,
+    "cached_input_tokens": 4086016,
+    "reasoning_output_tokens": 12188,
+    "total_tokens": 4350423,
+    "usage_available": true,
+    "usage_events": 32,
+    "request_count": null
+  },
+  "model_audit": {
+    "models": [
+      "gpt-5.6-luna"
+    ],
+    "efforts": [
+      "xhigh"
+    ],
+    "requested_model": "gpt-5.6-luna",
+    "requested_effort": "xhigh",
+    "model_effort_verified": true,
+    "global_memory": false,
+    "initial_distilled_skills": 0
+  },
+  "status": "complete",
+  "first_collection": {
+    "status": "failed",
+    "error": "result.json: lesson cites a file outside this task's failed attempts: /experience/failed_attempts/gpt-6-astra/329f3c96-6e68-4d58-a3df8afa1907/filter-js-from-html_0.txt; summary.json: reviewed_sources names a file outside this task's failed attempts"
+  },
+  "recollected_after_validator_fix": {
+    "at_unix": 1791347787.9211853,
+    "model_called": false,
+    "reason": "reviewed_sources listed the instruction or output schema; the self-report is no longer fatal"
+  },
+  "result_origin": "summary.json",
+  "lesson_count": 8,
+  "lessons_sha256": "99a40421f6b04b2c9ae52199dfa9c5bf4fc7f4f755a389d28017832cd44d8b60",
+  "reviewed_attempt_files": 19,
+  "reviewed_other_paths": [
+    "/experience/instruction.md",
+    "/work/output_schema.json"
+  ]
+}

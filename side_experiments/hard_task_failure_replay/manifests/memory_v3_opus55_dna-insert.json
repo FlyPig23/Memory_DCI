@@ -1,0 +1,120 @@
+{
+  "task_id": "dna-insert",
+  "builder": "opus55",
+  "engine": "claude",
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "prompt_version": "v3",
+  "attempt": "attempt-002",
+  "timeout_seconds": 3060,
+  "budget_basis": {
+    "mode": "adaptive_failure_volume_v1",
+    "candidate_count": 74,
+    "candidate_bytes": 9220914,
+    "ceil_mebibytes": 9,
+    "unbounded_seconds": 3060
+  },
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "corpus_manifest_sha256": "4e5ac6dc56698d9c82b60de9760190534deb1a313b0b35993a00cbc9e0b85cee",
+  "prompt_sha256": "6e9cadf1796296c7ea57d54d038ff83c33360800d09ea96eb0c07620c5b5633a",
+  "received_tests_or_solutions": false,
+  "received_successful_attempts": false,
+  "container_name": "side-replay-opus55-29d15f5fc3",
+  "started_at_unix": 1791369925.358949,
+  "elapsed_seconds": 577.4499127864838,
+  "exit_code": 0,
+  "timed_out": false,
+  "usage": {
+    "usage_available": true,
+    "input_tokens": 38,
+    "cache_creation_input_tokens": 40852,
+    "cache_read_input_tokens": 1362599,
+    "output_tokens": 42952,
+    "output_tokens_details": {
+      "thinking_tokens": 18981
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 40852,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 9740,
+        "cache_read_input_tokens": 97208,
+        "cache_creation_input_tokens": 717,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 717
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null,
+    "total_cost_usd": 2.1215365,
+    "num_turns": 20
+  },
+  "model_audit": {
+    "engine": "claude",
+    "init_model": "claude-opus-5-5",
+    "models_used": [
+      "claude-opus-4-8",
+      "claude-opus-5-5"
+    ],
+    "other_models_used": [
+      "claude-opus-4-8"
+    ],
+    "refusal_fallbacks": [
+      {
+        "original_model": "claude-opus-5-5",
+        "fallback_model": "claude-opus-4-8",
+        "api_refusal_category": "bio"
+      }
+    ],
+    "requested_model": "claude-opus-5-5",
+    "requested_effort": "medium",
+    "effort_source": "--effort flag (not echoed by the CLI)",
+    "model_effort_verified": false,
+    "result_subtype": "success",
+    "is_error": false
+  },
+  "status": "complete",
+  "accepted_refusal_fallback": {
+    "decision": "user accepted the fallback output as this builder's memory (2026-10-07)",
+    "fallbacks": [
+      {
+        "original_model": "claude-opus-5-5",
+        "fallback_model": "claude-opus-4-8",
+        "api_refusal_category": "bio"
+      }
+    ],
+    "output_tokens_by_model": {
+      "claude-opus-5-5": 1141,
+      "claude-opus-4-8": 41811
+    },
+    "output_share_by_model": {
+      "claude-opus-5-5": 0.027,
+      "claude-opus-4-8": 0.973
+    }
+  },
+  "first_collection": {
+    "status": "failed",
+    "error": "builder model could not be verified"
+  },
+  "recollected": {
+    "at_unix": 1791371544.7383347,
+    "model_called": false
+  },
+  "result_origin": "result.json",
+  "lesson_count": 7,
+  "lessons_sha256": "e2f9c27fe2d5ff67b536e8db8ecbc3eca792c4741f115b31db44df824c456ff4",
+  "lessons_chars": 16961
+}

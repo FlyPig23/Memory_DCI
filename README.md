@@ -5,7 +5,7 @@
 | 基准 | 固定划分 | 保留工作流 | 代码与运行说明 | 数据 |
 |---|---|---|---|---|
 | WildClawBench | 36 training / 24 test | V1、V1.1 baseline；V5 | [wildclaw_bench](experiment/benchmarks/wildclaw_bench/README.md) | [wildclaw_bench/](https://huggingface.co/datasets/FlyPig23/memory_dci/tree/main/wildclaw_bench) |
-| TerminalBench 2.1 | 53 training / 36 test | baseline；V5 | [terminal_bench_2_1](experiment/benchmarks/terminal_bench_2_1/README.md) | [terminal_bench_2_1/](https://huggingface.co/datasets/FlyPig23/memory_dci/tree/main/terminal_bench_2_1) |
+| TerminalBench 2.1 | 53 training / 36 test | baseline；V5；V6；V7 | [terminal_bench_2_1](experiment/benchmarks/terminal_bench_2_1/README.md) | [terminal_bench_2_1/](https://huggingface.co/datasets/FlyPig23/memory_dci/tree/main/terminal_bench_2_1) |
 
 ```text
 experiment/
@@ -14,6 +14,7 @@ experiment/
 │   └── terminal_bench_2_1/   # 代码、配置、文档、测试；本地数据及结果也归入此目录
 └── shared/                  # 共用 Codex 适配、容器隔离、DCI/memory 工具和下载校验
 
+side_experiments/            # 独立的小规模实验，只读引用主实验，不改动主实验
 docs/                        # 研究资料与会议笔记
 papers/                      # 论文来源索引
 reports/                     # 历史研究报告
@@ -40,7 +41,8 @@ python3 -m experiment.benchmarks.terminal_bench_2_1.scripts.download_data
 
 - [公共工具实现](experiment/shared/README.md)：五个 DCI/memory 工具的可执行实现与提示词。
 - [WildClaw 历史结果](experiment/benchmarks/wildclaw_bench/reports/retained/README.md)：从原有 72 份结果重算，目录迁移不改变得分。
-- [TerminalBench 协议](experiment/benchmarks/terminal_bench_2_1/docs/PROTOCOL.md)：固定 36 题、隔离与评分策略。
+- [TerminalBench 协议](experiment/benchmarks/terminal_bench_2_1/docs/PROTOCOL.md)：固定 36 题、隔离与评分策略；[V7 报告](experiment/benchmarks/terminal_bench_2_1/docs/V7_REPORT.md)：每题只给本题失败轨迹与 Opus 错题分析时的 36 题结果。
+- [难题错题回放（side experiment）](side_experiments/hard_task_failure_replay/REPORT.md)：5 道难题上比较只给失败轨迹、只给错题分析、两者都给，以及七个写分析的模型。
 - [V5 memory 设计依据](docs/research_notes/retrieval_followup/codex_memory_structure_20260928.md)、[检索研究资料](docs/research_notes/retrieval_followup/README.md)、[论文索引](papers/README.md)。
 
 任务划分和历史结果保持不变。数据导出中已清理的凭据内容及本次操作性路径迁移均有记录；公开文件不冒充未经处理的原始私有环境。历史笔记中的运行状态仍是当时的记录。
