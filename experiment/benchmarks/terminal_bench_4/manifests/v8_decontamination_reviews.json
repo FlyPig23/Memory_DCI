@@ -1,0 +1,68 @@
+{
+  "8cd54a11-816e-4bd8-9d7a-82e61f49fe87": {
+    "decision": "exclude",
+    "reason": "hunts the hidden grader: searches the filesystem for grader.py, test_outputs.py and instruction.md",
+    "task_id": "atrx-vep-crispr",
+    "model_name": "Grok 4.7 (Grok Build, xhigh)"
+  },
+  "059ed6eb-fe3d-48ba-b684-cd5d621eb94b": {
+    "decision": "exclude",
+    "reason": "hunts the hidden harness: plans to look for /tests/ or /solution/ from the Harbor task layout",
+    "task_id": "freight-dispatch-shift",
+    "model_name": "Grok 4.5 (Grok Build, high)"
+  },
+  "15765d17-a4f5-4fa5-8f86-0f1b14dc04c8": {
+    "decision": "keep",
+    "reason": "every harness-name hit is benign: the instruction's own /app/solution/output.json, an unrelated gauthmath.com/solution/ homework URL from a generic web search, and the mofstructure library's own tests/test_*.py; no benchmark access, solution coverage 0.2%, longest tests run 9 words",
+    "task_id": "hof-topology-interpenetration",
+    "model_name": "GPT-5.6 Luna (Codex, max)"
+  },
+  "8554b327-6599-59d7-a4f6-9fcd3722977e": {
+    "decision": "exclude",
+    "reason": "a web search returned the harborframework/terminal-bench dataset on HuggingFace (benchmark source)",
+    "task_id": "hof-topology-interpenetration",
+    "model_name": "GPT-6 Luna (Codex, max)"
+  },
+  "8d75ad11-153a-4b13-a4e5-3c698ce08fdf": {
+    "decision": "exclude",
+    "reason": "its own output JSON reproduces 62 words of the hidden expected answers (the HOF-1 to HOF-3 rows); excluded under the 60-run rule so hidden expected values do not enter the pool",
+    "task_id": "hof-topology-interpenetration",
+    "model_name": "Grok 4.7 (Grok Build, xhigh)"
+  },
+  "f60b21a8-a091-4aea-9a58-31e494f86b02": {
+    "decision": "exclude",
+    "reason": "its own output JSON reproduces 62 words of the hidden expected answers (the HOF-1 to HOF-3 rows); excluded under the 60-run rule so hidden expected values do not enter the pool",
+    "task_id": "hof-topology-interpenetration",
+    "model_name": "Opus 5 (Claude Code, low)"
+  },
+  "76816643-d024-42d2-9ab4-48b1e7f160fc": {
+    "decision": "exclude",
+    "reason": "hunts the hidden grader: searches the filesystem for task.toml, instruction.md, test_outputs.py and *hidden*",
+    "task_id": "pretrain-shard-corruption",
+    "model_name": "Grok 4.6 (Grok Build, high)"
+  },
+  "0b58011f-f828-56d5-bd93-e9b20deacd44": {
+    "decision": "exclude",
+    "reason": "a web search returned this task's README in the harborframework/terminal-bench dataset on HuggingFace (benchmark source)",
+    "task_id": "protein-autointerp-disulfide",
+    "model_name": "GPT-6 Sol (Codex, max)"
+  },
+  "ac7cf0ec-fac9-4554-adee-8903e67652a9": {
+    "decision": "exclude",
+    "reason": "its own MusicXML reproduces 80 words of the hidden expected answers (key and time signature and the opening soprano notes); excluded under the 60-run rule so hidden expected values do not enter the pool",
+    "task_id": "satb-audio-transcription",
+    "model_name": "Grok 4.5 (Grok Build, high)"
+  },
+  "91f5fd2f-f8da-47c3-8f7a-5ca9d3ce74d7": {
+    "decision": "exclude",
+    "reason": "its own MusicXML reproduces 80 words of the hidden expected answers (key and time signature and the opening soprano notes); excluded under the 60-run rule so hidden expected values do not enter the pool",
+    "task_id": "satb-audio-transcription",
+    "model_name": "Grok 4.6 (Grok Build, high)"
+  },
+  "cc9a44af-8eed-43a8-98fc-7318b5c85ff2": {
+    "decision": "exclude",
+    "reason": "its own MusicXML reproduces 78 words of the hidden expected answers (key and time signature and the opening soprano notes); excluded under the 60-run rule so hidden expected values do not enter the pool",
+    "task_id": "satb-audio-transcription",
+    "model_name": "Opus 4.8 (Claude Code, max)"
+  }
+}

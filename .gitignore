@@ -1,4 +1,4 @@
-# Only source code, protocols, source references and documentation belong on GitHub.
+# Publish V8 source, documentation and small frozen provenance manifests only.
 .DS_Store
 __pycache__/
 *.py[cod]
@@ -15,49 +15,22 @@ auth.json
 *.jsonl
 /tmp/
 archive/
+.cache/
+.openai/
+pi_harness/
 
-# Dataset namespaces. Never commit downloaded inputs, runs, credentials or caches.
 experiment/benchmarks/*
-!experiment/benchmarks/wildclaw_bench/
-!experiment/benchmarks/terminal_bench_2_1/
-experiment/benchmarks/*/runtime
+!experiment/benchmarks/terminal_bench_4/
+experiment/benchmarks/*/runtime/
 experiment/benchmarks/*/runs/
 experiment/benchmarks/*/logs/
 experiment/benchmarks/*/prepared/
 experiment/benchmarks/*/data/
 experiment/benchmarks/*/.downloads/
-experiment/benchmarks/*/corpus/
-experiment/benchmarks/*/vendor/
-experiment/benchmarks/*/trajectory library/
-experiment/benchmarks/*/skills/
 experiment/benchmarks/*/evidence/
-experiment/benchmarks/*/variants/*/prepared/
-experiment/benchmarks/terminal_bench_2_1/manifests/
-experiment/benchmarks/terminal_bench_2_1/reports/
-experiment/benchmarks/wildclaw_bench/reports/**/*.json
-experiment/benchmarks/wildclaw_bench/reports/**/*.csv
-experiment/benchmarks/wildclaw_bench/reports/**/*.html
-experiment/benchmarks/wildclaw_bench/reports/versions.json
-experiment/benchmarks/wildclaw_bench/manifests/*
-!experiment/benchmarks/wildclaw_bench/manifests/formal_protocol.json
-!experiment/benchmarks/wildclaw_bench/manifests/runtime_skill_patches.json
-!experiment/benchmarks/wildclaw_bench/manifests/sources.json
-!experiment/benchmarks/wildclaw_bench/manifests/split.json
-!experiment/benchmarks/wildclaw_bench/manifests/split_audit.md
-!experiment/benchmarks/wildclaw_bench/manifests/warmup_dependencies.json
-!experiment/benchmarks/wildclaw_bench/manifests/workflow_config.json
-# Temporary local compatibility paths used by already-running services.
-experiment/src/
-experiment/scripts
-experiment/runtime
-experiment/.venv
-experiment/.venv-dependencies
-experiment/LOCAL_COMPATIBILITY.md
-# Local-only tool harness; preserved separately from dataset experiments.
-pi_harness/
-.cache/
-.openai/
-docs/project_map/
-docs/meeting_notes/v5_html/
-papers/*.pdf
-reports/*.html
+experiment/benchmarks/*/source_snapshots/
+experiment/benchmarks/terminal_bench_4/manifests/official_trials.json
+experiment/benchmarks/terminal_bench_4/manifests/v8_failure_sources.json
+experiment/benchmarks/terminal_bench_4/manifests/v8_download_audit.json
+experiment/benchmarks/terminal_bench_4/manifests/*.lock
+experiment/benchmarks/terminal_bench_4/manifests/v8_publication_manifest.json

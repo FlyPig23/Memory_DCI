@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "purpose": "Standalone V8 source layout; original results/protocols are retained unchanged in the dataset. Published code records new source hashes for fresh runs.",
+  "original_source_status": "Pre-publication working source matches every original frozen solver/builder module; current original controller matches rollouts 4-5. The original rollouts 1-3 controller bytes were not found.",
+  "original_controller_sha256": {
+    "rollouts_1_3": "8e0e7d99e1352380982b86800186526d3b74a4d2e1820ed6704194cfa1f76bff",
+    "rollouts_4_5": "6be36fa66f3b4f5facb286db5e0e55af5a4c53dcf6466ceb5a0787f00a627750"
+  },
+  "changes": [
+    "Move required TB2.1 engine dependencies into terminal_bench_4/engine and point runtime installation at TB4.",
+    "Remove retired baseline files and V5/V6/V7 runner/planner entry points; retain only builder helper functions used by V8.",
+    "Keep original solver/reviewer/builder prompt bytes and preserved helper function bodies.",
+    "Add model/effort overrides and apply the frozen values independently in each solver worker.",
+    "Add early positive-concurrency validation; include the corpus sanitizer in the source inventory.",
+    "Extension runs lock all engine/shared/corpus source hashes; only run_v8.py controller code may differ."
+  ],
+  "prompt_sha256": {
+    "unseeded": "7cb972712df0a2c87505e2de73d17fdeb1b6dd8d0f259aaecd8cef0335e11ae4",
+    "seeded": "73786f0fac9a6c5d81e00153bc55ca6961b167f2cf023825a59940ea7343a830",
+    "review": "942d63062cb4af044880dbb787be386d76281fae07404da587376181f1c5f579",
+    "builder_template": "561b264d2696fdbe357d426ea1227c3fa369a852bfd91996958162e564ebaca7"
+  },
+  "files": [
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/config.json",
+      "published": "experiment/benchmarks/terminal_bench_4/config.json",
+      "original_sha256": "d2cacdc1d1f684f16cbc859c1b47bffa2caa625a1bff52186d52d505058b8e83",
+      "published_sha256": "d2cacdc1d1f684f16cbc859c1b47bffa2caa625a1bff52186d52d505058b8e83",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/requirements.lock.txt",
+      "published": "experiment/benchmarks/terminal_bench_4/requirements.lock.txt",
+      "original_sha256": "65dd8f70706d04f8feeb859f7429536b4d1c6338768be9af70bf76d1484e9a08",
+      "published_sha256": "65dd8f70706d04f8feeb859f7429536b4d1c6338768be9af70bf76d1484e9a08",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/build_failure_memory.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/build_failure_memory.py",
+      "original_sha256": "f23cd54837e46efed66d7a3aa315f8d75c65b4700fd12cb5c7a685c4f715b2ca",
+      "published_sha256": "50b72176d911de7cab218970cc3edfbf161b2a333bdd31c764332b35041a78f7",
+      "byte_identical": false
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/harbor_runtime.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/harbor_runtime.py",
+      "original_sha256": "bd0007c0605f5f24d9e5ea57bd1b613cd22ed9f1d9ed7fe72a609d3ab8b49247",
+      "published_sha256": "bd0007c0605f5f24d9e5ea57bd1b613cd22ed9f1d9ed7fe72a609d3ab8b49247",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/health_guard.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/health_guard.py",
+      "original_sha256": "81f90e401d06ff70e2ae836801c29f1e9134f09e424ed4ee434dc704facd9494",
+      "published_sha256": "81f90e401d06ff70e2ae836801c29f1e9134f09e424ed4ee434dc704facd9494",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/package_data.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/package_data.py",
+      "original_sha256": "7ceeeb0c66502dcfab31e4e0e3fe5a22f701515a1a9606d19931ae1a7c2fb31b",
+      "published_sha256": "f31f544a8549b548be7db546e6507d727e7c5aa301faa7f92cbe94e1820990c2",
+      "byte_identical": false
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/protocol.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/protocol.py",
+      "original_sha256": "d1839077462c8145db97b83ca8a62bd0df05ec5698423cdb2b9058441007175e",
+      "published_sha256": "b405c442175e3618471afbc0fed30adabed966a807858ae8850cb03e857401dc",
+      "byte_identical": false
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/run.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/run.py",
+      "original_sha256": "620445e641636122791bd2715b32ea04f2c1371021d8d60f4e73c9c13693a165",
+      "published_sha256": "d3a502d53eb69306d08f0568ad4ed3024288af112b0301c2e67d26a8c985344d",
+      "byte_identical": false
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/runtime.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/runtime.py",
+      "original_sha256": "960e2270060e7a48ce1f7b55b7636e6cab61cd56222f7920a508bd29325f1f18",
+      "published_sha256": "8ce1d06987cf82f6375aa6e0bb88eb3b2e15deff6bdcbadbbb5910115a874c63",
+      "byte_identical": false
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/serve_memory.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/serve_memory.py",
+      "original_sha256": "e3a0c6e2197a35153f63329af88793ba0208f7d79c5fd0c6fb542cad1d793059",
+      "published_sha256": "e3a0c6e2197a35153f63329af88793ba0208f7d79c5fd0c6fb542cad1d793059",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/setup_runtime.py",
+      "published": "experiment/benchmarks/terminal_bench_4/scripts/setup_runtime.py",
+      "original_sha256": "c4ec97007a47fcf973fb96f245dcf1d9bcd918fd08f57c97426f04e5470d27e8",
+      "published_sha256": "c4ec97007a47fcf973fb96f245dcf1d9bcd918fd08f57c97426f04e5470d27e8",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/v7_corpus.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/v7_corpus.py",
+      "original_sha256": "3d82637a14b248204a52a5ce81f6d77edae8d028fad71ede5a55c84ae7812c53",
+      "published_sha256": "b7ca3765ef77aabdba24836e68626a6614356fdb863a1f272143aaacbfa5e19e",
+      "byte_identical": false
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/v7_memory.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/v7_memory.py",
+      "original_sha256": "4986033da12d1b9f98ebfd9f84970d592a7b9181e3522d370dee85db99ce5105",
+      "published_sha256": "4986033da12d1b9f98ebfd9f84970d592a7b9181e3522d370dee85db99ce5105",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/v7_memory_prompt.txt",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/v7_memory_prompt.txt",
+      "original_sha256": "561b264d2696fdbe357d426ea1227c3fa369a852bfd91996958162e564ebaca7",
+      "published_sha256": "561b264d2696fdbe357d426ea1227c3fa369a852bfd91996958162e564ebaca7",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_2_1/scripts/v7_seed.py",
+      "published": "experiment/benchmarks/terminal_bench_4/engine/v7_seed.py",
+      "original_sha256": "d398a8f2d9dd90ccb725e5ad86b25e049556f33cef3e65b20cf6db2f278dd4c9",
+      "published_sha256": "d398a8f2d9dd90ccb725e5ad86b25e049556f33cef3e65b20cf6db2f278dd4c9",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_4/scripts/download_tasks.py",
+      "published": "experiment/benchmarks/terminal_bench_4/scripts/download_tasks.py",
+      "original_sha256": "948dcf8345e474a948f61f64909e893aec34fa0cf00a8cd44b415634f1e56d2a",
+      "published_sha256": "948dcf8345e474a948f61f64909e893aec34fa0cf00a8cd44b415634f1e56d2a",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_4/scripts/run_v8.py",
+      "published": "experiment/benchmarks/terminal_bench_4/scripts/run_v8.py",
+      "original_sha256": "6be36fa66f3b4f5facb286db5e0e55af5a4c53dcf6466ceb5a0787f00a627750",
+      "published_sha256": "b775112cbe4a12d52f40ab5a58e59d6a700794ce1c8c4085ec31265d7358cf8e",
+      "byte_identical": false
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_4/scripts/v8_corpus.py",
+      "published": "experiment/benchmarks/terminal_bench_4/scripts/v8_corpus.py",
+      "original_sha256": "0d31c23f9fb29a3102407e36320c6fc3675b6f70a09f18489bb43ac0f529e978",
+      "published_sha256": "29cb26f2ca9b00988129fcac862fa5b0c916272c1decc3f23cf36a722ff9f675",
+      "byte_identical": false
+    },
+    {
+      "original": "experiment/benchmarks/terminal_bench_4/scripts/v8_sources.py",
+      "published": "experiment/benchmarks/terminal_bench_4/scripts/v8_sources.py",
+      "original_sha256": "840888f053b94e90b237c1236bbc95968dd0c005f1ec9611d8f0052a1f3b73cd",
+      "published_sha256": "840888f053b94e90b237c1236bbc95968dd0c005f1ec9611d8f0052a1f3b73cd",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/shared/codex_backend.py",
+      "published": "experiment/shared/codex_backend.py",
+      "original_sha256": "53c68e8da37fee194dd97b2c79d93b78ceab30d4aa3b693125c09a49f749a70a",
+      "published_sha256": "53c68e8da37fee194dd97b2c79d93b78ceab30d4aa3b693125c09a49f749a70a",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/shared/memory/prompt.txt",
+      "published": "experiment/shared/memory/prompt.txt",
+      "original_sha256": "f45cbef1f96c09d5934b10d9981b373182786f64ee7d20f92a07895ac9780fd6",
+      "published_sha256": "f45cbef1f96c09d5934b10d9981b373182786f64ee7d20f92a07895ac9780fd6",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/shared/memory/review_prompt.txt",
+      "published": "experiment/shared/memory/review_prompt.txt",
+      "original_sha256": "5e4212d8c2294ce54bc0c1e44be8826959e2f75940e2a614bf5bdc00ea384869",
+      "published_sha256": "5e4212d8c2294ce54bc0c1e44be8826959e2f75940e2a614bf5bdc00ea384869",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/shared/memory/seed.py",
+      "published": "experiment/shared/memory/seed.py",
+      "original_sha256": "f98096a42c5dca9a7a9b772d1c39d2a1d7a83e1b760b2d15471406574f038440",
+      "published_sha256": "f98096a42c5dca9a7a9b772d1c39d2a1d7a83e1b760b2d15471406574f038440",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/shared/memory/tools.py",
+      "published": "experiment/shared/memory/tools.py",
+      "original_sha256": "c70a3ea6622d9b3f7e7e2bf4ca84e41a25a0fe683b67870316743cd5b743ef63",
+      "published_sha256": "c70a3ea6622d9b3f7e7e2bf4ca84e41a25a0fe683b67870316743cd5b743ef63",
+      "byte_identical": true
+    },
+    {
+      "original": "experiment/shared/task_runtime.py",
+      "published": "experiment/shared/task_runtime.py",
+      "original_sha256": "221438791c46a5de803ba5ea3b29513a9b57d6536b3f0039c7f3f0dc3a4c94c7",
+      "published_sha256": "221438791c46a5de803ba5ea3b29513a9b57d6536b3f0039c7f3f0dc3a4c94c7",
+      "byte_identical": true
+    }
+  ]
+}

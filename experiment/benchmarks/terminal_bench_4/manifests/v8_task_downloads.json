@@ -1,0 +1,222 @@
+{
+ "verified_at": "2026-10-08T00:49:26+00:00",
+ "rule": "Harbor content hash of prepared/tasks/<task> equals the official task version",
+ "tasks": [
+  {
+   "task_id": "atrx-vep-crispr",
+   "status": "downloaded",
+   "content_hash": "4ebe9e13de8cbd39ee2f9e14a9d7b1233c047ae43fba238ebc6274465697be3a",
+   "files": 23
+  },
+  {
+   "task_id": "bun-sourcemap-leak",
+   "status": "downloaded",
+   "content_hash": "e55ae542f338f50f4468d940c7d7c93a45d34fd418dc6cc5883c1fedc753603a",
+   "files": 66
+  },
+  {
+   "task_id": "cad-model",
+   "status": "downloaded",
+   "content_hash": "037b83651678230c04217bc7bd077c9e2c3d5a383bb368cdeb19e88a2202f644",
+   "files": 10
+  },
+  {
+   "task_id": "cargo-flight-dispatch",
+   "status": "downloaded",
+   "content_hash": "18a1c2670ce4be0e6752f48ed6c750281d7f97db025f5e74edc6c8728f62f5b5",
+   "files": 20
+  },
+  {
+   "task_id": "ctr-optimization",
+   "status": "downloaded",
+   "content_hash": "df8b7d99e23ad23ac9c92da35ff0a2714d78781e9424edd63143cc86860e096b",
+   "files": 16
+  },
+  {
+   "task_id": "data-anonymization",
+   "status": "downloaded",
+   "content_hash": "dec4261252665cf2981783df104ea10c901dcab3720b27b4bf8909a059713f08",
+   "files": 15
+  },
+  {
+   "task_id": "distributed-dedup",
+   "status": "downloaded",
+   "content_hash": "a645441376fea3d5b1acc15b64fe288eb0bb835724f6bf7a21adb1eca2bb814d",
+   "files": 44
+  },
+  {
+   "task_id": "embedding-drift-monitor",
+   "status": "downloaded",
+   "content_hash": "6907ffce9ad5c8a8b41fe9c0a076a9aeb9754a2f8083c52f9aede5481a4f4c59",
+   "files": 28
+  },
+  {
+   "task_id": "foodstuff-beta-activity",
+   "status": "downloaded",
+   "content_hash": "52adca169e97e15fe8692986470b6556f478e7348a37c58739a5bdb3f02cc45a",
+   "files": 12
+  },
+  {
+   "task_id": "formal-crypto",
+   "status": "downloaded",
+   "content_hash": "cb4f5a280f6ac1bfcc6c919841810084e286ce3109969841e1f5739fe9f7acf7",
+   "files": 11
+  },
+  {
+   "task_id": "freecad-impeller",
+   "status": "downloaded",
+   "content_hash": "40d322e979d30dd53c0a9330445b8799cf5c02099b0718a3b3ad15231b366dba",
+   "files": 13
+  },
+  {
+   "task_id": "freecad-platform-drawing",
+   "status": "downloaded",
+   "content_hash": "ed6db89260074bd0db58b064d90977cc4d470843deefecd8a9caf7f21da9a747",
+   "files": 13
+  },
+  {
+   "task_id": "freecad-spring-clip",
+   "status": "downloaded",
+   "content_hash": "c3110552902a44e17326df0a87083eb6028068cfbc7aa47461c7f2c0aa528bab",
+   "files": 13
+  },
+  {
+   "task_id": "freight-dispatch-shift",
+   "status": "downloaded",
+   "content_hash": "9c27972688139fce999058386bd381ca194c9f4ba76161a52bb8560aee9ceb2c",
+   "files": 84
+  },
+  {
+   "task_id": "glycan-ms2-elucidation",
+   "status": "downloaded",
+   "content_hash": "80bf0ef924d6ba9a4323172f5a13df1734609914ddd086deef2da0288e9c560d",
+   "files": 11
+  },
+  {
+   "task_id": "gsea-proteomics",
+   "status": "downloaded",
+   "content_hash": "7c0512e617cd4c0a0b595ebfb81258495d7e4a12c003cd0592c1137aa986a85d",
+   "files": 11
+  },
+  {
+   "task_id": "hof-topology-interpenetration",
+   "status": "downloaded",
+   "content_hash": "2534e62c5ab3c8592f4e0de3dee14ff07a5c1c9434164e7f80e2f564273de014",
+   "files": 19
+  },
+  {
+   "task_id": "interleaved-vigenere",
+   "status": "downloaded",
+   "content_hash": "238a75a32aad5e60b33a22ac53087790e95b752c6272f41d724407f198df4a14",
+   "files": 11
+  },
+  {
+   "task_id": "ks-solver-cpp",
+   "status": "downloaded",
+   "content_hash": "d4eef6bb296028e57be0abb4b19dab71cf04b807cbe22fad4bc64174f9380cc0",
+   "files": 22
+  },
+  {
+   "task_id": "kv-live-surgery",
+   "status": "downloaded",
+   "content_hash": "810958fbeefc6a7f677624f908561e6e47d88aec8c06fa5321d81f5aa75a9ffc",
+   "files": 17
+  },
+  {
+   "task_id": "lake-temp-glm",
+   "status": "downloaded",
+   "content_hash": "4ccec50699de5de3b1bcdedf1189a56d72520220da27306c10d93419a3316a0c",
+   "files": 33
+  },
+  {
+   "task_id": "layout-config-recreation",
+   "status": "downloaded",
+   "content_hash": "997003ffc98f6df316167de8752c9beada20cb1292588b0fa6409d87ed3a1def",
+   "files": 79
+  },
+  {
+   "task_id": "music-harmony",
+   "status": "downloaded",
+   "content_hash": "f32afbf135cbd3c622ee687ba032abe61cab85a33b5243ee5cbbde82557f3ed1",
+   "files": 13
+  },
+  {
+   "task_id": "mvcc-lsm-compaction",
+   "status": "downloaded",
+   "content_hash": "370406dd79cc164e50b73568de37c34eba1b0e30782d7dc03f87c38c68123137",
+   "files": 26
+  },
+  {
+   "task_id": "ontology-kg-querying",
+   "status": "downloaded",
+   "content_hash": "3149354c3fdc71ee698752c294cd9b020a908ab01280f7494513e69708f8833c",
+   "files": 50
+  },
+  {
+   "task_id": "payments-pipeline-fix",
+   "status": "downloaded",
+   "content_hash": "ed92bf0b59203522407a2f628f186ccd11ee300a7a1ee04641f9510e46db1f14",
+   "files": 25
+  },
+  {
+   "task_id": "pretrain-shard-corruption",
+   "status": "downloaded",
+   "content_hash": "0f17568e65b9e8b79480e474a457811a65815cdaf7272660efffd1bc690021a0",
+   "files": 18
+  },
+  {
+   "task_id": "production-planning",
+   "status": "downloaded",
+   "content_hash": "1958ac51553517b79e3a642ed4f3bd9affb5b42166dcbacaa4c32f4b040edaff",
+   "files": 20
+  },
+  {
+   "task_id": "protein-autointerp-disulfide",
+   "status": "downloaded",
+   "content_hash": "6b70d5b8b2ed87b10cd58461c58981d4296f504eda0869c63cd6b0fb2b9edfb9",
+   "files": 12
+  },
+  {
+   "task_id": "roy-polymorph-cn",
+   "status": "downloaded",
+   "content_hash": "012e714e79b4ff4f0d36eeb8fa2b6fa3be1043a71af880af8a71f61487669dfc",
+   "files": 22
+  },
+  {
+   "task_id": "rs-archive-clone",
+   "status": "downloaded",
+   "content_hash": "a6e74dbc5290e535872d70d5a9f52b97ca040d520a7b5f11a6f5b14013c4da85",
+   "files": 224
+  },
+  {
+   "task_id": "satb-audio-transcription",
+   "status": "downloaded",
+   "content_hash": "2b1bf5dcc71458a7e378f84468959993a304a8e89e51381ac0f78163e6e60f14",
+   "files": 14
+  },
+  {
+   "task_id": "sglang-qwen-burst",
+   "status": "downloaded",
+   "content_hash": "32bdf75983144af64a855c3711df1136cd347219b05bf5ef3b839375b1f82941",
+   "files": 11
+  },
+  {
+   "task_id": "vf2-speedup-networkx",
+   "status": "downloaded",
+   "content_hash": "cdbad1f303f57856199aae757bdbc6363111e8ad60d31db49c61d01706da63ab",
+   "files": 15
+  },
+  {
+   "task_id": "vllm-deepseek-streaming",
+   "status": "downloaded",
+   "content_hash": "cb78aec591411780aedf133b95ca829584ba48768bbc437487fa773afbde321d",
+   "files": 9
+  },
+  {
+   "task_id": "wal-recovery-ordering",
+   "status": "downloaded",
+   "content_hash": "8eb700419711e0d5eba317b8f6dec41aa3411e03e320e82b8da8070974ff3aae",
+   "files": 32
+  }
+ ]
+}
