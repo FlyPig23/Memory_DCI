@@ -105,6 +105,8 @@ def _diagnostic(item):
     kind = item.get('type')
     if kind in {'response_item', 'event_msg'}:
         return _diagnostic(item.get('payload'))
+    if kind == 'result' and item.get('is_error'):  # Claude Code's final event
+        return str(item.get('result') or item.get('subtype') or '')
     if kind not in {'error', 'turn.failed', 'task_complete', 'error_notification'}:
         return ''
     error = item.get('error')
@@ -135,7 +137,7 @@ def inspect_trial(directory):
         def observe(text):
             failures.update(name for name, pattern in _FAILURES.items() if pattern.search(text))
 
-        for name in ('codex.session.jsonl', 'codex.events.jsonl'):
+        for name in ('codex.session.jsonl', 'codex.events.jsonl', 'claude.events.jsonl'):
             path = logs / name
             if not path.is_file():
                 continue
@@ -147,11 +149,11 @@ def inspect_trial(directory):
                         continue
                     actual = actual or _actual_item(item)
                     observe(_diagnostic(item))
-        stderr = logs / 'codex.stderr.log'
-        if stderr.is_file():
-            with stderr.open(errors='replace') as stream:
-                for line in stream:
-                    observe(line)
+        for stderr in (logs / 'codex.stderr.log', logs / 'claude.stderr.log'):
+            if stderr.is_file():
+                with stderr.open(errors='replace') as stream:
+                    for line in stream:
+                        observe(line)
         phases[phase] = {'actual_inference': actual, 'failure_kinds': sorted(failures),
                          'blocked': bool(failures) and not actual}
     return {'blocked': any(phase['blocked'] for phase in phases.values()), 'phases': phases}

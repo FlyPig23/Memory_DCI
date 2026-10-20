@@ -32,10 +32,14 @@ from experiment.shared.codex_backend import (
 )
 from experiment.shared.memory.tools import audit_memory, initialize_memory
 
+from . import claude_engine
+
 ROOT = Path(__file__).resolve().parents[4]
 BASE = Path(__file__).resolve().parents[1]
 SHARED = ROOT / "experiment/shared/memory"
 MODEL, EFFORT, CLI_VERSION = "gpt-5.6-sol", "medium", "0.153.4"
+# 'claude' runs the same workflow through the Claude Code CLI (claude_engine.py); set per job like MODEL.
+ENGINE = "codex"
 PYTHON = "/opt/v5-python/bin/python3"
 SERVER = "/opt/v5/serve_memory.py"
 HOME = "/opt/v5-home"
@@ -154,6 +158,8 @@ def solver_instructions_v7(pool, workspace, *, initial_memory=None):
             ("all original training trajectories remain available for checking source evidence",
              "the original failed trajectories remain available for checking source evidence"),
         ]
+    if ENGINE == "claude":  # the only CLI-specific words in the prompt
+        edits.append(("native Codex terminal/file", "native Claude Code terminal/file"))
     for old, new in edits:
         prompt = _replace_once(prompt, old, new)
     return prompt
@@ -172,12 +178,28 @@ def make_config(task_id, workspace, stage, pool_scope=None):
                  "--task-id", task_id, "--stage", stage, "--workspace", workspace)
     if pool_scope is not None:
         arguments += ("--pool-scope", pool_scope)
+    if ENGINE == "claude":
+        return claude_engine.mcp_config("v5", PYTHON, arguments)
     server = MCPServer("v5", PYTHON, arguments)
     return render_config(CodexSettings(model=MODEL, reasoning_effort=EFFORT,
         cli_version=CLI_VERSION, binary="/opt/codex/codex", mcp_servers=(server,)))
 
 
+def config_name():
+    return "mcp.json" if ENGINE == "claude" else "config.toml"
+
+
+def cli_environment():
+    return claude_engine.environment(HOME) if ENGINE == "claude" else {"CODEX_HOME": HOME}
+
+
+def log_names():
+    return (claude_engine.EVENTS, claude_engine.STDERR) if ENGINE == "claude" else ("codex.events.jsonl", "codex.stderr.log")
+
+
 def codex_command(workspace, output):
+    if ENGINE == "claude":  # cwd is the workspace; the final message is taken from the event stream
+        return claude_engine.command(PYTHON, HOME, MODEL, EFFORT)
     return ["/opt/codex/codex", "exec", "--json", "--skip-git-repo-check",
             "--dangerously-bypass-approvals-and-sandbox", "--cd", workspace,
             "--output-last-message", output, "-"]
@@ -244,6 +266,8 @@ for name in sys.argv[3:]:
 
 
 def capture_session(home, logs):
+    if ENGINE == "claude":
+        return claude_engine.capture_session(logs, MODEL, EFFORT, TOOLS)
     logs = Path(logs)
     logs.mkdir(parents=True, exist_ok=True)
     source = select_main_session(list((Path(home) / "sessions").rglob("*.jsonl")))
@@ -297,19 +321,21 @@ class TerminalBenchV5Agent(BaseAgent):
         self.workspace = (where.stdout or "").strip()
         if not self.workspace.startswith("/") or "\n" in self.workspace:
             raise ValueError("Task has no unambiguous absolute working directory")
-        (self.private_home / "config.toml").write_text(make_config(self.task_id, self.workspace, "solve",
+        (self.private_home / config_name()).write_text(make_config(self.task_id, self.workspace, "solve",
                                                                    pool_scope=self.pool_scope))
         identity = await environment.exec("id -u; id -g", timeout_sec=10)
         uid, gid = [int(v) for v in identity.stdout.splitlines()]
+        secret = "" if ENGINE == "claude" else f" && chmod 600 {HOME}/auth.json"
         ready = await environment.exec(
-            f"chown -R {uid}:{gid} {HOME} /memory && chmod 700 {HOME} && chmod 600 {HOME}/auth.json",
+            f"chown -R {uid}:{gid} {HOME} /memory && chmod 700 {HOME}" + secret,
             timeout_sec=30, user="root")
         if ready.return_code:
             raise RuntimeError("Cannot prepare task-private Codex home/memory")
-        version = await environment.exec("/opt/codex/codex --version", timeout_sec=20,
-                                         env={"CODEX_HOME": HOME})
-        if version.return_code or version.stdout.strip() != f"codex-cli {CLI_VERSION}":
-            raise RuntimeError("Pinned Codex CLI version mismatch")
+        binary, banner = ((claude_engine.BINARY, f"{CLI_VERSION} (Claude Code)") if ENGINE == "claude"
+                          else ("/opt/codex/codex", f"codex-cli {CLI_VERSION}"))
+        version = await environment.exec(binary + " --version", timeout_sec=20, env=cli_environment())
+        if version.return_code or version.stdout.strip() != banner:
+            raise RuntimeError("Pinned CLI version mismatch")
         python_probe = await environment.exec(f"{PYTHON} -c 'import sys; assert sys.version_info[:2] == (3, 12)'", timeout_sec=20)
         if python_probe.return_code:
             raise RuntimeError("Standalone Python cannot run in this task image")
@@ -337,14 +363,15 @@ class TerminalBenchV5Agent(BaseAgent):
         text = f"The official solving deadline for this task is {deadline:g} seconds, including online memory work.\n\n" + text
         (self.run_dir / "control/solver_prompt.txt").write_text(text)
         log_dir = str(self.environment_logs_dir)
+        events, errors = log_names()
         argv = [PYTHON, SERVER, "supervise", "--prompt", CONTROL + "/solver_prompt.txt",
-                "--events", log_dir + "/codex.events.jsonl", "--stderr", log_dir + "/codex.stderr.log",
+                "--events", log_dir + "/" + events, "--stderr", log_dir + "/" + errors,
                 "--timeout", str(deadline), "--", *codex_command(self.workspace, log_dir + "/final.txt")]
         started = time.monotonic()
         status, code = "cancelled", None
         try:
             result = await environment.exec('export PATH="$PATH:/opt/v5-bin"; ' + shlex.join(argv), cwd=self.workspace,
-                env={"CODEX_HOME": HOME}, timeout_sec=None)
+                env=cli_environment(), timeout_sec=None)
             code = result.return_code
             status = "completed" if code == 0 else "timeout" if code == 124 else "execution_error"
             if code == 124:
@@ -371,9 +398,9 @@ def forbidden_evidence(path):
     if ".." in p.parts:
         return True
     prefixes = ("/pool", "/memory", "/tests", "/logs/verifier", HOME, CONTROL,
-                "/opt/codex", "/opt/v5", "/opt/v5-python", "/proc", "/sys", "/dev", "/run")
+                "/opt/codex", "/opt/claude", "/opt/v5", "/opt/v5-python", "/opt/v5-relay", "/proc", "/sys", "/dev", "/run")
     return any(p == PurePosixPath(x) or PurePosixPath(x) in p.parents for x in prefixes) or any(
-        part in {".codex", ".ssh", ".aws", ".azure", ".kube", "auth.json"} for part in p.parts)
+        part in {".codex", ".claude", ".ssh", ".aws", ".azure", ".kube", "auth.json"} for part in p.parts)
 
 
 def extract_public_archive(archive, destination, original_root, *, regular_file_only=False):
@@ -400,15 +427,75 @@ def extract_public_archive(archive, destination, original_root, *, regular_file_
     return copied
 
 
+# Rootless Docker cannot `docker cp` out of a container that has read-only bind mounts (the daemon fails to
+# remount them), and every solver container has such mounts. The mounted Python then writes the same archive.
+TAR_OUT = ("import sys,tarfile; t=tarfile.open(fileobj=sys.stdout.buffer,mode='w|'); "
+           "t.add(sys.argv[1],arcname=sys.argv[2]); t.close()")
+
+
+async def exec_tar(container, source, arcname, archive):
+    code, _, _ = await command(["docker", "exec", "--user", "root", container, PYTHON, "-c", TAR_OUT, source, arcname],
+                               timeout=600, check=False, stdout_path=archive)
+    return code
+
+
+def extract_like_cp(archive, destination):
+    """Like `docker cp` without -a: names stay inside the destination, modes are kept, the caller owns the files."""
+    def member_filter(member, path):
+        if not (member.isfile() or member.isdir() or member.issym() or member.islnk()):
+            return None
+        checked = tarfile.tar_filter(member, path)
+        return checked.replace(mode=member.mode, uid=os.getuid(), gid=os.getgid(), uname="", gname="", deep=False)
+    with tarfile.open(archive) as stream:
+        stream.extractall(destination, filter=member_filter)
+
+
+def install_copy_fallback():
+    """Give Harbor's artifact download the same fallback; uploads and working copies are left alone."""
+    from harbor.environments.docker.docker_unix import UnixOps
+    if getattr(UnixOps._engine_cp, "tar_fallback", False):
+        return
+    original = UnixOps._engine_cp
+
+    async def engine_cp(self, source, destination):
+        try:
+            return await original(self, source, destination)
+        except RuntimeError:
+            container, separator, path = source.partition(":")
+            if not separator or not path.startswith("/"):
+                raise
+            with tempfile.TemporaryDirectory(prefix="tb4-copy-") as temporary:
+                archive, staging = Path(temporary) / "copy.tar", Path(temporary) / "staging"
+                contents = path.endswith("/.")
+                name = "." if contents else PurePosixPath(path).name
+                if await exec_tar(container, path[:-2] if contents else path, name, archive):
+                    raise
+                if contents:
+                    Path(destination).mkdir(parents=True, exist_ok=True)
+                    extract_like_cp(archive, destination)
+                else:
+                    extract_like_cp(archive, staging)
+                    target = Path(destination)
+                    shutil.move(str(staging / name), str(target / name if target.is_dir() else target))
+            self._env.logger.info("docker cp failed; copied %s with tar over docker exec", source)
+
+    engine_cp.tar_fallback = True
+    UnixOps._engine_cp = engine_cp
+
+
 async def docker_snapshot(container_id, source, destination, *, regular_file_only=False):
     with tempfile.TemporaryDirectory(prefix="tb21-snapshot-") as temporary:
         archive = Path(temporary) / "snapshot.tar"
         code, _, _ = await command(["docker", "cp", f"{container_id}:{source}", "-"],
                                      timeout=600, check=False, stdout_path=archive)
+        method = "docker_cp"
+        if code:
+            method = "exec_tar"
+            code = await exec_tar(container_id, source, PurePosixPath(source).name, archive)
         if code:
             return {"path": source, "status": "absent_or_copy_failed"}
         count = extract_public_archive(archive, destination, source, regular_file_only=regular_file_only)
-        return {"path": source, "status": "copied", "files": count}
+        return {"path": source, "status": "copied", "files": count, "method": method}
 
 
 async def freeze_and_snapshot(trial):
@@ -500,9 +587,10 @@ async def review_frozen_memory(agent, evidence, *, python_root, auth_file, revie
     (memory / "final_decision.json").unlink(missing_ok=True)
     home = root / "private/review-home"
     home.mkdir(mode=0o700)
-    shutil.copyfile(auth_file, home / "auth.json")
-    os.chmod(home / "auth.json", 0o600)
-    (home / "config.toml").write_text(make_config(agent.task_id, "/review", "review", pool_scope=agent.pool_scope))
+    if ENGINE != "claude":
+        shutil.copyfile(auth_file, home / "auth.json")
+        os.chmod(home / "auth.json", 0o600)
+    (home / config_name()).write_text(make_config(agent.task_id, "/review", "review", pool_scope=agent.pool_scope))
     if agent.condition == "v7":
         prompt = review_instructions_v7()
     else:
@@ -515,15 +603,18 @@ async def review_frozen_memory(agent, evidence, *, python_root, auth_file, revie
     name = "tb21-v5-review-" + uuid.uuid4().hex[:16]
     argv = ["docker", "run", "--name", name, "--user", f"{os.getuid()}:{os.getgid()}",
             "--init", "--read-only", "--tmpfs", "/tmp:rw,nosuid,size=512m",
-            "--workdir", "/review", "--env", "CODEX_HOME=" + HOME,
+            "--workdir", "/review",
             "--env", "SSL_CERT_FILE=/opt/v5-ca/ca-certificates.crt",
             "--env", "CODEX_CA_CERTIFICATE=/opt/v5-ca/ca-certificates.crt"]
+    for key, value in cli_environment().items():
+        argv += ["--env", f"{key}={value}"]
+    events, errors = log_names()
     for mount in mounts:
         argv += ["--mount", "type=bind,src=" + mount["source"] + ",dst=" + mount["target"] +
                  (",readonly" if mount.get("read_only") else "")]
     argv += [review_image, "bash", "-c", 'export PATH="$PATH:/opt/v5-bin"; exec "$@"', "v5-review",
              PYTHON, SERVER, "supervise", "--prompt", "/review/prompt.txt",
-             "--events", "/review/codex.events.jsonl", "--stderr", "/review/codex.stderr.log",
+             "--events", "/review/" + events, "--stderr", "/review/" + errors,
              "--timeout", str(REVIEW_SECONDS), "--", *codex_command("/review", "/review/final.txt")]
     before = hash_tree(evidence)
     started = time.monotonic()
@@ -554,10 +645,11 @@ def support_mounts(pool, memory, home, control, python_root):
     rg = BASE / "runtime/bin/rg"
     if not rg.is_file() or not os.access(rg, os.X_OK):
         raise FileNotFoundError("Pinned static ripgrep binary is required for the DCI search tools")
+    extra = claude_engine.mounts(bind) if ENGINE == "claude" else []
     return [bind(pool, "/pool"), bind(memory, "/memory", False), bind(home, HOME, False),
             bind(control, CONTROL), bind(BASE / "runtime/bin", "/opt/codex"),
             bind(python_root, "/opt/v5-python"), bind(SHARED / "tools.py", "/opt/v5/tools.py"),
-            bind(Path(__file__).with_name("serve_memory.py"), SERVER), bind(rg, "/opt/v5-bin/rg")]
+            bind(Path(__file__).with_name("serve_memory.py"), SERVER), bind(rg, "/opt/v5-bin/rg")] + extra
 
 
 async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=None,
@@ -615,7 +707,7 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
         initial = initialize_seeded_memory(trial_dir / "memory", task_id, memory_seed,
             pool=pool, training_task_ids=json.loads((pool / 'manifest.json').read_text())['training_task_ids'])
     write_json(trial_dir / "memory_initial.json", initial)
-    write_json(trial_dir / "runtime_contract.json", {"model": MODEL, "reasoning_effort": EFFORT,
+    write_json(trial_dir / "runtime_contract.json", {"model": MODEL, "reasoning_effort": EFFORT, "engine": ENGINE,
         "cli_version": CLI_VERSION, "harbor_version": "0.23.0", "solver_timeout_seconds": solver_timeout,
         "review_timeout_seconds": REVIEW_SECONDS,
         "official_verifier_timeout_seconds": task_spec["verifier"]["timeout_sec"],
@@ -646,8 +738,9 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
     review_result = None
     frozen_evidence = None
     try:
-        shutil.copyfile(auth_file, home / "auth.json")
-        os.chmod(home / "auth.json", 0o600)
+        if ENGINE != "claude":
+            shutil.copyfile(auth_file, home / "auth.json")
+            os.chmod(home / "auth.json", 0o600)
         # Resolve the review image before starting the solver timer.
         probe, _, _ = await command(["docker", "image", "inspect", review_image], check=False)
         if probe:
@@ -657,6 +750,7 @@ async def run_trial(task_path, trial_dir, pool_path, task_id, *, python_root=Non
         contract = json.loads((trial_dir / "runtime_contract.json").read_text())
         contract["review_image_id"] = review_image
         write_json(trial_dir / "runtime_contract.json", contract)
+        install_copy_fallback()
         agent_kwargs = {"run_dir": str(trial_dir), "pool_path": str(pool), "task_id": task_id}
         if condition == "v7":
             agent_kwargs["condition"] = condition

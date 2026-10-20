@@ -63,7 +63,8 @@ def run_dir(run_name: str) -> Path:
 
 
 def build_plan(run_name: str, corpus: str, *, rollouts: int = ROLLOUTS, verifier_policy: str = "official",
-               oracle: bool = True, model: str | None = None, effort: str | None = None) -> dict:
+               oracle: bool = True, model: str | None = None, effort: str | None = None,
+               engine: str | None = None) -> dict:
     run_dir(run_name)
     if rollouts < 1:
         raise ValueError("rollouts must be at least 1")
@@ -96,7 +97,7 @@ def build_plan(run_name: str, corpus: str, *, rollouts: int = ROLLOUTS, verifier
                       "pool": {"path": record["pool_path"], "manifest_sha256": record["pool_manifest_sha256"],
                                "files_sha256": record["pool_files_sha256"], "trajectory_count": record["trajectory_count"]},
                       "memory_seed": seed, "memory_seed_reason": seed_row.get("reason")})
-    settings = protocol.settings(BASE, model=model, effort=effort, verifier_policy=verifier_policy)
+    settings = protocol.settings(BASE, model=model, effort=effort, verifier_policy=verifier_policy, engine=engine)
     sources = {**protocol.sources(BASE, "v7"),
                **{f"experiment/benchmarks/terminal_bench_4/scripts/{name}": sha(BASE / "scripts" / name) for name in SCRIPTS}}
     inputs = {f"manifests/{name}": sha(BASE / "manifests" / name)
@@ -174,6 +175,8 @@ async def rollout_job(plan: dict, job: dict, auth_file: Path) -> dict:
         module.MODEL = plan["settings"]["model"]
         module.EFFORT = plan["settings"]["reasoning_effort"]
         module.CLI_VERSION = plan["settings"]["cli_version"]
+    claude = plan["settings"].get("engine") == "claude"
+    shared.ENGINE = "claude" if claude else "codex"
     task = next(t for t in plan["tasks"] if t["task_id"] == job["task_id"])
     trial_dir = run_dir(plan["run_name"]) / "trials" / job["job_id"]
     path = BASE / task["source_path"]
@@ -187,7 +190,8 @@ async def rollout_job(plan: dict, job: dict, auth_file: Path) -> dict:
         seed = protocol.local_path(BASE, task["memory_seed"]["path"])
         if protocol.inventory(seed) != task["memory_seed"]["files_sha256"]:
             raise ValueError("V8 task seed changed after the protocol was frozen")
-    health_guard.ensure_auth_lifetime(auth_file, task["official_agent_timeout_seconds"], shared.REVIEW_SECONDS)
+    if not claude:  # the Claude engine has no credential file; its relay keeps the login on the operator's machine
+        health_guard.ensure_auth_lifetime(auth_file, task["official_agent_timeout_seconds"], shared.REVIEW_SECONDS)
     image = await engine_run.resolve_image(plan["settings"]["review_image"], None)
     await shared.run_trial(path, trial_dir, pool, task["task_id"], python_root=shared.python_installation(),
                            auth_file=auth_file, review_image=image["image_id"],
@@ -361,6 +365,7 @@ def main(argv=None) -> int:
     parser.add_argument("--auth-file", type=Path)
     parser.add_argument("--model", help="Solver/reviewer model; default from config.json")
     parser.add_argument("--effort", help="Solver/reviewer reasoning effort; default from config.json")
+    parser.add_argument("--engine", choices=("codex", "claude"), help="CLI that runs solver and reviewer; default codex")
     args = parser.parse_args(argv)
     auth = (args.auth_file or Path(os.environ.get("CODEX_AUTH_FILE", "~/.codex/auth.json"))).expanduser().resolve()
     if args.command == "status":
@@ -375,7 +380,7 @@ def main(argv=None) -> int:
             print(json.dumps(asyncio.run(rollout_job(plan, job, auth))))
         return 0
     plan = build_plan(args.run_name, args.corpus, rollouts=args.rollouts, oracle=not args.no_oracle,
-                      model=args.model, effort=args.effort)
+                      model=args.model, effort=args.effort, engine=args.engine)
     if args.extends:
         plan = extend_plan(load(run_dir(args.extends) / "protocol.json"), plan, args.rollouts)
     if args.command == "plan":

@@ -168,8 +168,9 @@ def freeze(baseline: Path):
                 argv = [x.decode(errors="replace") for x in args if x]
             except OSError:
                 continue
-            if argv and (argv[0] in {"/opt/codex/codex", "/opt/codex/codex-code-mode-host"}
-                    or len(argv) > 2 and argv[1:3] == ["/opt/v5/serve_memory.py", "mcp"]):
+            if argv and (argv[0] in {"/opt/codex/codex", "/opt/codex/codex-code-mode-host", "/opt/claude/claude"}
+                    or len(argv) > 2 and argv[1:3] == ["/opt/v5/serve_memory.py", "mcp"]
+                    or len(argv) > 1 and argv[1] == "/opt/v5/relay_exec.py"):
                 targets.append(pid)
         for pid in targets:
             try:

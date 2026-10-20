@@ -80,7 +80,7 @@ def inspect_task(task_path):
     return config
 
 
-def settings(base=BASE, *, model=None, effort=None, verifier_policy=None):
+def settings(base=BASE, *, model=None, effort=None, verifier_policy=None, engine=None):
     value = load(Path(base) / 'config.json')
     if model is not None:
         value['model'] = model
@@ -97,6 +97,11 @@ def settings(base=BASE, *, model=None, effort=None, verifier_policy=None):
         raise ValueError('Unknown verifier policy')
     if value['cli_version'] != '0.153.4':
         raise ValueError('This adapter requires Codex CLI 0.153.4')
+    if engine not in (None, 'codex', 'claude'):
+        raise ValueError('Unknown engine')
+    if engine == 'claude':  # same workflow through the Claude Code CLI; see engine/claude_engine.py
+        from .claude_engine import CLI_VERSION
+        value.update(engine='claude', cli_version=CLI_VERSION)
     return value
 
 
@@ -105,7 +110,8 @@ def settings(base=BASE, *, model=None, effort=None, verifier_policy=None):
 def sources(base=BASE, arm=None):
     base = Path(base)
     root = base.parents[2]
-    paths = [base / 'engine' / name for name in SOURCE_FILES + (V7_SOURCE_FILES if arm == 'v7' else ())]
+    paths = [base / 'engine' / name for name in SOURCE_FILES + (V7_SOURCE_FILES if arm == 'v7' else ())
+             + ('claude_engine.py', 'relay_exec.py')]
     paths += [root / 'experiment/shared' / name for name in ('codex_backend.py', 'task_runtime.py')]
     paths += [root / 'experiment/shared/memory' / name for name in ('tools.py', 'prompt.txt', 'review_prompt.txt', 'seed.py')]
     return {p.relative_to(root).as_posix(): sha(p) for p in paths}
