@@ -1,0 +1,4260 @@
+{
+  "schema_version": 1,
+  "run_name": "sonnet5_v8_x5",
+  "generated_at_utc": "2026-10-20T01:52:15Z",
+  "settings": {
+    "cli_version": "2.1.292",
+    "engine": "claude",
+    "model": "claude-sonnet-5",
+    "reasoning_effort": "medium",
+    "review_image": "python@sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+    "verifier_policy": "official"
+  },
+  "corpus": "final_20261008",
+  "sources_sha256": {
+    "experiment/benchmarks/terminal_bench_4/engine/claude_engine.py": "d0ec177188b91c3fd8efa797b9f5887c281a9e707a54af0704a2659894022f46",
+    "experiment/benchmarks/terminal_bench_4/engine/harbor_runtime.py": "8b292c0131c957b8a77b67415f545cb6f91ad2fd7351b2d6ae91be8665949348",
+    "experiment/benchmarks/terminal_bench_4/engine/health_guard.py": "90494ff80f459577dca5b6fcd6a73b408032ebeb245b30e9aee062132e5f01a3",
+    "experiment/benchmarks/terminal_bench_4/engine/package_data.py": "f31f544a8549b548be7db546e6507d727e7c5aa301faa7f92cbe94e1820990c2",
+    "experiment/benchmarks/terminal_bench_4/engine/protocol.py": "644836ad5fec7870267bc0e7f54936172e1a8292a63948a0c2dca7e06d36b996",
+    "experiment/benchmarks/terminal_bench_4/engine/relay_exec.py": "e169dcb90a5515e0d918c24f84b932c429a5fb517162a77bdc940d46a18d49f9",
+    "experiment/benchmarks/terminal_bench_4/engine/run.py": "d3a502d53eb69306d08f0568ad4ed3024288af112b0301c2e67d26a8c985344d",
+    "experiment/benchmarks/terminal_bench_4/engine/runtime.py": "8ce1d06987cf82f6375aa6e0bb88eb3b2e15deff6bdcbadbbb5910115a874c63",
+    "experiment/benchmarks/terminal_bench_4/engine/serve_memory.py": "d081278299aa50735751376bc0caf52185c03f838802f319ab9d42ac050c1f38",
+    "experiment/benchmarks/terminal_bench_4/engine/v7_corpus.py": "b7ca3765ef77aabdba24836e68626a6614356fdb863a1f272143aaacbfa5e19e",
+    "experiment/benchmarks/terminal_bench_4/engine/v7_seed.py": "d398a8f2d9dd90ccb725e5ad86b25e049556f33cef3e65b20cf6db2f278dd4c9",
+    "experiment/benchmarks/terminal_bench_4/scripts/download_tasks.py": "948dcf8345e474a948f61f64909e893aec34fa0cf00a8cd44b415634f1e56d2a",
+    "experiment/benchmarks/terminal_bench_4/scripts/run_v8.py": "311044db6be0a9e61fa1670952acad29af092e5670add9b0acaaf3af1163939e",
+    "experiment/benchmarks/terminal_bench_4/scripts/v8_corpus.py": "29cb26f2ca9b00988129fcac862fa5b0c916272c1decc3f23cf36a722ff9f675",
+    "experiment/benchmarks/terminal_bench_4/scripts/v8_sources.py": "840888f053b94e90b237c1236bbc95968dd0c005f1ec9611d8f0052a1f3b73cd",
+    "experiment/shared/codex_backend.py": "53c68e8da37fee194dd97b2c79d93b78ceab30d4aa3b693125c09a49f749a70a",
+    "experiment/shared/memory/prompt.txt": "f45cbef1f96c09d5934b10d9981b373182786f64ee7d20f92a07895ac9780fd6",
+    "experiment/shared/memory/review_prompt.txt": "5e4212d8c2294ce54bc0c1e44be8826959e2f75940e2a614bf5bdc00ea384869",
+    "experiment/shared/memory/seed.py": "f98096a42c5dca9a7a9b772d1c39d2a1d7a83e1b760b2d15471406574f038440",
+    "experiment/shared/memory/tools.py": "c70a3ea6622d9b3f7e7e2bf4ca84e41a25a0fe683b67870316743cd5b743ef63",
+    "experiment/shared/task_runtime.py": "221438791c46a5de803ba5ea3b29513a9b57d6536b3f0039c7f3f0dc3a4c94c7"
+  },
+  "inputs_sha256": {
+    "manifests/tb4_tasks.json": "1e08aea5c7aeff9e8817b06fc413d23a1949e3a66b4a65e7c46aa93ea42ffe6c",
+    "manifests/v8_download_audit.json": "e2f8646a3d40bcae886e5efea7c835ae14fcec0b69a905e2671314e3b011e2b3",
+    "manifests/v8_failure_sources.json": "e011c64259d018f7658ef58d99510f236a05e3eeb5fb145fb7acb32e553aada4",
+    "manifests/v8_tasks.json": "d4357c7cd6c8d2fefc53f7f61913a94a480c806c231de79c77e78b5d0802c7b3",
+    "prepared/v8_corpus/decontamination_decisions.json": "7efdf47b6a73e73c308dc935ec0556dbdbea0612667a8f9fb94bc501e1033ca7",
+    "prepared/v8_corpus/final_20261008/index.json": "e28b0a80cc613be38be2a5cd7aa691daa799d66e56cdf478021b9ffdda096854",
+    "prepared/v8_corpus/final_20261008/seeds_index.json": "42a41c12a8cf5fe35dcc996669febad97fe8ccf257412554afd86b6bbfe74d81"
+  },
+  "accounts": {
+    "A": "subscription account A (most solves)",
+    "B": "subscription account B (2026-10-13 05:04 UTC to 2026-10-14)",
+    "C": "subscription account C (the two final ctr-optimization reruns)"
+  },
+  "tasks_not_run": {
+    "cad-model": "official reference solution fails in the official image (excluded in V8 as well)",
+    "atrx-vep-crispr": "task image cannot be pulled under rootless Docker on our host (file owner UID/GID outside the subordinate ID range); oracle gave no verdict",
+    "formal-crypto": "same image problem as atrx-vep-crispr; oracle gave no verdict",
+    "rs-archive-clone": "official reference solution failed on our host (41 of 57 tests failed), so no solves were started"
+  },
+  "summary": {
+    "tasks": 32,
+    "trials": 160,
+    "valid": 160,
+    "ours_passes": 37,
+    "official_sonnet5_passes": 11,
+    "official_sol_passes": 15,
+    "v8_sol_passes": 60,
+    "tasks_better": 12,
+    "tasks_worse": 4,
+    "tasks_equal": 16,
+    "tasks_with_a_pass_ours": 14,
+    "median_solve_minutes": 22.9,
+    "total_cost_usd_list_price_kept_trials": 766.07
+  },
+  "per_task": [
+    {
+      "task_id": "bun-sourcemap-leak",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "2/5"
+    },
+    {
+      "task_id": "cargo-flight-dispatch",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "ctr-optimization",
+      "ours": "3/5",
+      "rollouts": "01101",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 3,
+      "official_sol": "0/5",
+      "v8_sol_medium": "4/5"
+    },
+    {
+      "task_id": "data-anonymization",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "distributed-dedup",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "2/5",
+      "diff_vs_official_sonnet5": -2,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "embedding-drift-monitor",
+      "ours": "5/5",
+      "rollouts": "11111",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 5,
+      "official_sol": "1/5",
+      "v8_sol_medium": "5/5"
+    },
+    {
+      "task_id": "foodstuff-beta-activity",
+      "ours": "2/5",
+      "rollouts": "01100",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 2,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "freecad-impeller",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "freecad-platform-drawing",
+      "ours": "1/5",
+      "rollouts": "00010",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 1,
+      "official_sol": "0/5",
+      "v8_sol_medium": "2/5"
+    },
+    {
+      "task_id": "freecad-spring-clip",
+      "ours": "4/5",
+      "rollouts": "10111",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 4,
+      "official_sol": "0/5",
+      "v8_sol_medium": "5/5"
+    },
+    {
+      "task_id": "freight-dispatch-shift",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "glycan-ms2-elucidation",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "gsea-proteomics",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "1/5",
+      "diff_vs_official_sonnet5": -1,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "hof-topology-interpenetration",
+      "ours": "2/5",
+      "rollouts": "00011",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 2,
+      "official_sol": "2/5",
+      "v8_sol_medium": "5/5"
+    },
+    {
+      "task_id": "interleaved-vigenere",
+      "ours": "5/5",
+      "rollouts": "11111",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 5,
+      "official_sol": "2/5",
+      "v8_sol_medium": "5/5"
+    },
+    {
+      "task_id": "ks-solver-cpp",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "1/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "kv-live-surgery",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "1/5",
+      "v8_sol_medium": "3/5"
+    },
+    {
+      "task_id": "lake-temp-glm",
+      "ours": "1/5",
+      "rollouts": "00100",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 1,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "layout-config-recreation",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "5/5"
+    },
+    {
+      "task_id": "music-harmony",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "1/5"
+    },
+    {
+      "task_id": "mvcc-lsm-compaction",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "ontology-kg-querying",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "payments-pipeline-fix",
+      "ours": "2/5",
+      "rollouts": "01001",
+      "official_sonnet5": "3/5",
+      "diff_vs_official_sonnet5": -1,
+      "official_sol": "1/5",
+      "v8_sol_medium": "4/5"
+    },
+    {
+      "task_id": "pretrain-shard-corruption",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "2/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "production-planning",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "protein-autointerp-disulfide",
+      "ours": "1/5",
+      "rollouts": "01000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 1,
+      "official_sol": "0/5",
+      "v8_sol_medium": "3/5"
+    },
+    {
+      "task_id": "roy-polymorph-cn",
+      "ours": "5/5",
+      "rollouts": "11111",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 5,
+      "official_sol": "0/5",
+      "v8_sol_medium": "5/5"
+    },
+    {
+      "task_id": "satb-audio-transcription",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "0/5",
+      "v8_sol_medium": "4/5"
+    },
+    {
+      "task_id": "sglang-qwen-burst",
+      "ours": "2/5",
+      "rollouts": "00101",
+      "official_sonnet5": "4/5",
+      "diff_vs_official_sonnet5": -2,
+      "official_sol": "0/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "vf2-speedup-networkx",
+      "ours": "1/5",
+      "rollouts": "01000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 1,
+      "official_sol": "1/5",
+      "v8_sol_medium": "5/5"
+    },
+    {
+      "task_id": "vllm-deepseek-streaming",
+      "ours": "0/5",
+      "rollouts": "00000",
+      "official_sonnet5": "0/5",
+      "diff_vs_official_sonnet5": 0,
+      "official_sol": "2/5",
+      "v8_sol_medium": "0/5"
+    },
+    {
+      "task_id": "wal-recovery-ordering",
+      "ours": "3/5",
+      "rollouts": "11100",
+      "official_sonnet5": "1/5",
+      "diff_vs_official_sonnet5": 2,
+      "official_sol": "2/5",
+      "v8_sol_medium": "2/5"
+    }
+  ],
+  "trials": [
+    {
+      "task_id": "bun-sourcemap-leak",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_r1",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 5.4,
+      "input_tokens": 2124898,
+      "output_tokens": 23711,
+      "cost_usd_list_price": 1.0038,
+      "result_sha256": "045ccd6e1ba92cfdf0daf9c65198f6ccdbb255066c93b3ee6ba299230af35fe8",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "bun-sourcemap-leak",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 6.3,
+      "input_tokens": 2505101,
+      "output_tokens": 28556,
+      "cost_usd_list_price": 1.1496,
+      "result_sha256": "63a5b64cc4e97ecffb0ab9dc2c59aca1d7451052b68f0dcae363501facc4d36d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "bun-sourcemap-leak",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 4.7,
+      "input_tokens": 1597683,
+      "output_tokens": 21745,
+      "cost_usd_list_price": 0.9208,
+      "result_sha256": "303538d1618767c3f1971300a6a77396137f0c171492f43c11b826a569370394",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "bun-sourcemap-leak",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 9.7,
+      "input_tokens": 4783315,
+      "output_tokens": 42396,
+      "cost_usd_list_price": 1.8345,
+      "result_sha256": "42307c72afa5fdc71097f56a6c6d30fcd2957479ec9377a11b8e0f412a3785c4",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "bun-sourcemap-leak",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 9.2,
+      "input_tokens": 3769268,
+      "output_tokens": 42115,
+      "cost_usd_list_price": 1.5333,
+      "result_sha256": "14c528200a3d581f8a939817022616bd939763e2b89fb8761a8af8467e8b4886",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "cargo-flight-dispatch",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_r1",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 7.5,
+      "input_tokens": 2693814,
+      "output_tokens": 35216,
+      "cost_usd_list_price": 1.3349,
+      "result_sha256": "69a7e6c5adf79b5559f1aaaa7d7f5639eaeba003d43cfc797aaa7f3caa14dd2d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "cargo-flight-dispatch",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 6.5,
+      "input_tokens": 2106782,
+      "output_tokens": 30940,
+      "cost_usd_list_price": 1.0168,
+      "result_sha256": "3773a0bfa2c00ac45c7adfa6530c85c1ca2972ed94e08bf0af484b4b70031e3e",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "cargo-flight-dispatch",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 7.8,
+      "input_tokens": 3334298,
+      "output_tokens": 39486,
+      "cost_usd_list_price": 1.5164,
+      "result_sha256": "a12c0c8760352ed82ef03f7e0d4cacc0c022c12601f902e72f7838c931aa9e09",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "cargo-flight-dispatch",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 6.3,
+      "input_tokens": 3217515,
+      "output_tokens": 28171,
+      "cost_usd_list_price": 1.3211,
+      "result_sha256": "e7849d10ba2c481dd2dac61b3f98e126b3f53271b9ad9c92be576dbdb31310d7",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "cargo-flight-dispatch",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 6.6,
+      "input_tokens": 2109704,
+      "output_tokens": 30799,
+      "cost_usd_list_price": 1.0666,
+      "result_sha256": "bce878c1a6b19b66f696f0ed934d87ee0d21528c07bbe3122577d7adc82d1445",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ctr-optimization",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 291.4,
+      "input_tokens": 9611132,
+      "output_tokens": 52701,
+      "cost_usd_list_price": 4.613,
+      "result_sha256": "63e40fee87d4b2b6bc507762981b934ac249d4fce1dc73849862139431014bb8",
+      "notes": [],
+      "replaced_attempts": [
+        {
+          "why": "operator_pause",
+          "moved_to": "trials_void/ctr-optimization__r1"
+        },
+        {
+          "why": "operator pause 2026-10-19 ~17:20 +08 (lid had to close)",
+          "moved_to": "trials_void/ctr-optimization__r1__pause_1019"
+        }
+      ]
+    },
+    {
+      "task_id": "ctr-optimization",
+      "rollout": 2,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 292.4,
+      "input_tokens": 8229306,
+      "output_tokens": 45473,
+      "cost_usd_list_price": 8.38,
+      "result_sha256": "73dc744e09510ee69199abb82eb129aa6b45e8db67a00c5573342fafe0fae6a1",
+      "notes": [],
+      "replaced_attempts": [
+        {
+          "why": "api_error",
+          "moved_to": "trials_void/ctr-optimization__r2"
+        },
+        {
+          "why": "operator pause 2026-10-19 ~17:20 +08 (lid had to close)",
+          "moved_to": "trials_void/ctr-optimization__r2__pause_1019"
+        }
+      ]
+    },
+    {
+      "task_id": "ctr-optimization",
+      "rollout": 3,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 298.0,
+      "input_tokens": 14023368,
+      "output_tokens": 69891,
+      "cost_usd_list_price": 11.6139,
+      "result_sha256": "048c2179e4bfe87a743008e2e5bc8991b6817d3b3d532f8d9b00a4b20f106506",
+      "notes": [],
+      "replaced_attempts": [
+        {
+          "why": "api_error",
+          "moved_to": "trials_void/ctr-optimization__r3"
+        },
+        {
+          "why": "operator pause 2026-10-19 ~17:20 +08 (lid had to close)",
+          "moved_to": "trials_void/ctr-optimization__r3__pause_1019"
+        }
+      ]
+    },
+    {
+      "task_id": "ctr-optimization",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "C",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 292.8,
+      "input_tokens": 7660145,
+      "output_tokens": 55434,
+      "cost_usd_list_price": 5.1769,
+      "result_sha256": "ff0e54f03de517a5fd11397097ff3f5213c8d52362920e04103ff5522d04b669",
+      "notes": [],
+      "replaced_attempts": [
+        {
+          "why": "api_error",
+          "moved_to": "trials_void/ctr-optimization__r4"
+        },
+        {
+          "why": "solve ended after ~40 min: the model set a CronCreate timer, which never fires in headless mode",
+          "moved_to": "trials_void/ctr-optimization__r4",
+          "reward_seen": 0.0
+        },
+        {
+          "why": "started on the account-A relay by mistake (wrapper re-read env.sh); stopped after ~3 minutes, no result",
+          "moved_to": "trials_void/ctr-optimization__r4__wrong_account"
+        },
+        {
+          "why": "operator pause 2026-10-19 ~17:20 +08 (lid had to close)",
+          "moved_to": "trials_void/ctr-optimization__r4__pause_1019"
+        }
+      ]
+    },
+    {
+      "task_id": "ctr-optimization",
+      "rollout": 5,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "C",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 292.8,
+      "input_tokens": 9919279,
+      "output_tokens": 72413,
+      "cost_usd_list_price": 9.736,
+      "result_sha256": "12eb7fa13260f69a435a862030b80efe089e42bb0ec9eedc41b34efe1d953e43",
+      "notes": [],
+      "replaced_attempts": [
+        {
+          "why": "relay host slept ~25 min during this real-time task (note_relay_outage.json)",
+          "moved_to": "trials_void/ctr-optimization__r5",
+          "reward_seen": 0.0
+        },
+        {
+          "why": "started on the account-A relay by mistake (wrapper re-read env.sh); stopped after ~3 minutes, no result",
+          "moved_to": "trials_void/ctr-optimization__r5__wrong_account"
+        },
+        {
+          "why": "operator pause 2026-10-19 ~17:20 +08 (lid had to close)",
+          "moved_to": "trials_void/ctr-optimization__r5__pause_1019"
+        }
+      ]
+    },
+    {
+      "task_id": "data-anonymization",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 29.7,
+      "input_tokens": 6217891,
+      "output_tokens": 97107,
+      "cost_usd_list_price": 2.7525,
+      "result_sha256": "cef4b74a8e5df621f8fd6a77efba269243ae8175ba0e8066f8795d135f532565",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "data-anonymization",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 50.5,
+      "input_tokens": 6544400,
+      "output_tokens": 88269,
+      "cost_usd_list_price": 2.9388,
+      "result_sha256": "c3660604f6c3949882b96a8a98faee33cf65d5cd789e5fa35698d1301998dd59",
+      "notes": [],
+      "replaced_attempts": [
+        {
+          "why": "operator_pause",
+          "moved_to": "trials_void/data-anonymization__r2"
+        }
+      ]
+    },
+    {
+      "task_id": "data-anonymization",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 25.1,
+      "input_tokens": 7063248,
+      "output_tokens": 95567,
+      "cost_usd_list_price": 2.8943,
+      "result_sha256": "10d0139e0dab1979964c8c646b0d4ed3e11a90b5c1cccf76d2216f592834409f",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "data-anonymization",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 22.3,
+      "input_tokens": 5284452,
+      "output_tokens": 83806,
+      "cost_usd_list_price": 2.311,
+      "result_sha256": "5349410d7ca6444681ba4f09579607b0d554ca8d920a399e869ed029335fb005",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "data-anonymization",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 33.4,
+      "input_tokens": 7898687,
+      "output_tokens": 94001,
+      "cost_usd_list_price": 3.0588,
+      "result_sha256": "948119945af0725d85ca0051643a48fc7ae1c36e37207c893521a8b0ab519686",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "distributed-dedup",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 19.1,
+      "input_tokens": 3604921,
+      "output_tokens": 50835,
+      "cost_usd_list_price": 1.654,
+      "result_sha256": "6c9ae19b54c6b584ca8e2462c7bf608a784a07de3e5808d568d176cd6ee51475",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "distributed-dedup",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 55.7,
+      "input_tokens": 32179337,
+      "output_tokens": 109588,
+      "cost_usd_list_price": 8.4057,
+      "result_sha256": "9fc3b0abe085cc82d45d9cbeca07804fc519c8906bb7be75d9c5c1229e973617",
+      "notes": [],
+      "replaced_attempts": [
+        {
+          "why": "operator_pause",
+          "moved_to": "trials_void/distributed-dedup__r2"
+        }
+      ]
+    },
+    {
+      "task_id": "distributed-dedup",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 68.2,
+      "input_tokens": 18019927,
+      "output_tokens": 138378,
+      "cost_usd_list_price": 5.7498,
+      "result_sha256": "25792d64af645570cd7966418f6591c233317abb08962b63dc06f68c3d8225ee",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "distributed-dedup",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 20.6,
+      "input_tokens": 2342817,
+      "output_tokens": 38244,
+      "cost_usd_list_price": 1.1497,
+      "result_sha256": "c16c5a50b389854e21fe4b4ee3ab6a83b196461e20184a9dbeaadbb33a23dcf3",
+      "notes": [],
+      "replaced_attempts": [
+        {
+          "why": "api_error",
+          "moved_to": "trials_void/distributed-dedup__r4"
+        }
+      ]
+    },
+    {
+      "task_id": "distributed-dedup",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 25.0,
+      "input_tokens": 3487162,
+      "output_tokens": 63301,
+      "cost_usd_list_price": 1.82,
+      "result_sha256": "381cd98f456a2c0798f07c3ef3e524fc62695bd7bcb63a2c02a8a1bac079daf1",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "embedding-drift-monitor",
+      "rollout": 1,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 4.9,
+      "input_tokens": 1793381,
+      "output_tokens": 21201,
+      "cost_usd_list_price": 0.8616,
+      "result_sha256": "9385404c7c24022cfb8ac7bbc95dd4d3fb629bac289b71f56b14b3330064269f",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "embedding-drift-monitor",
+      "rollout": 2,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 5.0,
+      "input_tokens": 2288968,
+      "output_tokens": 25911,
+      "cost_usd_list_price": 1.0534,
+      "result_sha256": "9712649a0bca0a3469a018541b57aedc147a5a5c83329270f11a5a7b88b1bd4a",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "embedding-drift-monitor",
+      "rollout": 3,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 5.5,
+      "input_tokens": 2357646,
+      "output_tokens": 24670,
+      "cost_usd_list_price": 0.9856,
+      "result_sha256": "b72ba1535660f2d8c01050a295b43866edb34e121f9fa4c0789d0b3a5f7b3261",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "embedding-drift-monitor",
+      "rollout": 4,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 4.8,
+      "input_tokens": 2128251,
+      "output_tokens": 19232,
+      "cost_usd_list_price": 0.9933,
+      "result_sha256": "5125502fa9caa0e31ad4bd99134b9bd8286a87f3010b40b9d8c699181a857a0f",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "embedding-drift-monitor",
+      "rollout": 5,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 5.2,
+      "input_tokens": 1980944,
+      "output_tokens": 23023,
+      "cost_usd_list_price": 0.9061,
+      "result_sha256": "73fd8c43a30f9b9b3cf4b1a20268b537863d5eaab79c363ded540591f52f1f73",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "foodstuff-beta-activity",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 13.2,
+      "input_tokens": 1920348,
+      "output_tokens": 60420,
+      "cost_usd_list_price": 1.3779,
+      "result_sha256": "6a577f30f2635695a65fa40fbfce08d9e382b560e5d72ab27654c4e3b252e47d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "foodstuff-beta-activity",
+      "rollout": 2,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 19.4,
+      "input_tokens": 3741761,
+      "output_tokens": 90975,
+      "cost_usd_list_price": 2.0861,
+      "result_sha256": "bda0c6344f480f520c9391ac732bbbae5c3b26871e23de598331e2b199ccec70",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "foodstuff-beta-activity",
+      "rollout": 3,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 15.8,
+      "input_tokens": 2847578,
+      "output_tokens": 70325,
+      "cost_usd_list_price": 1.8258,
+      "result_sha256": "4c70360cd6ab1006e83830d13b7b7d0e2f5a741b823dddce7c6553aeba26cbe8",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "foodstuff-beta-activity",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 24.5,
+      "input_tokens": 8161200,
+      "output_tokens": 112968,
+      "cost_usd_list_price": 3.408,
+      "result_sha256": "a0f263c47eab0eb856f75509372381b7bfc3c26af52b6b05360f0816f1149a96",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "foodstuff-beta-activity",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 11.2,
+      "input_tokens": 2638991,
+      "output_tokens": 59571,
+      "cost_usd_list_price": 1.544,
+      "result_sha256": "4f3f0c0512d4713c6f82759e11d04330c195a6d4d7d3a3ccbf6f10a23f7e444e",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-impeller",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 30.4,
+      "input_tokens": 13021970,
+      "output_tokens": 120091,
+      "cost_usd_list_price": 4.4027,
+      "result_sha256": "93af6f5b9c245481fff86e1eebb6cb816d829b32bd292ef348a1e9b42ad88428",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-impeller",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 35.4,
+      "input_tokens": 13581255,
+      "output_tokens": 112760,
+      "cost_usd_list_price": 4.3403,
+      "result_sha256": "c79187dcb8190dff8c81d40f6f567d09390fd0d535c3c0902f8849fa99cc5f9d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-impeller",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 34.9,
+      "input_tokens": 16894081,
+      "output_tokens": 153168,
+      "cost_usd_list_price": 5.7051,
+      "result_sha256": "134b34949816fa8a6b2d18b66c4d5891b909e7956db4c2f54d06731e8b040997",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-impeller",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 6.8,
+      "input_tokens": 2105712,
+      "output_tokens": 34595,
+      "cost_usd_list_price": 1.253,
+      "result_sha256": "fa5b14b3bce89a7d71139346e67ee65167b420dff8dc4d48cbf87a7d9be4de60",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-impeller",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 17.7,
+      "input_tokens": 3976688,
+      "output_tokens": 63301,
+      "cost_usd_list_price": 1.8151,
+      "result_sha256": "9d7a84304cdd7d98adcc7851b615ad69cdcc88b2504e21ade5124ff1487bcdf1",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-platform-drawing",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 16.5,
+      "input_tokens": 7144657,
+      "output_tokens": 62088,
+      "cost_usd_list_price": 2.6054,
+      "result_sha256": "d6dac9705def90494035e15d52149c2a318d1ea4e379b98f30895dfae178f486",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-platform-drawing",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 24.8,
+      "input_tokens": 12735934,
+      "output_tokens": 100978,
+      "cost_usd_list_price": 4.1495,
+      "result_sha256": "06deca2b388be27c4639ad6835aa705bd7bc28c243184279ff64874e525b93cb",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-platform-drawing",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 27.0,
+      "input_tokens": 13275245,
+      "output_tokens": 110293,
+      "cost_usd_list_price": 4.4159,
+      "result_sha256": "a7e3db796f17b3a2985e8b0cab328713b6cde75e444f03d472b666cc8005b878",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-platform-drawing",
+      "rollout": 4,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 31.3,
+      "input_tokens": 13931563,
+      "output_tokens": 122234,
+      "cost_usd_list_price": 4.6938,
+      "result_sha256": "1207a16fe57f14ab9cf744c81a4c296285d611c6c2598b6eabac5d9f5de68280",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-platform-drawing",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A then B (account switched mid-solve)",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 26.7,
+      "input_tokens": 11850614,
+      "output_tokens": 92000,
+      "cost_usd_list_price": 4.2238,
+      "result_sha256": "d9e65716a0b8c134d577e95f401cbc910e8af2ec0c3b056a8ce31177a56b0471",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-spring-clip",
+      "rollout": 1,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 24.9,
+      "input_tokens": 12884261,
+      "output_tokens": 127238,
+      "cost_usd_list_price": 4.3592,
+      "result_sha256": "36062890542ac208f83f82c3fe8603d7bcb10d5c02663f804e265f73010bfca9",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-spring-clip",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 46.6,
+      "input_tokens": 23172383,
+      "output_tokens": 225641,
+      "cost_usd_list_price": 7.7328,
+      "result_sha256": "981614b2be7c64e2c1c4ee725e3d0bb7e25ed2c48678082870d29b7a6adbe32c",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-spring-clip",
+      "rollout": 3,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A then B (account switched mid-solve)",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 66.5,
+      "input_tokens": 54560819,
+      "output_tokens": 298296,
+      "cost_usd_list_price": 15.7284,
+      "result_sha256": "6ad03078c196277489234ea433b63bc493c6e3c15f6ac2b5d0fd7d8da2e25168",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-spring-clip",
+      "rollout": 4,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 29.7,
+      "input_tokens": 19192769,
+      "output_tokens": 156644,
+      "cost_usd_list_price": 6.1698,
+      "result_sha256": "198391d48ca842e4071f031aab7d93e3f1989c699b8b7f03918ef2c8a110f0d4",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freecad-spring-clip",
+      "rollout": 5,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 107.7,
+      "input_tokens": 83005022,
+      "output_tokens": 386814,
+      "cost_usd_list_price": 22.8056,
+      "result_sha256": "482ea1656668fc63ec795b97fbf7a807cc8a5b73ea4ac002bd657c774a204787",
+      "notes": [
+        "the relay host slept for about 25 minutes during this solve (2026-10-13 09:41-10:06 UTC real time); API requests stalled and resumed after 3-4 retries; the solve was not aborted"
+      ],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freight-dispatch-shift",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 19.2,
+      "input_tokens": 7763324,
+      "output_tokens": 57222,
+      "cost_usd_list_price": 2.8256,
+      "result_sha256": "ca3f3474afca0584ef88410b278ce22fcf65f7e12515ed72b7bbfdf6934df16b",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freight-dispatch-shift",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 10.3,
+      "input_tokens": 2827725,
+      "output_tokens": 58339,
+      "cost_usd_list_price": 1.5962,
+      "result_sha256": "824ee361eeecc5843afe55b65a9c853830ad9beb463b773c366d04dc9c70059e",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freight-dispatch-shift",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 12.3,
+      "input_tokens": 7762832,
+      "output_tokens": 63087,
+      "cost_usd_list_price": 2.7152,
+      "result_sha256": "03dfa285736923e29d1b937469e8960cc0829dc5ec9be16f1bbcc85040f03b01",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freight-dispatch-shift",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 13.7,
+      "input_tokens": 9474585,
+      "output_tokens": 78203,
+      "cost_usd_list_price": 3.1368,
+      "result_sha256": "c93683cbcd791b8e2ddb1278f4368c3dab0ff7338e131912ecbb0b2cc56a9c6b",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "freight-dispatch-shift",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 13.5,
+      "input_tokens": 7143174,
+      "output_tokens": 76630,
+      "cost_usd_list_price": 2.8661,
+      "result_sha256": "18171ccf9d9906b26f850ca341c8da491d99335f8453c49c034b5edab681d3f5",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "glycan-ms2-elucidation",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 4.4,
+      "input_tokens": 1737505,
+      "output_tokens": 23983,
+      "cost_usd_list_price": 0.8373,
+      "result_sha256": "f89eff5f03ae92302e95e73aa56d8cafcd6e1f76b2c7123ec4904d8b2a8f2e40",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "glycan-ms2-elucidation",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 38.6,
+      "input_tokens": 2828187,
+      "output_tokens": 39338,
+      "cost_usd_list_price": 1.264,
+      "result_sha256": "3712b4bc96c84be220f3e619268fc756176ae0239f07fedc799fc948782b5283",
+      "notes": [
+        "the relay host slept for about 25 minutes during this solve (2026-10-13 09:41-10:06 UTC real time); API requests stalled and resumed after 3-4 retries; the solve was not aborted"
+      ],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "glycan-ms2-elucidation",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 8.3,
+      "input_tokens": 2228534,
+      "output_tokens": 37084,
+      "cost_usd_list_price": 1.1066,
+      "result_sha256": "af546e16b3163fc78472bf0090587c2c832e3027f4927ac6bf9c051748a40f18",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "glycan-ms2-elucidation",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 7.2,
+      "input_tokens": 1945216,
+      "output_tokens": 39815,
+      "cost_usd_list_price": 1.0574,
+      "result_sha256": "e5fc9ed014e52f4c8dd520e91e0a1ff7ed1a0291e0d2ce9e7176f716d3bd009f",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "glycan-ms2-elucidation",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 4.8,
+      "input_tokens": 1542295,
+      "output_tokens": 24909,
+      "cost_usd_list_price": 0.8151,
+      "result_sha256": "b2d7a29a474b68a48378aaba9d59c052cea76edcf7dcffb044bd8771f4c62a7d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "gsea-proteomics",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 6.7,
+      "input_tokens": 2794067,
+      "output_tokens": 31746,
+      "cost_usd_list_price": 1.1766,
+      "result_sha256": "c4645dda92905d08c5ce72112bb6d70df79914ef4f2e7784c3605983b0c90a85",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "gsea-proteomics",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 7.9,
+      "input_tokens": 3096910,
+      "output_tokens": 34613,
+      "cost_usd_list_price": 1.414,
+      "result_sha256": "e76fd54c5177be028dc4264bf9a612ee6b70805c1d652cff5066b07ddc556dd9",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "gsea-proteomics",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 6.1,
+      "input_tokens": 3123593,
+      "output_tokens": 21057,
+      "cost_usd_list_price": 1.1902,
+      "result_sha256": "9bb49fdbd7140ca7669b2d979bdc7f42315acb4d4aa2810dc049708375611649",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "gsea-proteomics",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 8.1,
+      "input_tokens": 3652571,
+      "output_tokens": 31613,
+      "cost_usd_list_price": 1.6654,
+      "result_sha256": "f298fa72c7fa7e7e2190201840df218c48f8f92a74a0bf9d785862cecb61f6ad",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "gsea-proteomics",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 8.5,
+      "input_tokens": 4385208,
+      "output_tokens": 36502,
+      "cost_usd_list_price": 1.7631,
+      "result_sha256": "481cca351b58a19cdf2aa0f3a0a26fd1ff0063ecc531588fc17555e5fc814811",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "hof-topology-interpenetration",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 41.0,
+      "input_tokens": 19139438,
+      "output_tokens": 195595,
+      "cost_usd_list_price": 6.7481,
+      "result_sha256": "74a623ae0a0dbd339121eeec4fae6681e35e1f05c6321cfbfc19054547b3d190",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "hof-topology-interpenetration",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 98.5,
+      "input_tokens": 21563247,
+      "output_tokens": 168480,
+      "cost_usd_list_price": 6.698,
+      "result_sha256": "78326ad53d391078754e5cec7924cad297c65b522cb2e9711e147bc815f6683b",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "hof-topology-interpenetration",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 49.6,
+      "input_tokens": 23255825,
+      "output_tokens": 206834,
+      "cost_usd_list_price": 7.617,
+      "result_sha256": "f8e43b77cc6dff4053ea53e900d3265bb5f4eea0ef917328802eae3853bc0b3b",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "hof-topology-interpenetration",
+      "rollout": 4,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 61.1,
+      "input_tokens": 31365704,
+      "output_tokens": 194224,
+      "cost_usd_list_price": 9.0284,
+      "result_sha256": "eb426bd9450841810896e783bc7b2a46009a0ad16897ecc0445b1388109aed8e",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "hof-topology-interpenetration",
+      "rollout": 5,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 8.9,
+      "input_tokens": 3043254,
+      "output_tokens": 42047,
+      "cost_usd_list_price": 1.3284,
+      "result_sha256": "bed84a3c8a29bdaa839ae5310a88c3236469f83edbd50cc5969ffacc3ab52889",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "interleaved-vigenere",
+      "rollout": 1,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 34.0,
+      "input_tokens": 9584274,
+      "output_tokens": 84666,
+      "cost_usd_list_price": 3.3475,
+      "result_sha256": "8f3364edb2f0c392db0bb46ebd79e20b96c6ffbe3e55519e18654428e61a1972",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "interleaved-vigenere",
+      "rollout": 2,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 17.1,
+      "input_tokens": 4914910,
+      "output_tokens": 61858,
+      "cost_usd_list_price": 1.8457,
+      "result_sha256": "ef3286da77b63f7cbe2336a8eebe2a4afeb9fc44c0a52ed98a3e495519d034a0",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "interleaved-vigenere",
+      "rollout": 3,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 33.5,
+      "input_tokens": 11777745,
+      "output_tokens": 110043,
+      "cost_usd_list_price": 4.0344,
+      "result_sha256": "480ded7f36baa44de680f57c455fbf8c45351f0dd152989a844fb67a3f068818",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "interleaved-vigenere",
+      "rollout": 4,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 41.6,
+      "input_tokens": 19332410,
+      "output_tokens": 107631,
+      "cost_usd_list_price": 5.5337,
+      "result_sha256": "55f7b2d2fa73bb6d7a02fcfc8de2a9c016563b45be919b08e071ec460e34c067",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "interleaved-vigenere",
+      "rollout": 5,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 65.4,
+      "input_tokens": 14144463,
+      "output_tokens": 101973,
+      "cost_usd_list_price": 4.9295,
+      "result_sha256": "9fa4b5021cfb3af5ef7d0efb73d5be35da64db8a671f9b90d50bd6e719b1c0af",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ks-solver-cpp",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 49.1,
+      "input_tokens": 25172608,
+      "output_tokens": 159059,
+      "cost_usd_list_price": 7.5397,
+      "result_sha256": "2c1de398ec63cd9bb34a75875f4d9842ebd40e765754d82619e097b1b1a49ce2",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ks-solver-cpp",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 110.6,
+      "input_tokens": 67710792,
+      "output_tokens": 227948,
+      "cost_usd_list_price": 16.9105,
+      "result_sha256": "dad670c92c1c21ad49b3383db9af42532b3755cfb3caed9c757ae4315401eee1",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ks-solver-cpp",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 70.4,
+      "input_tokens": 32148663,
+      "output_tokens": 209868,
+      "cost_usd_list_price": 9.3861,
+      "result_sha256": "d10744e9319c0a7f760503688bea018058cbf5566447cd9bdc53f7a76ae88106",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ks-solver-cpp",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 116.1,
+      "input_tokens": 53656919,
+      "output_tokens": 255122,
+      "cost_usd_list_price": 14.3704,
+      "result_sha256": "9d92be7dd40a681b24e4f303418efff338bd7ab50d705eb601660b62b34df1fb",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ks-solver-cpp",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 44.1,
+      "input_tokens": 41401672,
+      "output_tokens": 212353,
+      "cost_usd_list_price": 11.3784,
+      "result_sha256": "60ca79a64e670b5b5fa90c2209963ea09c57d340d2edf72f6e3c5bde952831b8",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "kv-live-surgery",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 38.3,
+      "input_tokens": 31887271,
+      "output_tokens": 149387,
+      "cost_usd_list_price": 8.5136,
+      "result_sha256": "c541c79aa9d09cfe7b201ea2116826e381d2e47fa0fe15123dc75e769fc0dfaa",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "kv-live-surgery",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 15.5,
+      "input_tokens": 9760740,
+      "output_tokens": 59150,
+      "cost_usd_list_price": 2.9908,
+      "result_sha256": "913f030840cf246483a51e35a505559bd2535eefcf7fdb70fba8b84c0e493adf",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "kv-live-surgery",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 32.5,
+      "input_tokens": 17582749,
+      "output_tokens": 139352,
+      "cost_usd_list_price": 5.562,
+      "result_sha256": "a3f8f9d2cceff4d47a0ab02e7d3b7be6da5d5fd12ed3bdfdad86d33f60ec5182",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "kv-live-surgery",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 34.4,
+      "input_tokens": 26124989,
+      "output_tokens": 147738,
+      "cost_usd_list_price": 7.4312,
+      "result_sha256": "d5bd716f5ebe67e79faad454d0a691a4c02e39dd42490b5aa603fe62e3dd6796",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "kv-live-surgery",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 32.4,
+      "input_tokens": 26571162,
+      "output_tokens": 149763,
+      "cost_usd_list_price": 7.5435,
+      "result_sha256": "86bff765005bca7c399f37c76943bfd72929e0d76a18c63e817a4fcd49ed754c",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "lake-temp-glm",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 23.1,
+      "input_tokens": 9526441,
+      "output_tokens": 61116,
+      "cost_usd_list_price": 3.324,
+      "result_sha256": "7dc4e96f9aa4bc8dea8681d7fb0a7f3f7e01a1047652969b87d83b80fa32d013",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "lake-temp-glm",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 61.1,
+      "input_tokens": 19376388,
+      "output_tokens": 68885,
+      "cost_usd_list_price": 5.4495,
+      "result_sha256": "aa7980e24e6a40b3eafd4aafb72b708b6f2458f11d457f7bd0e02c06a4d8232d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "lake-temp-glm",
+      "rollout": 3,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 29.1,
+      "input_tokens": 8442061,
+      "output_tokens": 71626,
+      "cost_usd_list_price": 2.863,
+      "result_sha256": "fa864ef82fb01993e9f1be6cf9d096b8b74fd672a3f0f17e7f8fb45711d58a6d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "lake-temp-glm",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 22.5,
+      "input_tokens": 4999926,
+      "output_tokens": 67264,
+      "cost_usd_list_price": 2.0496,
+      "result_sha256": "04ebb3587cf31de5711db3f7d36fab246ad83898b33ffbe24d6f8a7597ff29f4",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "lake-temp-glm",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 24.0,
+      "input_tokens": 4315565,
+      "output_tokens": 51231,
+      "cost_usd_list_price": 1.744,
+      "result_sha256": "ec55c1473663ec829604fdf9356ce8b4e7b7d0fefa89b63233b6b29ebf475a48",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "layout-config-recreation",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 118.1,
+      "input_tokens": 104100786,
+      "output_tokens": 250415,
+      "cost_usd_list_price": 24.4368,
+      "result_sha256": "57376522db53014479f79d30a59d3258737beabe342e575d6192b6d76bf3c92e",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "layout-config-recreation",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 115.0,
+      "input_tokens": 134512229,
+      "output_tokens": 223775,
+      "cost_usd_list_price": 30.4171,
+      "result_sha256": "51951124ce6eda59f2bc8f99811f5528fda654538ba516f2723e7aea66e7e8c5",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "layout-config-recreation",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 51.4,
+      "input_tokens": 31729682,
+      "output_tokens": 124143,
+      "cost_usd_list_price": 8.2902,
+      "result_sha256": "694ab11172d37d82e8bb63000cbfda19107a8c6cbebbd17c00d0b2a52b7f4ee6",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "layout-config-recreation",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 58.0,
+      "input_tokens": 44184978,
+      "output_tokens": 142347,
+      "cost_usd_list_price": 11.2549,
+      "result_sha256": "56d3a9f1ca862914d7ae261c8c77c098ba2a5e8c8204c1802b28f8f6cb0987b5",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "layout-config-recreation",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 150.2,
+      "input_tokens": 115958127,
+      "output_tokens": 235136,
+      "cost_usd_list_price": 26.579,
+      "result_sha256": "a97bbf77eb8da8845b97f2dd800028e031ad3f1050b7e2f22754f4e8385127bf",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "music-harmony",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 18.7,
+      "input_tokens": 13785300,
+      "output_tokens": 90206,
+      "cost_usd_list_price": 4.1784,
+      "result_sha256": "4ef1901ea147a2490678099d6dcb851c3abc1e54242334d427e2449e28331cd9",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "music-harmony",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 32.5,
+      "input_tokens": 24676709,
+      "output_tokens": 137333,
+      "cost_usd_list_price": 7.0964,
+      "result_sha256": "75ff3cabe7612abd375640b8893aa7f3a436567052a64424269a006e40e00c50",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "music-harmony",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "B",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 34.9,
+      "input_tokens": 23072611,
+      "output_tokens": 126994,
+      "cost_usd_list_price": 6.7773,
+      "result_sha256": "6ca396222053c1b8b24c86d50fb01cda57f15da4ee3ae8cbb57997b68ba68291",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "music-harmony",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 39.1,
+      "input_tokens": 31796727,
+      "output_tokens": 156598,
+      "cost_usd_list_price": 8.7387,
+      "result_sha256": "9875b971d7d21806549ada9074d23657f436399fb3c639d6268e7bb134cf1e34",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "music-harmony",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 31.7,
+      "input_tokens": 24343489,
+      "output_tokens": 128800,
+      "cost_usd_list_price": 6.8399,
+      "result_sha256": "be99bdb6d220d2c75f4fcf52575d4785b2c75d1a9a674d1133029148b5e245e5",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "mvcc-lsm-compaction",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 8.1,
+      "input_tokens": 3055621,
+      "output_tokens": 37118,
+      "cost_usd_list_price": 1.2993,
+      "result_sha256": "05e5af1fb25fbeb2171aa290721cb5edc657c36d44a64f40a1f58dbef345ac5d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "mvcc-lsm-compaction",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 6.9,
+      "input_tokens": 2307141,
+      "output_tokens": 32900,
+      "cost_usd_list_price": 1.1342,
+      "result_sha256": "2fe17148f1965a15fbc113ec7ea6529c2efbb20264b0b5a4ef4ad65d8c3b805f",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "mvcc-lsm-compaction",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 6.9,
+      "input_tokens": 2596445,
+      "output_tokens": 27585,
+      "cost_usd_list_price": 1.1298,
+      "result_sha256": "56092939a54bd8067399003565b1a69e8390323421d9b023602d1cf8283ba2ec",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "mvcc-lsm-compaction",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 7.4,
+      "input_tokens": 2074012,
+      "output_tokens": 38245,
+      "cost_usd_list_price": 1.0932,
+      "result_sha256": "3d1c337508b6b1fec0362b196eb875e0286fcad3cc43006ddda1bf2faededf09",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "mvcc-lsm-compaction",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 8.2,
+      "input_tokens": 2377026,
+      "output_tokens": 39523,
+      "cost_usd_list_price": 1.2357,
+      "result_sha256": "db39f86d1c636ff6c2744ec162eb903cf15fc0c306a49d70731e67f053d5521a",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ontology-kg-querying",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 21.6,
+      "input_tokens": 12871743,
+      "output_tokens": 80196,
+      "cost_usd_list_price": 4.0412,
+      "result_sha256": "0c2cf2422b92c491c7f2cea16e61d52ede118f54bfdc3d45b24c7eb13d5d63e0",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ontology-kg-querying",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 16.9,
+      "input_tokens": 14994592,
+      "output_tokens": 87389,
+      "cost_usd_list_price": 4.6183,
+      "result_sha256": "4e3517d76800f2d8d2d7203da089ce7c7077a49f7d10175bb84f97ece07eeab0",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ontology-kg-querying",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 14.7,
+      "input_tokens": 14366691,
+      "output_tokens": 64939,
+      "cost_usd_list_price": 4.1964,
+      "result_sha256": "ea2ce7014fae59d2b4e62f924ab3c24a1dc60fce5a14eec6522cbaa6bbecd14f",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ontology-kg-querying",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 11.7,
+      "input_tokens": 8989294,
+      "output_tokens": 58463,
+      "cost_usd_list_price": 3.1476,
+      "result_sha256": "384a78ee4f1e0516dffa89cfba34b33b371fe73629efb9b66af49164964c5715",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "ontology-kg-querying",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 11.3,
+      "input_tokens": 10942838,
+      "output_tokens": 53668,
+      "cost_usd_list_price": 3.4472,
+      "result_sha256": "2c3dc981f400b74ade925fca34ef8024c6c65df2aae32b301735c38ed7dce9ff",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "payments-pipeline-fix",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_smoke2",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 44.4,
+      "input_tokens": 35288669,
+      "output_tokens": 159101,
+      "cost_usd_list_price": 9.5883,
+      "result_sha256": "7d3a6a6bfaf47aeb5d6bc265bcdc6eca1949a2041a0fb380c8c9a1650d830a37",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "payments-pipeline-fix",
+      "rollout": 2,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 27.6,
+      "input_tokens": 12122383,
+      "output_tokens": 77970,
+      "cost_usd_list_price": 4.0391,
+      "result_sha256": "9bcc78cbc59b5b95b3125fcbcf429e6280c759aff693436887c1ebc4b5873d0c",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "payments-pipeline-fix",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 43.9,
+      "input_tokens": 26130937,
+      "output_tokens": 143419,
+      "cost_usd_list_price": 7.3257,
+      "result_sha256": "29436b9cfebd6c193ab4936931767f00bcdf93d8fb0343e942fdfd26f3a2b49d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "payments-pipeline-fix",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 53.7,
+      "input_tokens": 37863098,
+      "output_tokens": 158984,
+      "cost_usd_list_price": 9.9325,
+      "result_sha256": "62aa78714779be56c8faa5d0cca412416b405161162b0d819ce9d71a8e898d3f",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "payments-pipeline-fix",
+      "rollout": 5,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 19.4,
+      "input_tokens": 10771785,
+      "output_tokens": 84589,
+      "cost_usd_list_price": 3.3533,
+      "result_sha256": "32a7e80f7590673b313ffa6137f61aaa2cdbd4e4c467af64abec971400dfdf1b",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "pretrain-shard-corruption",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 17.6,
+      "input_tokens": 2624645,
+      "output_tokens": 57259,
+      "cost_usd_list_price": 1.4615,
+      "result_sha256": "f801506f82400f40d7dd0770e82629bd5cff9dbb16f7d86dd3ca5ddb8f83d367",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "pretrain-shard-corruption",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 22.7,
+      "input_tokens": 5889721,
+      "output_tokens": 82569,
+      "cost_usd_list_price": 2.3782,
+      "result_sha256": "20b2917628952678eb48daec144b68249c13bb4dbabd4a23b0b4931c708c3393",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "pretrain-shard-corruption",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 5.2,
+      "input_tokens": 1436164,
+      "output_tokens": 24426,
+      "cost_usd_list_price": 0.7982,
+      "result_sha256": "64d38d266f29168b399017ae87abdc5b06131571c8d8d7810f817cd3b57a555f",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "pretrain-shard-corruption",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 56.9,
+      "input_tokens": 10971033,
+      "output_tokens": 92199,
+      "cost_usd_list_price": 3.5488,
+      "result_sha256": "190757c843dd8a470b74ca98a37a1f60ec530505f5765ac17c9d307e1d8aa2f0",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "pretrain-shard-corruption",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 5.1,
+      "input_tokens": 1484128,
+      "output_tokens": 23453,
+      "cost_usd_list_price": 0.8157,
+      "result_sha256": "24ea77abff0bea9033095dd336c68d39270271700d35c24790e70650c6820a14",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "production-planning",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 35.0,
+      "input_tokens": 9935336,
+      "output_tokens": 157643,
+      "cost_usd_list_price": 4.775,
+      "result_sha256": "1d7037f0bb8f6e52540618db84763c113a6bada1acf9e357d2c6a9b19db9311f",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "production-planning",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 28.8,
+      "input_tokens": 6779463,
+      "output_tokens": 109992,
+      "cost_usd_list_price": 3.0552,
+      "result_sha256": "7408355aa4ef201dc392cd3bb42242b4863ca91b7d3c1bd31505db1be625afcb",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "production-planning",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 17.3,
+      "input_tokens": 7015926,
+      "output_tokens": 92495,
+      "cost_usd_list_price": 2.7279,
+      "result_sha256": "6820a8151b3edbfb6c3d88ee2fe29b4aa2188e49cf6f5d77239726ea7a9a5c30",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "production-planning",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 33.7,
+      "input_tokens": 8963881,
+      "output_tokens": 139327,
+      "cost_usd_list_price": 4.0473,
+      "result_sha256": "73b16d6299763903507f99d196c3051b9969633a687a263287086a96aab9185d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "production-planning",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 11.6,
+      "input_tokens": 4325481,
+      "output_tokens": 65305,
+      "cost_usd_list_price": 1.9941,
+      "result_sha256": "b7c1468eb438c08b0cf378c500da3b4c4413678b45e7a388baec7d228d591080",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "protein-autointerp-disulfide",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 35.2,
+      "input_tokens": 6225464,
+      "output_tokens": 46808,
+      "cost_usd_list_price": 2.3241,
+      "result_sha256": "66548a878cf3429cbad0f3dcc5aff82b4677fa5c654c1e89389a4b1841f92c18",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "protein-autointerp-disulfide",
+      "rollout": 2,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 14.4,
+      "input_tokens": 4738247,
+      "output_tokens": 68289,
+      "cost_usd_list_price": 1.9063,
+      "result_sha256": "726494c6ae0d3a45b26dbfee6bb941b67b9f97deffe25e0b9278c606e5046326",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "protein-autointerp-disulfide",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 8.8,
+      "input_tokens": 1909939,
+      "output_tokens": 41476,
+      "cost_usd_list_price": 1.0723,
+      "result_sha256": "48f2777e1a9b4ae1787040b4f5f866c68ae6046f49b4a936b3a0a8e7424669c4",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "protein-autointerp-disulfide",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 29.2,
+      "input_tokens": 7237486,
+      "output_tokens": 65730,
+      "cost_usd_list_price": 2.7677,
+      "result_sha256": "2cf7ad7c101f797f7b109662b9d78d0309653cfbf830888203d0ac7e5e17ea16",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "protein-autointerp-disulfide",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 46.4,
+      "input_tokens": 11357389,
+      "output_tokens": 101132,
+      "cost_usd_list_price": 3.8344,
+      "result_sha256": "ee47696bfbbf3b9453bd73c65a295fdeb6bad8f1988331c1991ba5ff6b6a8dc0",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "roy-polymorph-cn",
+      "rollout": 1,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 8.3,
+      "input_tokens": 909550,
+      "output_tokens": 14759,
+      "cost_usd_list_price": 0.7886,
+      "result_sha256": "7bfb3d6b38da36c7a2ed981f1c67c273deb26dbb83ed056b39425afd0347ba08",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "roy-polymorph-cn",
+      "rollout": 2,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 3.3,
+      "input_tokens": 1252101,
+      "output_tokens": 17547,
+      "cost_usd_list_price": 0.6546,
+      "result_sha256": "79398749f2f2f807afdbe357d021f42c699e1d26b4b6419293a09e0d4f88fc3f",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "roy-polymorph-cn",
+      "rollout": 3,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 3.9,
+      "input_tokens": 1561185,
+      "output_tokens": 18407,
+      "cost_usd_list_price": 0.7502,
+      "result_sha256": "aeaa52f8f5738cc8d999703f1ad598a95f80d01abec3de0eda77a2be536c3a7d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "roy-polymorph-cn",
+      "rollout": 4,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 3.4,
+      "input_tokens": 1204327,
+      "output_tokens": 15980,
+      "cost_usd_list_price": 0.6256,
+      "result_sha256": "a9142e92407025c48775aedfd88a34a9f2c6a0f2cd0f07556c77e06640cdca90",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "roy-polymorph-cn",
+      "rollout": 5,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 1.8,
+      "input_tokens": 765158,
+      "output_tokens": 7549,
+      "cost_usd_list_price": 0.4262,
+      "result_sha256": "fdf529b7403c3efb96cca0003e911c5ee1b4a2c7e4b4aa4bb650eab0a105edd1",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "satb-audio-transcription",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 31.7,
+      "input_tokens": 19803378,
+      "output_tokens": 138948,
+      "cost_usd_list_price": 6.0208,
+      "result_sha256": "cac8416964543122f6b3303aa97d317d16ee04eee809557e7666cd17d4118524",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "satb-audio-transcription",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 40.0,
+      "input_tokens": 7390952,
+      "output_tokens": 96872,
+      "cost_usd_list_price": 3.3324,
+      "result_sha256": "369068e3f5db36b959b1950b8536f9d5fba179f20ac0276e6d804d7834f9e0bc",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "satb-audio-transcription",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 66.7,
+      "input_tokens": 26704097,
+      "output_tokens": 174067,
+      "cost_usd_list_price": 7.79,
+      "result_sha256": "dfda38a0f51854d32c56b1dfa25ae03a067a0405ce220051690c3913946eb03b",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "satb-audio-transcription",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 17.4,
+      "input_tokens": 7397457,
+      "output_tokens": 82172,
+      "cost_usd_list_price": 2.923,
+      "result_sha256": "79056190a39e02132dc195c004993403a5386fcbf55e2f2cafbcd8bb907e3612",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "satb-audio-transcription",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 18.1,
+      "input_tokens": 6187937,
+      "output_tokens": 80219,
+      "cost_usd_list_price": 2.5795,
+      "result_sha256": "3d392f4d6216d8b9df38434ce40bcc57f62ca9056a09b4cad46e18bc2898023e",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "sglang-qwen-burst",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 31.7,
+      "input_tokens": 13509342,
+      "output_tokens": 59985,
+      "cost_usd_list_price": 4.0428,
+      "result_sha256": "7ced5f0c39afaa8066ce7f1414f4cd21b5d3f535fb58fef2c2c2da5d17712a13",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "sglang-qwen-burst",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 39.4,
+      "input_tokens": 27188020,
+      "output_tokens": 101285,
+      "cost_usd_list_price": 7.2298,
+      "result_sha256": "77bd373158c6ed10a913f9f7330e9fb17828094f2588d05085d10a5d088291ba",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "sglang-qwen-burst",
+      "rollout": 3,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 35.9,
+      "input_tokens": 29010560,
+      "output_tokens": 106380,
+      "cost_usd_list_price": 7.5682,
+      "result_sha256": "bf7b32569376d3874733e850685c17a6347167f025d28f9712b104d976b31d26",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "sglang-qwen-burst",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 31.5,
+      "input_tokens": 23958039,
+      "output_tokens": 87362,
+      "cost_usd_list_price": 6.2897,
+      "result_sha256": "2d19ef67db3779137b7c614049b98f40d657ae7f9f589cee941204fd7c42b434",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "sglang-qwen-burst",
+      "rollout": 5,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 23.3,
+      "input_tokens": 19309588,
+      "output_tokens": 75140,
+      "cost_usd_list_price": 5.1474,
+      "result_sha256": "7529bc7c156193beb107c2dd816576d3790f534fbcc1e72a29fc7c8e122e7332",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "vf2-speedup-networkx",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 43.3,
+      "input_tokens": 26985473,
+      "output_tokens": 162583,
+      "cost_usd_list_price": 7.9028,
+      "result_sha256": "4685360d0ebbb03b6a8f12d70f12100be192b63cba2203dc3fe4818ce0af48ab",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "vf2-speedup-networkx",
+      "rollout": 2,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 57.7,
+      "input_tokens": 44376023,
+      "output_tokens": 211563,
+      "cost_usd_list_price": 12.184,
+      "result_sha256": "f4fcf367ccca3b7f92fb39d5e9683b6b533a1b31bd912ba4eaa2ace3cd28a6ec",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "vf2-speedup-networkx",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 78.8,
+      "input_tokens": 104813274,
+      "output_tokens": 258175,
+      "cost_usd_list_price": 25.6275,
+      "result_sha256": "74b5a6eacb383d10a1e65be9fe4ec5afba5f236620d603b905a06e45e67e786a",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "vf2-speedup-networkx",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 83.0,
+      "input_tokens": 85938439,
+      "output_tokens": 245355,
+      "cost_usd_list_price": 21.7034,
+      "result_sha256": "12b98af5ad2990d49c8715aa25b1b9779a222fecf116962b22f37083eead2626",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "vf2-speedup-networkx",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 54.4,
+      "input_tokens": 49086026,
+      "output_tokens": 181557,
+      "cost_usd_list_price": 12.5363,
+      "result_sha256": "9ec2622017c9dfbc69a0359f9c9c00c280976c214c0aab953aca53964a7e93d1",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "vllm-deepseek-streaming",
+      "rollout": 1,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 20.1,
+      "input_tokens": 8310783,
+      "output_tokens": 64326,
+      "cost_usd_list_price": 2.7641,
+      "result_sha256": "0820b30672ee21a3d0fa9a9edd7056a17a466681fe98118fd07f20e8304f73be",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "vllm-deepseek-streaming",
+      "rollout": 2,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 5.7,
+      "input_tokens": 3021720,
+      "output_tokens": 25740,
+      "cost_usd_list_price": 1.27,
+      "result_sha256": "2a6c4a7fd05a5bc2152c30dbd7760ec9ae4cbf9da559dbc63bce921e7ec84ce7",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "vllm-deepseek-streaming",
+      "rollout": 3,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 10.3,
+      "input_tokens": 5710616,
+      "output_tokens": 47127,
+      "cost_usd_list_price": 2.0674,
+      "result_sha256": "605960f8044e160119ebdf0a7fe73ee980a13a9cbdc2810bdc9f9086a093b976",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "vllm-deepseek-streaming",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 20.9,
+      "input_tokens": 13010622,
+      "output_tokens": 97864,
+      "cost_usd_list_price": 4.1727,
+      "result_sha256": "53e7f0bb1099e6870973a43ec83d801abbafa4ff7cfac3e7ab6170dc746526b2",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "vllm-deepseek-streaming",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 15.8,
+      "input_tokens": 8573175,
+      "output_tokens": 76750,
+      "cost_usd_list_price": 3.1108,
+      "result_sha256": "9d96a8375849690f6330c4a289304d32c6b9eb409cd31300120e54812bcfcbc4",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "wal-recovery-ordering",
+      "rollout": 1,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 6.5,
+      "input_tokens": 2482698,
+      "output_tokens": 35196,
+      "cost_usd_list_price": 1.1591,
+      "result_sha256": "7a070f815c920f448b09c2eec6b83ff1f759a79d72385ff29910cc2287b824a2",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "wal-recovery-ordering",
+      "rollout": 2,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 8.4,
+      "input_tokens": 2928129,
+      "output_tokens": 45452,
+      "cost_usd_list_price": 1.5131,
+      "result_sha256": "c0c52819af74602e2c17a553fce00bf6d60b70f2efa1ed42170c6454dc3d6028",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "wal-recovery-ordering",
+      "rollout": 3,
+      "reward": 1.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 7.8,
+      "input_tokens": 2809840,
+      "output_tokens": 41931,
+      "cost_usd_list_price": 1.3028,
+      "result_sha256": "e43c3873cc8249c2afd766c6405e32156d7734d447037d3df1c4341f037b6b4d",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "wal-recovery-ordering",
+      "rollout": 4,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 7.7,
+      "input_tokens": 3313184,
+      "output_tokens": 42022,
+      "cost_usd_list_price": 1.3661,
+      "result_sha256": "8a290c10c39877007d7cf7c05a0e57b5604d1e5066a3af35d45a1f48825f4806",
+      "notes": [],
+      "replaced_attempts": []
+    },
+    {
+      "task_id": "wal-recovery-ordering",
+      "rollout": 5,
+      "reward": 0.0,
+      "valid": true,
+      "source_run": "sonnet5_v8_x5",
+      "account": "A",
+      "model_effort_verified": true,
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "cli": "claude-code 2.1.292",
+      "solve_minutes": 8.6,
+      "input_tokens": 3380053,
+      "output_tokens": 48170,
+      "cost_usd_list_price": 1.5301,
+      "result_sha256": "9907536e7d67982e2b401fac73ee919b59851f2ac0628a2b0adc11d6143b5d64",
+      "notes": [],
+      "replaced_attempts": []
+    }
+  ],
+  "replaced_attempts_log": [
+    {
+      "job": "ctr-optimization__r1",
+      "why": "operator_pause",
+      "moved_to": "trials_void/ctr-optimization__r1",
+      "approved_by": "operator, 2026-10-19",
+      "time": "2026-10-19T04:55:53Z"
+    },
+    {
+      "job": "ctr-optimization__r2",
+      "why": "api_error",
+      "moved_to": "trials_void/ctr-optimization__r2",
+      "approved_by": "operator, 2026-10-19",
+      "time": "2026-10-19T04:55:53Z"
+    },
+    {
+      "job": "ctr-optimization__r3",
+      "why": "api_error",
+      "moved_to": "trials_void/ctr-optimization__r3",
+      "approved_by": "operator, 2026-10-19",
+      "time": "2026-10-19T04:55:53Z"
+    },
+    {
+      "job": "ctr-optimization__r4",
+      "why": "api_error",
+      "moved_to": "trials_void/ctr-optimization__r4",
+      "approved_by": "operator, 2026-10-19",
+      "time": "2026-10-19T04:55:53Z"
+    },
+    {
+      "job": "distributed-dedup__r2",
+      "why": "operator_pause",
+      "moved_to": "trials_void/distributed-dedup__r2",
+      "approved_by": "operator, 2026-10-19",
+      "time": "2026-10-19T04:55:53Z"
+    },
+    {
+      "job": "distributed-dedup__r4",
+      "why": "api_error",
+      "moved_to": "trials_void/distributed-dedup__r4",
+      "approved_by": "operator, 2026-10-19",
+      "time": "2026-10-19T04:55:53Z"
+    },
+    {
+      "job": "data-anonymization__r2",
+      "why": "operator_pause",
+      "moved_to": "trials_void/data-anonymization__r2",
+      "approved_by": "operator, 2026-10-19",
+      "time": "2026-10-19T04:55:53Z"
+    },
+    {
+      "job": "ctr-optimization__r4",
+      "why": "solve ended after ~40 min: the model set a CronCreate timer, which never fires in headless mode",
+      "reward_seen": 0.0,
+      "moved_to": "trials_void/ctr-optimization__r4",
+      "approved_by": "operator, 2026-10-19 15:0x +08",
+      "time": "2026-10-19T08:02:24Z"
+    },
+    {
+      "job": "ctr-optimization__r5",
+      "why": "relay host slept ~25 min during this real-time task (note_relay_outage.json)",
+      "reward_seen": 0.0,
+      "moved_to": "trials_void/ctr-optimization__r5",
+      "approved_by": "operator, 2026-10-19 15:0x +08",
+      "time": "2026-10-19T08:02:24Z"
+    },
+    {
+      "note": "paths for ctr-optimization__r4: the 2026-10-13 API-error attempt is trials_void/ctr-optimization__r4__attempt1, the 2026-10-19 CronCreate attempt is trials_void/ctr-optimization__r4__attempt2",
+      "time": "2026-10-19T08:03:11Z"
+    },
+    {
+      "job": "ctr-optimization__r4",
+      "why": "started on the account-A relay by mistake (wrapper re-read env.sh); stopped after ~3 minutes, no result",
+      "moved_to": "trials_void/ctr-optimization__r4__wrong_account",
+      "time": "2026-10-19T08:14:48Z"
+    },
+    {
+      "job": "ctr-optimization__r5",
+      "why": "started on the account-A relay by mistake (wrapper re-read env.sh); stopped after ~3 minutes, no result",
+      "moved_to": "trials_void/ctr-optimization__r5__wrong_account",
+      "time": "2026-10-19T08:14:48Z"
+    },
+    {
+      "job": "ctr-optimization__r1",
+      "why": "operator pause 2026-10-19 ~17:20 +08 (lid had to close)",
+      "moved_to": "trials_void/ctr-optimization__r1__pause_1019",
+      "approved_by": "operator, 2026-10-19 20:1x +08",
+      "time": "2026-10-19T13:10:16Z"
+    },
+    {
+      "job": "ctr-optimization__r2",
+      "why": "operator pause 2026-10-19 ~17:20 +08 (lid had to close)",
+      "moved_to": "trials_void/ctr-optimization__r2__pause_1019",
+      "approved_by": "operator, 2026-10-19 20:1x +08",
+      "time": "2026-10-19T13:10:16Z"
+    },
+    {
+      "job": "ctr-optimization__r3",
+      "why": "operator pause 2026-10-19 ~17:20 +08 (lid had to close)",
+      "moved_to": "trials_void/ctr-optimization__r3__pause_1019",
+      "approved_by": "operator, 2026-10-19 20:1x +08",
+      "time": "2026-10-19T13:10:16Z"
+    },
+    {
+      "job": "ctr-optimization__r4",
+      "why": "operator pause 2026-10-19 ~17:20 +08 (lid had to close)",
+      "moved_to": "trials_void/ctr-optimization__r4__pause_1019",
+      "approved_by": "operator, 2026-10-19 20:1x +08",
+      "time": "2026-10-19T13:10:16Z"
+    },
+    {
+      "job": "ctr-optimization__r5",
+      "why": "operator pause 2026-10-19 ~17:20 +08 (lid had to close)",
+      "moved_to": "trials_void/ctr-optimization__r5__pause_1019",
+      "approved_by": "operator, 2026-10-19 20:1x +08",
+      "time": "2026-10-19T13:10:16Z"
+    }
+  ],
+  "reused_rollouts": [
+    {
+      "rollout": 1,
+      "source_run": "sonnet5_v8_r1",
+      "task_id": "bun-sourcemap-leak",
+      "trial": "runs/sonnet5_v8_r1/trials/bun-sourcemap-leak__r1"
+    },
+    {
+      "rollout": 1,
+      "source_run": "sonnet5_v8_r1",
+      "task_id": "cargo-flight-dispatch",
+      "trial": "runs/sonnet5_v8_r1/trials/cargo-flight-dispatch__r1"
+    },
+    {
+      "rollout": 1,
+      "source_run": "sonnet5_smoke2",
+      "task_id": "payments-pipeline-fix",
+      "trial": "runs/sonnet5_smoke2/trials/payments-pipeline-fix__r1"
+    }
+  ]
+}
